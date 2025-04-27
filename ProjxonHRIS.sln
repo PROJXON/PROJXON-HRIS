@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{FD1AB57F-E6BC-45DB-B1E7-C734691DC742}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudSync", "CloudSync\CloudSync.csproj", "{D28A10B2-6F9A-463F-A65B-F81935E9D90B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{7083B94B-0E1C-48F0-B52A-BEAA91F46DF3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD1AB57F-E6BC-45DB-B1E7-C734691DC742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD1AB57F-E6BC-45DB-B1E7-C734691DC742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD1AB57F-E6BC-45DB-B1E7-C734691DC742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD1AB57F-E6BC-45DB-B1E7-C734691DC742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D28A10B2-6F9A-463F-A65B-F81935E9D90B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D28A10B2-6F9A-463F-A65B-F81935E9D90B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D28A10B2-6F9A-463F-A65B-F81935E9D90B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D28A10B2-6F9A-463F-A65B-F81935E9D90B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7083B94B-0E1C-48F0-B52A-BEAA91F46DF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7083B94B-0E1C-48F0-B52A-BEAA91F46DF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7083B94B-0E1C-48F0-B52A-BEAA91F46DF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7083B94B-0E1C-48F0-B52A-BEAA91F46DF3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
