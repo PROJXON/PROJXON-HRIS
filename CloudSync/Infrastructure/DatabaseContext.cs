@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using CloudSync.Modules.EmployeeManagement.Models;
 using CloudSync.Modules.UserManagement.Models;
 
 namespace CloudSync.Infrastructure;
@@ -21,6 +22,9 @@ public class DatabaseContext : DbContext
             .HasKey(u => u.Id);
         
         modelBuilder.Entity<Permission>()
+            .HasKey(u => u.Id);
+        
+        modelBuilder.Entity<Employee>()
             .HasKey(u => u.Id);
     }
 }
