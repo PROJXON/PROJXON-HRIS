@@ -18,4 +18,13 @@
       <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Modules\CandidateManagement\Controllers\" />
+      <Folder Include="Modules\CandidateManagement\Repositories\" />
+      <Folder Include="Modules\CandidateManagement\Services\" />
+      <Folder Include="Modules\EmployeeManagement\Controllers\" />
+      <Folder Include="Modules\EmployeeManagement\Repositories\" />
+      <Folder Include="Modules\EmployeeManagement\Services\" />
+    </ItemGroup>
+
 </Project>
