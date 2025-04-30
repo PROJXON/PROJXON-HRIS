@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using CloudSync.Modules.EmployeeManagement.Models;
 using CloudSync.Modules.UserManagement.Models;
+using CloudSync.Modules.CandidateManagement.Models;
 
 namespace CloudSync.Infrastructure;
 
@@ -25,6 +26,18 @@ public class DatabaseContext : DbContext
             .HasKey(u => u.Id);
         
         modelBuilder.Entity<Employee>()
+            .HasKey(u => u.Id);
+        
+        modelBuilder.Entity<Department>()
+            .HasKey(u => u.Id);
+        
+        modelBuilder.Entity<ProjectTeam>()
+            .HasKey(u => u.Id);
+        
+        modelBuilder.Entity<TeamMember>()
+            .HasKey(u => u.Id);
+        
+        modelBuilder.Entity<Candidate>()
             .HasKey(u => u.Id);
     }
 }
