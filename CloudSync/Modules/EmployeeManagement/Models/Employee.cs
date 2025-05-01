@@ -17,12 +17,60 @@ public class Employee
     public string? LastName { get; set; }
     
     [EmailAddress]
-    [StringLength(40)]
-    public string? Email { get; set; }
+    [StringLength(60)]
+    public string? ProjxonEmail { get; set; }
     
     [Phone]
     [StringLength(15)]
     public string? Phone { get; set; }
+    
+    [Column(TypeName = "json")]
+    public string? Address { get; set; }
+    
+    [EmailAddress]
+    [StringLength(60)]
+    public string? PersonalEmail { get; set; }
+    
+    [StringLength(40)]
+    public string? EmergencyContactName { get; set; }
+    
+    [Phone]
+    public string? EmergencyContactPhone { get; set; }
+    
+    [StringLength(9)]
+    public string? SocialSecurityNumber { get; set; }
+    
+    [StringLength(40)]
+    public string? IdNumber { get; set; }
+    
+    [StringLength(40)]
+    public string? IdType { get; set; }
+    
+    [StringLength(40)]
+    public string? IdCountry { get; set; }
+    
+    [StringLength(40)]
+    public string? IdState { get; set; }
+    
+    [StringLength(40)]
+    public string? BirthCountry { get; set; }
+    
+    [StringLength(40)]
+    public string? BirthState { get; set; }
+    
+    [StringLength(40)]
+    public string? BirthCity { get; set; }
+    
+    public DateTime? BirthDate { get; set; }
+    
+    [StringLength(20)]
+    public string? Gender { get; set; }
+    
+    [StringLength(20)]
+    public string? PreferredPronouns { get; set; }
+    
+    [StringLength(20)]
+    public string? PreferredName { get; set; }
     
     [Required]
     [StringLength(40)]
@@ -93,10 +141,23 @@ public class Employee
     public string? WorkAuthorizationDocumentUrl { get; set; }
     
     [StringLength(20)]
+    public string? VisaNumber { get; set; }
+    
+    public DateTime VisaExpirationDate { get; set; }
+    
+    [StringLength(20)]
+    public string? WorkPermitNumber { get; set; }
+    
+    public DateTime WorkExpirationDate { get; set; }
+    
+    [StringLength(20)]
     public string? EducationLevel { get; set; }
     
     [Column(TypeName = "jsonb")]
     public List<string>? UniversitiesAttended { get; set; }
+    
+    [Column(TypeName = "jsonb")]
+    public List<string>? DegreesEarned { get; set; }
     
     [StringLength(30)]
     public string? TimeZone { get; set; }
