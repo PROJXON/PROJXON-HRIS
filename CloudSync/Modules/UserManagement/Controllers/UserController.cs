@@ -76,13 +76,9 @@ namespace CloudSync.Modules.UserManagement.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (UserExists(id).IsCanceled || UserExists(id).IsFaulted)
                 {
                     return NotFound();
-                }
-                else
-                {
-                    throw;
                 }
             }
         
