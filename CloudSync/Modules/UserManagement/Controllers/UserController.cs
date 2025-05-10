@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Models;
-using Shared.DTOs;
+using Shared.DTOs.User;
 
 namespace CloudSync.Modules.UserManagement.Controllers
 {
@@ -61,14 +61,14 @@ namespace CloudSync.Modules.UserManagement.Controllers
         // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(int id, UserDTO userDTO)
         {
-            if (id != user.Id)
+            if (id != userDTO.Id)
             {
                 return BadRequest();
             }
         
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(userDTO).State = EntityState.Modified;
         
             try
             {
@@ -97,7 +97,16 @@ namespace CloudSync.Modules.UserManagement.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            var userDTO = new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+                CreateDateTime = user.CreateDateTime,
+                LastLoginDateTime = user.LastLoginDateTime,
+                UserSettings = user.UserSettings ?? null
+            };
+
+            return CreatedAtAction("GetUser", new { id = user.Id }, userDTO);
         }
 
         // DELETE: api/User/5
