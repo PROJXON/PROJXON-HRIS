@@ -15,5 +15,5 @@ public class Department
     public int ParentDepartmentId { get; set; } 
     
     [ForeignKey("ParentDepartmentId")]
-    public Department? ParenDepartment { get; set; }
+    public Department? ParentDepartment { get; set; }
 }
