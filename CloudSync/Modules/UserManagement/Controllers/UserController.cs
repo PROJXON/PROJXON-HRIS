@@ -54,7 +54,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
                 Username = user.Username,
                 CreateDateTime = user.CreateDateTime,
                 LastLoginDateTime = user.LastLoginDateTime,
-                UserSettings = user.UserSettings ?? ""
+                UserSettings = user.UserSettings ?? null
             };
         }
         
