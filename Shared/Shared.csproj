@@ -9,7 +9,6 @@
     <ItemGroup>
       <Folder Include="Requests\" />
       <Folder Include="Responses\" />
-      <Folder Include="DTOs\" />
       <Folder Include="Enums\" />
     </ItemGroup>
 
