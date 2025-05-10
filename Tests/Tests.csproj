@@ -19,4 +19,9 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Client\Client.csproj" />
+      <ProjectReference Include="..\CloudSync\CloudSync.csproj" />
+    </ItemGroup>
+
 </Project>
