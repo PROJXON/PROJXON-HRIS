@@ -1,4 +1,4 @@
-namespace Shared.DTOs;
+namespace Shared.DTOs.User;
 
 public class UserDTO
 {
@@ -6,5 +6,5 @@ public class UserDTO
     public required string Username { get; set; }
     public DateTime CreateDateTime { get; set; }
     public DateTime LastLoginDateTime { get; set; }
-    public required string UserSettings { get; set; }
+    public string? UserSettings { get; set; }
 }
