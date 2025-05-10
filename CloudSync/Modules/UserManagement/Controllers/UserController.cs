@@ -121,9 +121,9 @@ namespace CloudSync.Modules.UserManagement.Controllers
             return NoContent();
         }
 
-        private bool UserExists(int id)
+        private async Task<bool> UserExists(int id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return await _context.Users.AnyAsync(e => e.Id == id);
         }
     }
 }
