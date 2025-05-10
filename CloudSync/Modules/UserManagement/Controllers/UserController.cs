@@ -24,11 +24,19 @@ namespace CloudSync.Modules.UserManagement.Controllers
 
         // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
-        }
+            var userList = await _context.Users.ToListAsync();
+            List<UserDTO> userDtoList = [];
+            
+            userDtoList.AddRange(userList.Select(user => new UserDTO
+            {
+                Id = user.Id, Username = user.Username, CreateDateTime = user.CreateDateTime, LastLoginDateTime = user.LastLoginDateTime,
+            }));
 
+            return userDtoList;
+        }
+        
         // GET: api/User/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
