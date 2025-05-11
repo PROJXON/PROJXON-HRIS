@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Models;
+using CloudSync.Modules.UserManagement.Services;
 using Shared.DTOs.User;
 
 namespace CloudSync.Modules.UserManagement.Controllers
@@ -54,7 +55,6 @@ namespace CloudSync.Modules.UserManagement.Controllers
         }
         
         // PUT: api/User/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, UserDTO userDTO)
         {
@@ -81,23 +81,27 @@ namespace CloudSync.Modules.UserManagement.Controllers
         }
 
         // POST: api/User
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
+        public async Task<ActionResult<UserDTO>> CreateUser(User user)
         {
+            var passwordAndHash = PasswordService.GeneratePasswordAndHash();
+            
+            user.Password = passwordAndHash.HashedPassword;
+            Console.WriteLine(user.Password);
+            
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            var userDTO = new UserDTO
+            var createUserDTO = new CreateUserDTO
             {
-                Id = user.Id,
+                Password = passwordAndHash.GeneratedPassword,
                 Username = user.Username,
                 CreateDateTime = user.CreateDateTime,
                 LastLoginDateTime = user.LastLoginDateTime,
                 UserSettings = user.UserSettings ?? null
             };
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, userDTO);
+            return CreatedAtAction("GetUser", new { id = user.Id }, createUserDTO);
         }
 
         // DELETE: api/User/5
