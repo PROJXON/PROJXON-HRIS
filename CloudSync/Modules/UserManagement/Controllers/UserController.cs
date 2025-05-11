@@ -56,14 +56,14 @@ namespace CloudSync.Modules.UserManagement.Controllers
         
         // PUT: api/User/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, UserDTO userDTO)
+        public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != userDTO.Id)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
         
-            _context.Entry(userDTO).State = EntityState.Modified;
+            _context.Entry(user).State = EntityState.Modified;
         
             try
             {
