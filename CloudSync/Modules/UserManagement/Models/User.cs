@@ -12,23 +12,21 @@ public class User
     [Required]
     [EmailAddress]
     [StringLength(40)]
-    public string? Username { get; set; }
+    public string Username { get; set; } = string.Empty;
+
+    [Required] 
+    [StringLength(60)] 
+    public required string Password { get; set; }
     
-    [Required]
-    [StringLength(40)]
-    public string? Password { get; set; }
-    
-    [Required]
-    public int RoleId { get; set; } 
-    
-    [ForeignKey("RoleId")]
-    public UserRole? Role { get; set; }
-    
-    [Required]
-    public int EmployeeId { get; set; }
-    
-    [ForeignKey("EmployeeId")]
-    public Employee? Employee { get; set; }
+    // public int RoleId { get; set; } 
+    //
+    // [ForeignKey("RoleId")]
+    // public UserRole? Role { get; set; }
+    //
+    // public int EmployeeId { get; set; }
+    //
+    // [ForeignKey("EmployeeId")]
+    // public Employee? Employee { get; set; }
     
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime CreateDateTime { get; set; }
