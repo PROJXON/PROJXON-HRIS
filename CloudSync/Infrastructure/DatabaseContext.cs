@@ -7,12 +7,15 @@ namespace CloudSync.Infrastructure;
 
 public class DatabaseContext : DbContext
 {
+    public DatabaseContext() : base()
+    {}
+    
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
     }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<UserRole> Roles { get; set; }
+    public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<UserRole> Roles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
