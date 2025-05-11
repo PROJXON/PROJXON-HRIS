@@ -8,19 +8,24 @@ public struct PasswordAndHash
     public string HashedPassword;
 }
 
-public class PasswordGenerationService
+public class PasswordService
 {
     public static PasswordAndHash GeneratePasswordAndHash()
     {
         var pwd = new Password();
         var generatedPassword = pwd.Next();
 
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(generatedPassword);
+        var hashedPassword = HashPassword(generatedPassword);
 
         return new PasswordAndHash
         {
             GeneratedPassword = generatedPassword,
             HashedPassword = hashedPassword
         };
+    }
+
+    public static string HashPassword(string generatedPassword)
+    {
+        return BCrypt.Net.BCrypt.HashPassword(generatedPassword);
     }
 }
