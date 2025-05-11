@@ -94,6 +94,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
 
             var createUserDTO = new CreateUserDTO
             {
+                Id = user.Id,
                 Password = passwordAndHash.GeneratedPassword,
                 Username = user.Username,
                 CreateDateTime = user.CreateDateTime,
