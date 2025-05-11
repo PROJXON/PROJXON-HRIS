@@ -41,7 +41,6 @@
       <Folder Include="Modules\EmployeeManagement\Controllers\" />
       <Folder Include="Modules\EmployeeManagement\Repositories\" />
       <Folder Include="Modules\EmployeeManagement\Services\" />
-      <Folder Include="Modules\UserManagement\Controllers\" />
     </ItemGroup>
 
 </Project>
