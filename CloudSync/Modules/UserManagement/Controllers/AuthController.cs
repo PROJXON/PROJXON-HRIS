@@ -10,8 +10,8 @@ public class AuthController(DatabaseContext context) : ControllerBase
 {
     private readonly DatabaseContext _context = context;
 
-    [HttpPost]
-    public async Task<string> LogInUser(LoginDTO loginData)
+    [HttpPost("google-login")]
+    public async Task<string> GoogleLogIn(LoginDTO loginData)
     {
         return "test";
     }
