@@ -20,7 +20,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
             
             userDtoList.AddRange(userList.Select(user => new UserDTO
             {
-                Id = user.Id, Username = user.Username, CreateDateTime = user.CreateDateTime, LastLoginDateTime = user.LastLoginDateTime,
+                Id = user.Id, Email = user.Email, CreateDateTime = user.CreateDateTime, LastLoginDateTime = user.LastLoginDateTime,
             }));
 
             return userDtoList;
@@ -40,7 +40,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
             return new UserDTO()
             {
                 Id = user.Id,
-                Username = user.Username,
+                Email = user.Email,
                 CreateDateTime = user.CreateDateTime,
                 LastLoginDateTime = user.LastLoginDateTime,
                 UserSettings = user.UserSettings ?? null
@@ -79,9 +79,6 @@ namespace CloudSync.Modules.UserManagement.Controllers
         {
             var passwordAndHash = PasswordService.GeneratePasswordAndHash();
             
-            user.Password = passwordAndHash.HashedPassword;
-            Console.WriteLine(user.Password);
-            
             context.Users.Add(user);
             await context.SaveChangesAsync();
 
@@ -89,8 +86,8 @@ namespace CloudSync.Modules.UserManagement.Controllers
             {
                 Id = user.Id,
                 Password = passwordAndHash.GeneratedPassword,
-                Username = user.Username,
-                CreateDateTime = user.CreateDateTime,
+                Email = user.Email,
+                CreateDateTime = user.Email,
                 LastLoginDateTime = user.LastLoginDateTime,
                 UserSettings = user.UserSettings ?? null
             };
