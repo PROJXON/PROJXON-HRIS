@@ -10,13 +10,13 @@ public class User
     public int Id { get; set; }
     
     [Required]
+    [StringLength(255)]
+    public required string GoogleUserId { get; set; }
+    
+    [Required]
     [EmailAddress]
     [StringLength(40)]
-    public string Username { get; set; } = string.Empty;
-
-    [Required] 
-    [StringLength(60)] 
-    public required string Password { get; set; }
+    public string Email { get; set; } = string.Empty;
     
     // public int RoleId { get; set; } 
     //
@@ -33,6 +33,8 @@ public class User
     
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime LastLoginDateTime { get; set; }
+    
+    public bool IsActive { get; set; }
     
     [Column(TypeName = "jsonb")]
     public string? UserSettings { get; set; }
