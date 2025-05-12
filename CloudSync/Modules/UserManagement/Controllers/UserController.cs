@@ -11,7 +11,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
     [ApiController]
     public class UserController(DatabaseContext context) : ControllerBase
     {
-        // GET: api/User
+        // GET: api/UserManagement
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
@@ -26,7 +26,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
             return userDtoList;
         }
         
-        // GET: api/User/5
+        // GET: api/UserManagement/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
@@ -47,7 +47,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
             };
         }
         
-        // PUT: api/User/5
+        // PUT: api/UserManagement/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
@@ -73,7 +73,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
             return NoContent();
         }
 
-        // POST: api/User
+        // POST: api/UserManagement
         [HttpPost]
         public async Task<ActionResult<UserDTO>> CreateUser(User user)
         {
@@ -98,7 +98,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
             return CreatedAtAction("GetUser", new { id = user.Id }, createUserDTO);
         }
 
-        // DELETE: api/User/5
+        // DELETE: api/UserManagement/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {

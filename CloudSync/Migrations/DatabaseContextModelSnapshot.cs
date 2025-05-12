@@ -452,7 +452,7 @@ namespace CloudSync.Migrations
                     b.ToTable("Permission");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.User", b =>
+            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.UserManagement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

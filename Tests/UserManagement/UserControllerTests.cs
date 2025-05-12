@@ -22,7 +22,7 @@ public class UserControllerTests
         var passwordAndHash = PasswordService.GeneratePasswordAndHash();
 
         var controller = new UserController(mockContext.Object);
-        var newUser = new User { Id = 1, Username = "Test User", Password = passwordAndHash.HashedPassword};
+        var newUser = new User { Id = 1, Username = "Test UserManagement", Password = passwordAndHash.HashedPassword};
 
         // Act
         var result = await controller.CreateUser(newUser);
