@@ -17,4 +17,7 @@ public class InvitedUser
     
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime CreateDateTime { get; set; }
+    
+    [StringLength(20)]
+    public required string Status { get; set; }
 }
