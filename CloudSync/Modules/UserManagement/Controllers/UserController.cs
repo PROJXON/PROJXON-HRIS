@@ -9,20 +9,13 @@ namespace CloudSync.Modules.UserManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController(DatabaseContext context) : ControllerBase
     {
-        private readonly DatabaseContext _context;
-
-        public UserController(DatabaseContext context)
-        {
-            _context = context;
-        }
-
         // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
-            var userList = await _context.Users.ToListAsync();
+            var userList = await context.Users.ToListAsync();
             List<UserDTO> userDtoList = [];
             
             userDtoList.AddRange(userList.Select(user => new UserDTO
@@ -37,7 +30,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await context.Users.FindAsync(id);
         
             if (user == null)
             {
@@ -63,11 +56,11 @@ namespace CloudSync.Modules.UserManagement.Controllers
                 return BadRequest();
             }
         
-            _context.Entry(user).State = EntityState.Modified;
+            context.Entry(user).State = EntityState.Modified;
         
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -89,8 +82,8 @@ namespace CloudSync.Modules.UserManagement.Controllers
             user.Password = passwordAndHash.HashedPassword;
             Console.WriteLine(user.Password);
             
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            context.Users.Add(user);
+            await context.SaveChangesAsync();
 
             var createUserDTO = new CreateUserDTO
             {
@@ -109,21 +102,21 @@ namespace CloudSync.Modules.UserManagement.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            context.Users.Remove(user);
+            await context.SaveChangesAsync();
 
             return NoContent();
         }
 
         private async Task<bool> UserExists(int id)
         {
-            return await _context.Users.AnyAsync(e => e.Id == id);
+            return await context.Users.AnyAsync(e => e.Id == id);
         }
     }
 }
