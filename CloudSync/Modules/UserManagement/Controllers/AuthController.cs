@@ -1,8 +1,21 @@
+using CloudSync.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using Shared.DTOs.User;
+
 namespace CloudSync.Modules.UserManagement.Controllers;
 
-public class AuthController
+[Route("api/[controller]")]
+[ApiController]
+public class AuthController(DatabaseContext context) : ControllerBase
 {
-    // TODO login
+    private readonly DatabaseContext _context = context;
+
+    [HttpPost]
+    public async Task<string> LogInUser(LoginDTO loginData)
+    {
+        return "test";
+    }
+    
     // TODO logout
     // TODO update password
 }
