@@ -87,7 +87,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
                 Id = user.Id,
                 Password = passwordAndHash.GeneratedPassword,
                 Email = user.Email,
-                CreateDateTime = user.Email,
+                CreateDateTime = user.CreateDateTime,
                 LastLoginDateTime = user.LastLoginDateTime,
                 UserSettings = user.UserSettings ?? null
             };
