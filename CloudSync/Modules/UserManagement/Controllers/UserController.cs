@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Services;
-using Shared.DTOs.User;
+using Shared.DTOs.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Controllers
 {

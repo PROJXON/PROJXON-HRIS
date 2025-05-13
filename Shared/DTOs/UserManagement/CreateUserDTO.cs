@@ -1,4 +1,4 @@
-namespace Shared.DTOs.User;
+namespace Shared.DTOs.UserManagement;
 
 public class CreateUserDTO
 {
