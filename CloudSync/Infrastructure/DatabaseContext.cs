@@ -25,6 +25,9 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<UserRole>()
             .HasKey(u => u.Id);
         
+        modelBuilder.Entity<InvitedUser>()
+            .HasKey(u => u.Id);
+        
         modelBuilder.Entity<Permission>()
             .HasKey(u => u.Id);
         
