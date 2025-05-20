@@ -1,4 +1,4 @@
-namespace Shared;
+namespace Shared.Enums.UserManagement;
 
 public enum HierarchyLevel
 {
