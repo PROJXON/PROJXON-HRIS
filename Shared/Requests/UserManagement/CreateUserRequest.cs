@@ -1,10 +1,10 @@
-namespace Shared.DTOs.UserManagement;
+namespace Shared.Requests.UserManagement;
 
-public class CreateUserDTO
+public class CreateUserRequest
 {
     public int Id { get; set; }
+    public required string GoogleUserId { get; set; }
     public required string Email { get; set; }
-    public required string Password { get; set; }
     public DateTime CreateDateTime { get; set; }
     public DateTime LastLoginDateTime { get; set; }
     public string? UserSettings { get; set; }
