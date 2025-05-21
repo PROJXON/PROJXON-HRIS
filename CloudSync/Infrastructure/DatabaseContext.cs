@@ -15,6 +15,7 @@ public class DatabaseContext : DbContext
     }
 
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<InvitedUser> InvitedUsers { get; set; }
     public virtual DbSet<UserRole> Roles { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
