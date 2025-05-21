@@ -21,7 +21,7 @@ public class DatabaseContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
-            .HasKey(u => u.Id);
+            .HasKey(u => u.GoogleUserId);
         
         modelBuilder.Entity<UserRole>()
             .HasKey(u => u.Id);
