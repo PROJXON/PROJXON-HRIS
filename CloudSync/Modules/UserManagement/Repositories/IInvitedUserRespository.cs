@@ -8,6 +8,6 @@ public interface IInvitedUserRespository
     Task<IEnumerable<InvitedUser>> GetAll();
     Task<InvitedUser> GetById(int id);
     void Add(InvitedUserDto invitedUserDto);
-    void Update(InvitedUser invitedUser);
+    void Update(InvitedUserDto invitedUserDto);
     void Delete(int id);
 }
