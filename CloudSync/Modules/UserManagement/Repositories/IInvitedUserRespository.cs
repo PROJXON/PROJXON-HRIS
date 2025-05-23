@@ -3,11 +3,11 @@ using Shared.DTOs.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Repositories;
 
-public interface IInvitedUserRespository
+public interface IInvitedUserRepository
 {
     Task<IEnumerable<InvitedUser>> GetAll();
-    Task<InvitedUser> GetById(int id);
-    void Add(InvitedUserDto invitedUserDto);
-    void Update(InvitedUserDto invitedUserDto);
-    void Delete(int id);
+    Task<InvitedUser?> GetByEmail(string email);
+    Task<InvitedUserDto> Add(InvitedUserDto invitedUserDto);
+    Task<bool> Update(InvitedUserDto invitedUserDto);
+    Task<bool> Delete(int id);
 }
