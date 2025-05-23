@@ -5,6 +5,6 @@ namespace Shared.DTOs.UserManagement;
 public class InvitedUserDto
 {
     public required string Email { get; set; }
-    public required int InvitedById { get; set; }
-    public required InvitedUserStatus Status { get; set; }
+    public required string InvitedByEmployeeId { get; set; }
+    public InvitedUserStatus Status { get; set; }
 }
