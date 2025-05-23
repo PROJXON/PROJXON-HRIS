@@ -28,26 +28,21 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
         return emailExists;
     }
 
-    public async Task<InvitedUserDto> Add(InvitedUserDto invitedUserDto)
+    public async Task<InvitedUser> Add(InvitedUserDto invitedUserDto)
     {
         try
         {
             var invitedUser = new InvitedUser
             {
                 Email = invitedUserDto.Email,
-                InvitedById = invitedUserDto.InvitedById,
+                InvitedByEmployeeId = invitedUserDto.InvitedByEmployeeId,
                 Status = invitedUserDto.Status
             };
+            
             await context.InvitedUsers.AddAsync(invitedUser);
             await context.SaveChangesAsync();
-
-            return new InvitedUserDto
-            {
-                Id = invitedUserDto.Id,
-                Email = invitedUserDto.Email,
-                InvitedById = invitedUserDto.InvitedById,
-                Status = invitedUserDto.Status
-            };
+            
+            return invitedUser;
         }
         catch (Exception e)
         {
@@ -91,7 +86,7 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
             var invitedUser = new InvitedUser
             {
                 Email = invitedUserDto.Email,
-                InvitedById = invitedUserDto.InvitedById,
+                InvitedByEmployeeId = invitedUserDto.InvitedByEmployeeId,
                 Status = invitedUserDto.Status
             };
             
