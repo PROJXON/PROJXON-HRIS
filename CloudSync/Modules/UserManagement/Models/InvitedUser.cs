@@ -16,9 +16,9 @@ public class InvitedUser
     
     [Required]
     [StringLength(255)]
-    public required string InvitedById { get; set; }
+    public required string InvitedByEmployeeId { get; set; }
     
-    [ForeignKey("InvitedById")]
+    [ForeignKey("InvitedByEmployeeId")]
     public User? InvitedBy { get; set; }
     
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
