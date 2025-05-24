@@ -3,6 +3,8 @@ using CloudSync.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CloudSync.Middleware;
+using CloudSync.Modules.UserManagement.Repositories;
+using CloudSync.Modules.UserManagement.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +32,9 @@ builder.Services.AddAuthentication("Bearer")
 builder.Services.AddControllers();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IInvitedUserRepository, InvitedUserRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
