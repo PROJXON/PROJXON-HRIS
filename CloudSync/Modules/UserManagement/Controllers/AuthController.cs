@@ -1,20 +1,26 @@
-using CloudSync.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.User;
+using CloudSync.Modules.UserManagement.Services;
+using Shared.Requests.UserManagement;
+
 
 namespace CloudSync.Modules.UserManagement.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
-public class AuthController(DatabaseContext context) : ControllerBase
+[Route("api/[controller]")]
+public class AuthController(IAuthService authService) : ControllerBase
 {
-    private readonly DatabaseContext _context = context;
-
-    [HttpPost("google-login")]
-    public async Task<string> GoogleLogIn(GoogleLoginDTO loginData)
+    // POST /api/auth/login
+    [HttpPost("login")]
+    public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
     {
-        return "test";
+        try
+        {
+            var response = await authService.LoginAsync(request);
+            return Ok(response);
+        }
+        catch (AuthException e)
+        {
+            return StatusCode(e.StatusCode, new { message = e.Message});
+        }
     }
-    
-    
 }
