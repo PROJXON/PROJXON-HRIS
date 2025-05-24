@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using CloudSync.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CloudSync.Middleware;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +54,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseSerilogRequestLogging();
 
