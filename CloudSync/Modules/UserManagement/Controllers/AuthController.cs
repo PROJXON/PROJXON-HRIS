@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using CloudSync.Modules.UserManagement.Services;
+using CloudSync.Modules.UserManagement.Services.Exceptions;
+using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Shared.Requests.UserManagement;
-
 
 namespace CloudSync.Modules.UserManagement.Controllers;
 

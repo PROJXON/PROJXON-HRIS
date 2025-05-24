@@ -1,4 +1,4 @@
-﻿namespace CloudSync.Modules.UserManagement.Services;
+﻿namespace CloudSync.Modules.UserManagement.Services.Exceptions;
 
 public class AuthException(string message, int statusCode = 400) : Exception(message)
 {
