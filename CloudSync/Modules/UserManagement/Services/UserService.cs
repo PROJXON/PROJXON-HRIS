@@ -1,5 +1,6 @@
 ﻿using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
+using Shared.DTOs.UserManagement;
 using Shared.Responses.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Services;
@@ -37,7 +38,7 @@ public class UserService(IUserRepository userRepository) : IUserService
         };
     }
 
-    public async Task<UserResponse> UpdateAsync(int id)
+    public async Task<UserResponse> UpdateAsync(int id, UserDto user)
     {
         throw new NotImplementedException();
     }
