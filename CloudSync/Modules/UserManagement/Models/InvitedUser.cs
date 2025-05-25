@@ -12,7 +12,7 @@ public class InvitedUser
     
     [EmailAddress]
     [StringLength(255)]
-    public string? Email { get; set; }
+    public string Email { get; set; }
     
     [Required]
     [StringLength(255)]
