@@ -30,7 +30,10 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository) :
     
     public async Task<ActionResult<InviteUserResponse>> InviteUserAsync(InviteUserRequest request)
     {
-        var existingInvite = await invitedUserRepository.GetByEmail(request.Email);
+        if (string.IsNullOrWhiteSpace(request.Email))
+            throw new InvitedUserException("Email is required.", 400);
+        
+        var existingInvite = await invitedUserRepository.GetByEmailAsync(request.Email);
         if (existingInvite != null)
         {
             throw new InvitedUserException("Email has already been invited.", 409);
@@ -43,7 +46,7 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository) :
             Status = nameof(InvitedUserStatus.Pending)
         };
 
-        var newInvitedUser = await invitedUserRepository.Add(invitedUserDto);
+        var newInvitedUser = await invitedUserRepository.AddAsync(invitedUserDto);
         
         return new InviteUserResponse
         {
