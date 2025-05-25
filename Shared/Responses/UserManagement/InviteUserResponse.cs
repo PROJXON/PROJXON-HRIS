@@ -8,4 +8,5 @@ public class InviteUserResponse
     public required string Email { get; set; }
     public required string InvitedByEmployeeId { get; set; }
     public required InvitedUserStatus Status { get; set; }
+    public DateTime CreateDateTime { get; set; }
 }
