@@ -37,4 +37,18 @@ public class InvitedUserController(IInvitedUserService invitedUserService) : Con
             return StatusCode(e.StatusCode, new { message = e.Message });
         }
     }
+
+    [HttpDelete("delete-invite/{id}")]
+    public async Task<ActionResult> DeleteInvite(string id)
+    {
+        try
+        {
+            await invitedUserService.DeleteInviteAsync(id);
+            return NoContent();
+        }
+        catch (InvitedUserException e)
+        {
+            return StatusCode(e.StatusCode, new { message = e.Message });
+        }
+    }
 }
