@@ -22,7 +22,7 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
         }
     }
     
-    public async Task<InvitedUser?> GetByEmail(string email)
+    public async Task<InvitedUser?> GetByEmailAsync(string email)
     {
         try
         {
@@ -34,11 +34,8 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
         }
     }
 
-    public async Task<InvitedUser> Add(InvitedUserDto invitedUserDto)
+    public async Task<InvitedUser> AddAsync(InvitedUserDto invitedUserDto)
     {
-        if (string.IsNullOrWhiteSpace(invitedUserDto.Email))
-            throw new InvitedUserException("Email is required.", 400);
-        
         try
         {
             var invitedUser = new InvitedUser
@@ -59,15 +56,15 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
         }
     }
 
-    public async Task DeleteInviteAsync(string id)
+    public async Task DeleteAsync(int id)
     {
         try
         {
-            var invitedUser = await context.InvitedUsers.FindAsync(id);
-            if (invitedUser == null)
-                throw new InvitedUserException("Invite does not exist.", 400);
+            var existingInvite = await context.InvitedUsers.FindAsync(id);
+            if (existingInvite == null)
+                throw new InvitedUserException("No invite exists for this user.", 404);
             
-            context.InvitedUsers.Remove(invitedUser);
+            context.Remove(existingInvite);
             await context.SaveChangesAsync();
         }
         catch (Exception e)
