@@ -30,7 +30,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
             throw new AuthException("User has not been invited.", 404);
         }
 
-        return existingInvitee.Status switch
+        return Enum.Parse<InvitedUserStatus>(existingInvitee.Status) switch
         {
             InvitedUserStatus.Accepted => throw new AuthException("User has already accepted invitation.", 400),
             InvitedUserStatus.Expired => throw new AuthException("Invitation has expired.", 400),
