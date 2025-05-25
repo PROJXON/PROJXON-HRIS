@@ -22,7 +22,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
 
         // TODO Check if user already exists
         
-        var existingInvitee = await invitedUserRepository.GetByEmail(payload.Email);
+        var existingInvitee = await invitedUserRepository.GetByEmailAsync(payload.Email);
         
         // TODO move this error to the repository?
         if (existingInvitee == null)
