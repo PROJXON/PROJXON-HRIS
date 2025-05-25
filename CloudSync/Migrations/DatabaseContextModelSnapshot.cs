@@ -446,18 +446,19 @@ namespace CloudSync.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<string>("InvitedById")
+                    b.Property<string>("InvitedByEmployeeId")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("Status")
+                        .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("integer");
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InvitedById");
+                    b.HasIndex("InvitedByEmployeeId");
 
                     b.ToTable("InvitedUsers");
                 });
@@ -611,7 +612,7 @@ namespace CloudSync.Migrations
                 {
                     b.HasOne("CloudSync.Modules.UserManagement.Models.User", "InvitedBy")
                         .WithMany()
-                        .HasForeignKey("InvitedById")
+                        .HasForeignKey("InvitedByEmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
