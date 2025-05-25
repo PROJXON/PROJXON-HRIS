@@ -3,7 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Services;
+using CloudSync.Modules.UserManagement.Services.Exceptions;
+using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Shared.DTOs.UserManagement;
+using Shared.Responses.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Controllers
 {
@@ -11,22 +14,20 @@ namespace CloudSync.Modules.UserManagement.Controllers
     [ApiController]
     public class UserController(DatabaseContext context) : ControllerBase
     {
-        // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-            var userList = await context.Users.ToListAsync();
-            List<UserDTO> userDtoList = [];
-            
-            userDtoList.AddRange(userList.Select(user => new UserDTO
+            try
             {
-                Id = user.Id, Email = user.Email, CreateDateTime = user.CreateDateTime, LastLoginDateTime = user.LastLoginDateTime,
-            }));
-
-            return userDtoList;
+                var response = await userService.GetAllAsync();
+                return Ok(response);
+            }
+            catch (UserException e)
+            {
+                return StatusCode(e.StatusCode, new { message = e.Message });
+            }
         }
         
-        // GET: api/User/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
@@ -47,7 +48,6 @@ namespace CloudSync.Modules.UserManagement.Controllers
             };
         }
         
-        // PUT: api/User/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
@@ -72,8 +72,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
         
             return NoContent();
         }
-
-        // POST: api/User
+        
         [HttpPost]
         public async Task<ActionResult<UserDTO>> CreateUser(User user)
         {
@@ -94,8 +93,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
 
             return CreatedAtAction("GetUser", new { id = user.Id }, createUserDTO);
         }
-
-        // DELETE: api/User/5
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
