@@ -28,7 +28,7 @@ public class UserRepository(DatabaseContext context) : IUserRepository
             var user = await context.Users.FindAsync(id);
 
             if (user == null)
-                throw new UserException("User with the given Id does not exist.", 404);
+                throw new UserException("User with the given ID does not exist.", 404);
 
             return user;
         }
@@ -43,9 +43,28 @@ public class UserRepository(DatabaseContext context) : IUserRepository
         throw new NotImplementedException();
     }
 
-    public async Task UpdateAsync(UserDto userDto)
+    public async Task UpdateAsync(int id, UserDto userDto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (id != userDto.Id)
+            {
+                throw new UserException("The provided ID does not match the user ID.");
+            }
+
+            var existingUser = await context.Users.FindAsync(id);
+            if (existingUser == null)
+                throw new UserException("User with the given ID does not exist.", 404);
+
+            existingUser.Email = userDto.Email;
+            existingUser.UserSettings = userDto.UserSettings;
+                
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            throw new UserException(e.Message, 500);
+        }
     }
 
     public async Task DeleteAsync(string googleUserId)
