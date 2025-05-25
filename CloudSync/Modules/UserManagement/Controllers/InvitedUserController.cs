@@ -11,7 +11,7 @@ namespace CloudSync.Modules.UserManagement.Controllers;
 public class InvitedUserController(IInvitedUserService invitedUserService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<InviteUserResponse>>> GetInvitedUsers()
+    public async Task<ActionResult<IEnumerable<InvitedUserResponse>>> GetInvitedUsers()
     {
         try
         {
@@ -25,7 +25,7 @@ public class InvitedUserController(IInvitedUserService invitedUserService) : Con
     }
     
     [HttpPost("invite-user")]
-    public async Task<ActionResult<InviteUserResponse>> InviteUser(InviteUserRequest request)
+    public async Task<ActionResult<InvitedUserResponse>> InviteUser(InvitedUserRequest request)
     {
         try
         {

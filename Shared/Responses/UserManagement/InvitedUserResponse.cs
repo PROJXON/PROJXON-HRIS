@@ -2,7 +2,7 @@
 
 namespace Shared.Responses.UserManagement;
 
-public class InviteUserResponse
+public class InvitedUserResponse
 {
     public required int Id { get; set; }
     public required string Email { get; set; }

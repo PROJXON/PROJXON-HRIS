@@ -11,12 +11,12 @@ namespace CloudSync.Modules.UserManagement.Services;
 
 public class InvitedUserService (IInvitedUserRepository invitedUserRepository) : IInvitedUserService
 {
-    public async Task<IEnumerable<InviteUserResponse>> GetAllAsync()
+    public async Task<IEnumerable<InvitedUserResponse>> GetAllAsync()
     {
         var invitedUserList = await invitedUserRepository.GetAllAsync();
-        List<InviteUserResponse> invitedUserResponseList = [];
+        List<InvitedUserResponse> invitedUserResponseList = [];
             
-        invitedUserResponseList.AddRange(invitedUserList.Select(invitedUser => new InviteUserResponse
+        invitedUserResponseList.AddRange(invitedUserList.Select(invitedUser => new InvitedUserResponse
         {
             Id = invitedUser.Id,
             Email = invitedUser.Email,
@@ -28,7 +28,7 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository) :
         return invitedUserResponseList;
     }
     
-    public async Task<ActionResult<InviteUserResponse>> InviteUserAsync(InviteUserRequest request)
+    public async Task<ActionResult<InvitedUserResponse>> InviteUserAsync(InvitedUserRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Email))
             throw new InvitedUserException("Email is required.", 400);
@@ -48,7 +48,7 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository) :
 
         var newInvitedUser = await invitedUserRepository.AddAsync(invitedUserDto);
         
-        return new InviteUserResponse
+        return new InvitedUserResponse
         {
             Id = newInvitedUser.Id,
             Email = newInvitedUser.Email,
