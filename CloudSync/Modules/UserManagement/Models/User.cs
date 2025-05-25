@@ -27,9 +27,9 @@ public class User
     //
     // [ForeignKey("EmployeeId")]
     // public Employee? Employee { get; set; }
-    
+
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime CreateDateTime { get; set; }
+    public DateTime CreateDateTime { get; set; } = DateTime.UtcNow;
     
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime LastLoginDateTime { get; set; }
