@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CloudSync.Middleware;
 using CloudSync.Modules.UserManagement.Repositories;
+using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Serilog;
