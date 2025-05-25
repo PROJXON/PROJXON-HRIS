@@ -39,7 +39,7 @@ public class InvitedUserController(IInvitedUserService invitedUserService) : Con
     }
 
     [HttpDelete("delete-invite/{id}")]
-    public async Task<ActionResult> DeleteInvite(string id)
+    public async Task<ActionResult> DeleteInvite(int id)
     {
         try
         {
