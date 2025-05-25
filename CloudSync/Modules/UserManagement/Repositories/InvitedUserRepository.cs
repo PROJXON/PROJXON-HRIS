@@ -64,7 +64,7 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
             if (existingInvite == null)
                 throw new InvitedUserException("No invite exists for this user.", 404);
             
-            context.Remove(existingInvite);
+            context.InvitedUsers.Remove(existingInvite);
             await context.SaveChangesAsync();
         }
         catch (Exception e)
