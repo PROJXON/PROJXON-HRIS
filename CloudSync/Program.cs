@@ -35,6 +35,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IInvitedUserService, InvitedUserService>();
 builder.Services.AddScoped<IInvitedUserRepository, InvitedUserRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
