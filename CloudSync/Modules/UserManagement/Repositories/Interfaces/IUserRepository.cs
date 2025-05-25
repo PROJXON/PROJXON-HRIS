@@ -9,5 +9,5 @@ public interface IUserRepository
     Task<User> GetByIdAsync(int id);
     Task CreateAsync(UserDto userDto);
     Task UpdateAsync(int id, UserDto userDto);
-    Task DeleteAsync(string googleUserId);
+    Task DeleteAsync(int id);
 }
