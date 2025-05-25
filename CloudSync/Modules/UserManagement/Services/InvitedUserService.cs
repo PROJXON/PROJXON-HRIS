@@ -54,4 +54,9 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository) :
             CreateDateTime = newInvitedUser.CreateDateTime
         };
     }
+
+    public async Task DeleteInviteAsync(int id)
+    {
+        await invitedUserRepository.DeleteAsync(id);
+    }
 }
