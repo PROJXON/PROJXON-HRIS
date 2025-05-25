@@ -9,4 +9,5 @@ public interface IInvitedUserService
 {
     Task<IEnumerable<InviteUserResponse>> GetAllAsync();
     Task<ActionResult<InviteUserResponse>> InviteUserAsync(InviteUserRequest request);
+    Task DeleteInviteAsync(int id);
 }
