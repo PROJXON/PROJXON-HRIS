@@ -21,22 +21,34 @@ public class UserRepository(DatabaseContext context) : IUserRepository
         }
     }
 
-    public Task<User> GetByIdAsync(int id)
+    public async Task<User> GetByIdAsync(int id)
+    {
+        try
+        {
+            var user = await context.Users.FindAsync(id);
+
+            if (user == null)
+                throw new UserException("User with the given Id does not exist.", 404);
+
+            return user;
+        }
+        catch (Exception e)
+        {
+            throw new UserException(e.Message, 500);
+        }
+    }
+
+    public async Task CreateAsync(UserDto userDto)
     {
         throw new NotImplementedException();
     }
 
-    public void CreateAsync(UserDto userDto)
+    public async Task UpdateAsync(UserDto userDto)
     {
         throw new NotImplementedException();
     }
 
-    public void UpdateAsync(UserDto userDto)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void DeleteAsync(string googleUserId)
+    public async Task DeleteAsync(string googleUserId)
     {
         throw new NotImplementedException();
     }
