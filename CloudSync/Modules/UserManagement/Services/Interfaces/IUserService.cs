@@ -5,6 +5,7 @@ namespace CloudSync.Modules.UserManagement.Services.Interfaces;
 public interface IUserService
 {
     Task<IEnumerable<UserResponse>> GetAllAsync();
-    Task<UserResponse> GetByIdAsync();
+    Task<UserResponse> GetByIdAsync(int id);
+    Task<UserResponse> UpdateUser(int id);
     Task DeleteUserAsync();
 }
