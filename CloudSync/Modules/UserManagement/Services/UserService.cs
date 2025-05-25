@@ -37,7 +37,7 @@ public class UserService(IUserRepository userRepository) : IUserService
         };
     }
 
-    public async Task<UserResponse> UpdateUser(int id)
+    public async Task<UserResponse> UpdateAsync(int id)
     {
         throw new NotImplementedException();
     }
