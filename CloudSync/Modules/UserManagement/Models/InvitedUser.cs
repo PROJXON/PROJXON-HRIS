@@ -26,5 +26,5 @@ public class InvitedUser
     
     [Required]
     [StringLength(20)]
-    public required InvitedUserStatus Status { get; set; }
+    public required string Status { get; set; }
 }
