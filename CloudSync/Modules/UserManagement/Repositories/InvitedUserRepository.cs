@@ -46,60 +46,24 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
         }
         catch (Exception e)
         {
-            Log.Error(e, "Exception occurred while adding user.");
-            throw;
+            throw new InvitedUserException(e.Message, 500);
         }
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task DeleteInviteAsync(string id)
     {
         try
         {
             var invitedUser = await context.InvitedUsers.FindAsync(id);
             if (invitedUser == null)
-            {
-                return false;
-            }
+                throw new InvitedUserException("Invite does not exist.", 400);
             
             context.InvitedUsers.Remove(invitedUser);
             await context.SaveChangesAsync();
-            
-            return true;
         }
         catch (Exception e)
         {
-            Log.Error(e, "Exception occurred while deleting user.");
-            throw;
+            throw new InvitedUserException(e.Message, 500);
         }
     }
-
-    public async Task<bool> Update(InvitedUserDto invitedUserDto)
-    {
-        try
-        {
-            var existingUser = await context.InvitedUsers.FindAsync(invitedUserDto.Id);
-            if (existingUser == null)
-            {
-                return false;
-            }
-            
-            var invitedUser = new InvitedUser
-            {
-                Email = invitedUserDto.Email,
-                InvitedByEmployeeId = invitedUserDto.InvitedByEmployeeId,
-                Status = invitedUserDto.Status
-            };
-            
-            context.InvitedUsers.Update(invitedUser);
-            await context.SaveChangesAsync();
-            
-            return true;
-        }
-        catch (Exception e)
-        {
-            Log.Error(e, "Exception occurred while updating user.");
-            throw;
-        }
-    }
-    
 }
