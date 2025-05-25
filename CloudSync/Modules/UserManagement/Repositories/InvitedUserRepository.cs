@@ -1,5 +1,7 @@
 ﻿using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Models;
+using CloudSync.Modules.UserManagement.Repositories.Interfaces;
+using CloudSync.Modules.UserManagement.Services.Exceptions;
 using Shared.DTOs.UserManagement;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -8,7 +10,7 @@ namespace CloudSync.Modules.UserManagement.Repositories;
 
 public class InvitedUserRepository(DatabaseContext context) : IInvitedUserRepository
 {
-    public async Task<IEnumerable<InvitedUser>> GetAll()
+    public async Task<IEnumerable<InvitedUser>> GetAllAsync()
     {
         try
         {
@@ -16,20 +18,27 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
         }
         catch (Exception e)
         {
-            Log.Error(e, "Exception occurred while fetching users.");
-            throw;
+            throw new InvitedUserException(e.Message, 500);
         }
     }
-
+    
     public async Task<InvitedUser?> GetByEmail(string email)
     {
-        var emailExists = await context.InvitedUsers.FirstOrDefaultAsync(u => u.Email == email);
-
-        return emailExists;
+        try
+        {
+            return await context.InvitedUsers.FirstOrDefaultAsync(u => u.Email == email);
+        }
+        catch (Exception e)
+        {
+            throw new InvitedUserException(e.Message, 500);
+        }
     }
 
     public async Task<InvitedUser> Add(InvitedUserDto invitedUserDto)
     {
+        if (string.IsNullOrWhiteSpace(invitedUserDto.Email))
+            throw new InvitedUserException("Email is required.", 400);
+        
         try
         {
             var invitedUser = new InvitedUser
