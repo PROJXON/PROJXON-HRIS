@@ -67,8 +67,22 @@ public class UserRepository(DatabaseContext context) : IUserRepository
         }
     }
 
-    public async Task DeleteAsync(string googleUserId)
+    public async Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var user = await context.Users.FindAsync(id);
+            if (user == null)
+            {
+                throw new UserException("User with the given ID does not exist.", 404);
+            }
+            
+            context.Users.Remove(user);
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            throw new UserException(e.Message, 500);
+        }
     }
 }
