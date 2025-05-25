@@ -10,12 +10,26 @@ namespace CloudSync.Modules.UserManagement.Controllers;
 [ApiController]
 public class InvitedUserController(IInvitedUserService invitedUserService) : ControllerBase
 {
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<InviteUserResponse>>> GetInvitedUsers()
+    {
+        try
+        {
+            var response = await invitedUserService.GetAllAsync();
+            return Ok(response);
+        }
+        catch (InvitedUserException e)
+        {
+            return StatusCode(e.StatusCode, new { message = e.Message });
+        }
+    }
+    
     [HttpPost("invite-user")]
     public async Task<ActionResult<InviteUserResponse>> InviteUser(InviteUserRequest request)
     {
         try
         {
-            var response = await invitedUserService.InviteUser(request);
+            var response = await invitedUserService.InviteUserAsync(request);
             return Ok(response);
         }
         catch (InvitedUserException e)
