@@ -73,27 +73,6 @@ namespace CloudSync.Modules.UserManagement.Controllers
             return NoContent();
         }
         
-        [HttpPost]
-        public async Task<ActionResult<UserDTO>> CreateUser(User user)
-        {
-            var passwordAndHash = PasswordService.GeneratePasswordAndHash();
-            
-            context.Users.Add(user);
-            await context.SaveChangesAsync();
-
-            var createUserDTO = new CreateUserDTO
-            {
-                Id = user.Id,
-                Password = passwordAndHash.GeneratedPassword,
-                Email = user.Email,
-                CreateDateTime = user.CreateDateTime,
-                LastLoginDateTime = user.LastLoginDateTime,
-                UserSettings = user.UserSettings ?? null
-            };
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, createUserDTO);
-        }
-        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
