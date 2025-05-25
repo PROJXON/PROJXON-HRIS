@@ -20,9 +20,8 @@ public class InvitedUser
     
     [ForeignKey("InvitedByEmployeeId")]
     public User? InvitedBy { get; set; }
-    
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime CreateDateTime { get; set; }
+
+    public DateTime CreateDateTime { get; set; } = DateTime.UtcNow;
     
     [Required]
     [StringLength(20)]
