@@ -35,9 +35,9 @@ public class Candidate
     
     [StringLength(20)]
     public string? Status { get; set; }
-    
+
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime CreateDateTime { get; set; }
+    public DateTime CreateDateTime { get; set; } = DateTime.UtcNow;
     
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime UpdateDateTime { get; set; }
