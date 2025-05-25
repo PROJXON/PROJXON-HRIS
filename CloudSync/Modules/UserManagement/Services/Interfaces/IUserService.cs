@@ -7,6 +7,6 @@ public interface IUserService
 {
     Task<IEnumerable<UserResponse>> GetAllAsync();
     Task<UserResponse> GetByIdAsync(int id);
-    Task<UserResponse> UpdateAsync(int id, UserDto user);
+    Task UpdateAsync(int id, UserDto userDto);
     Task DeleteUserAsync();
 }
