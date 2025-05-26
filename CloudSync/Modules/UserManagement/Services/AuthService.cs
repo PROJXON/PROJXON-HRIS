@@ -31,8 +31,8 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
 
         return Enum.Parse<InvitedUserStatus>(existingInvitee.Status) switch
         {
-            InvitedUserStatus.Accepted => throw new AuthException("User has already accepted invitation.", 400),
-            InvitedUserStatus.Expired => throw new AuthException("Invitation has expired.", 400),
+            InvitedUserStatus.Accepted => throw new AuthException("User has already accepted invitation."),
+            InvitedUserStatus.Expired => throw new AuthException("Invitation has expired."),
             InvitedUserStatus.Pending => new GoogleLoginResponse
             {
                 JsonWebToken = GenerateJwt(payload.Email),
@@ -50,7 +50,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
     {
         if (string.IsNullOrWhiteSpace(request.IdToken))
         {
-            throw new AuthException("Missing ID token.", 400);
+            throw new AuthException("Missing ID token.");
         }
 
         try
