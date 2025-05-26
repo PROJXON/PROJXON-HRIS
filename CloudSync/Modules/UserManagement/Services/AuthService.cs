@@ -46,7 +46,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
     // Google account. This tests the ID token against the Google Auth API and returns data about a user's Google account.
     // Returned data includes the Full Name, First and Last Name, Email, Subject (Google User ID string), the time the
     // token was issued at, time before expiration, and information about the Audience, Issuer, and Authorized party.
-    public async Task<GoogleJsonWebSignature.Payload> ValidateIdToken(GoogleLoginRequest request)
+    private async Task<GoogleJsonWebSignature.Payload> ValidateIdToken(GoogleLoginRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.IdToken))
         {
@@ -72,7 +72,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
         }
     }
 
-    public string GenerateJwt(string email)
+    private string GenerateJwt(string email)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings["Key"] ?? throw new AuthException("Jwt key not found or missing.", 500)));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
