@@ -18,15 +18,9 @@ namespace CloudSync.Migrations
                 name: "PK_Users",
                 table: "Users");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "InvitedByEmployeeId",
-                table: "InvitedUsers",
-                type: "integer",
-                maxLength: 255,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "character varying(255)",
-                oldMaxLength: 255);
+            migrationBuilder.Sql(
+                "ALTER TABLE \"InvitedUsers\" ALTER COLUMN \"InvitedByEmployeeId\" TYPE integer USING \"InvitedByEmployeeId\"::integer;"
+            );
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Users",
