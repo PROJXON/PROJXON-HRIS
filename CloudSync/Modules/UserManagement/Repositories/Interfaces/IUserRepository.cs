@@ -8,7 +8,7 @@ public interface IUserRepository
     Task<IEnumerable<User>> GetAllAsync();
     Task<User> GetByIdAsync(int id);
     Task<User?> GetByGoogleUserIdAsync(string googleUserId);
-    Task<User> CreateAsync(InvitedUser invitedUser);
+    Task<User> CreateAsync(InvitedUser invitedUser, string googleUserId);
     Task UpdateAsync(int id, UserDto userDto);
     Task UpdateLastLoginTimeAsync(int id);
     Task DeleteAsync(int id);
