@@ -3,5 +3,5 @@
 public class InvitedUserRequest
 {
     public required string Email { get; set; }
-    public required string InvitedByEmployeeId { get; set; }
+    public required int InvitedByEmployeeId { get; set; }
 }

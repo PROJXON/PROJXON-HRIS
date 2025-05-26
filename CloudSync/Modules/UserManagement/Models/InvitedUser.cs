@@ -16,7 +16,7 @@ public class InvitedUser
     
     [Required]
     [StringLength(255)]
-    public required string InvitedByEmployeeId { get; set; }
+    public required int InvitedByEmployeeId { get; set; }
     
     [ForeignKey("InvitedByEmployeeId")]
     public User? InvitedByEmployee { get; set; }
