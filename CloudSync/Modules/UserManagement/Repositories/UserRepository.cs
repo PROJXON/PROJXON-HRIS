@@ -72,6 +72,17 @@ public class UserRepository(DatabaseContext context) : IUserRepository
         }
     }
 
+    public async Task UpdateLastLoginTimeAsync(int id)
+    {
+        var existingUser = await context.Users.FindAsync(id);
+        if (existingUser == null)
+            throw new UserException("User with the given ID does not exist.", 404);
+        
+        existingUser.LastLoginDateTime = DateTime.UtcNow;
+
+        await context.SaveChangesAsync();
+    }
+
     public async Task DeleteAsync(int id)
     {
         try

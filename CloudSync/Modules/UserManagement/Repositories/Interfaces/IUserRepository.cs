@@ -10,5 +10,6 @@ public interface IUserRepository
     Task<User?> GetByGoogleUserIdAsync(string googleUserId);
     Task CreateAsync(UserDto userDto);
     Task UpdateAsync(int id, UserDto userDto);
+    Task UpdateLastLoginTimeAsync(int id);
     Task DeleteAsync(int id);
 }
