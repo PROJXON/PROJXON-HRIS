@@ -12,14 +12,14 @@ public class InvitedUser
     
     [EmailAddress]
     [StringLength(255)]
-    public string Email { get; set; }
+    public required string Email { get; set; }
     
     [Required]
     [StringLength(255)]
     public required string InvitedByEmployeeId { get; set; }
     
     [ForeignKey("InvitedByEmployeeId")]
-    public User? InvitedBy { get; set; }
+    public User? InvitedByEmployee { get; set; }
 
     public DateTime CreateDateTime { get; set; } = DateTime.UtcNow;
     
