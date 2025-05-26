@@ -24,7 +24,6 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
         
         var existingInvitee = await invitedUserRepository.GetByEmailAsync(payload.Email);
         
-        // TODO move this error to the repository?
         if (existingInvitee == null)
         {
             throw new AuthException("User has not been invited.", 404);
