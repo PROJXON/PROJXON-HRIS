@@ -43,9 +43,28 @@ public class UserRepository(DatabaseContext context) : IUserRepository
         return await context.Users.FirstOrDefaultAsync(u => u.GoogleUserId == googleUserId);
     }
 
-    public async Task CreateAsync(UserDto userDto)
+    public async Task<User> CreateAsync(InvitedUser invitedUser, string googleUserId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var newUser = new User
+            {
+                GoogleUserId = googleUserId,
+                Email = invitedUser.Email,
+                LastLoginDateTime = DateTime.UtcNow,
+                IsActive = false,
+                UserSettings = null
+            };
+
+            await context.Users.AddAsync(newUser);
+            await context.SaveChangesAsync();
+
+            return newUser;
+        }
+        catch (Exception e)
+        {
+            throw new UserException(e.Message, 500);
+        }
     }
 
     public async Task UpdateAsync(int id, UserDto userDto)
