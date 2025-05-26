@@ -38,6 +38,11 @@ public class UserRepository(DatabaseContext context) : IUserRepository
         }
     }
 
+    public async Task<User?> GetByGoogleUserIdAsync(string googleUserId)
+    {
+        return await context.Users.FirstOrDefaultAsync(u => u.GoogleUserId == googleUserId);
+    }
+
     public async Task CreateAsync(UserDto userDto)
     {
         throw new NotImplementedException();
