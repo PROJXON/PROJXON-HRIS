@@ -18,6 +18,11 @@ public class DatabaseContext : DbContext
     public virtual DbSet<InvitedUser> InvitedUsers { get; set; }
     public virtual DbSet<UserRole> Roles { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder
+            .UseNpgsql()
+    .UseSnakeCaseNamingConvention();
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
