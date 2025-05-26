@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Models;
-using CloudSync.Modules.UserManagement.Services;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Shared.DTOs.UserManagement;
@@ -12,7 +11,7 @@ namespace CloudSync.Modules.UserManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(DatabaseContext context) : ControllerBase
+    public class UserController(IUserService userService) : ControllerBase
     {
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
@@ -29,68 +28,46 @@ namespace CloudSync.Modules.UserManagement.Controllers
         }
         
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDTO>> GetUser(int id)
+        public async Task<ActionResult<UserResponse>> GetUser(int id)
         {
-            var user = await context.Users.FindAsync(id);
-        
-            if (user == null)
+            try
             {
-                return NotFound();
+                var response = await userService.GetByIdAsync(id);
+                return Ok(response);
             }
-            
-            return new UserDTO()
+            catch (UserException e)
             {
-                Id = user.Id,
-                Email = user.Email,
-                CreateDateTime = user.CreateDateTime,
-                LastLoginDateTime = user.LastLoginDateTime,
-                UserSettings = user.UserSettings ?? null
-            };
+                return StatusCode(e.StatusCode, new { message = e.Message });
+            }
+        
         }
         
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<ActionResult> PutUser(int id, [FromBody] UserDto userDto)
         {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
-        
-            context.Entry(user).State = EntityState.Modified;
-        
             try
             {
-                await context.SaveChangesAsync();
+                await userService.UpdateAsync(id, userDto);
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (UserException e)
             {
-                if (UserExists(id).IsCanceled || UserExists(id).IsFaulted)
-                {
-                    return NotFound();
-                }
+                return StatusCode(e.StatusCode, new { message = e.Message });
             }
-        
-            return NoContent();
         }
         
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<ActionResult> DeleteUser(int id)
         {
-            var user = await context.Users.FindAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound();
+                await userService.DeleteAsync(id);
+                return NoContent();
             }
-
-            context.Users.Remove(user);
-            await context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private async Task<bool> UserExists(int id)
-        {
-            return await context.Users.AnyAsync(e => e.Id == id);
+            catch (UserException e)
+            {
+                return StatusCode(e.StatusCode, new { message = e.Message });
+            }
         }
     }
 }
