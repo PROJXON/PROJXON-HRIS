@@ -24,7 +24,7 @@ public class InvitedUserController(IInvitedUserService invitedUserService) : Con
         }
     }
     
-    [HttpPost("invite-user")]
+    [HttpPost]
     public async Task<ActionResult<InvitedUserResponse>> InviteUser(InvitedUserRequest request)
     {
         try
@@ -38,7 +38,7 @@ public class InvitedUserController(IInvitedUserService invitedUserService) : Con
         }
     }
 
-    [HttpDelete("delete-invite/{id}")]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteInvite(int id)
     {
         try
