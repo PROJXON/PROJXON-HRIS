@@ -16,7 +16,7 @@ public class User
     [Required]
     [EmailAddress]
     [StringLength(40)]
-    public string Email { get; set; } = string.Empty;
+    public required string Email { get; set; }
     
     // public int RoleId { get; set; } 
     //
