@@ -47,6 +47,6 @@ public class UserService(IUserRepository userRepository) : IUserService
 
     public async Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        await userRepository.DeleteAsync(id);
     }
 }
