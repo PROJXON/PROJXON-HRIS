@@ -45,7 +45,7 @@ public class UserService(IUserRepository userRepository) : IUserService
         await userRepository.UpdateAsync(id, userDto);
     }
 
-    public async Task DeleteUserAsync()
+    public async Task DeleteAsync()
     {
         throw new NotImplementedException();
     }
