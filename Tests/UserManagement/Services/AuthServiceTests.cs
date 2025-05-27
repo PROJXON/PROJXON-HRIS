@@ -96,7 +96,7 @@ public class AuthServiceTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(payload.Email, result.User.Email);
+        Assert.Equal(payload.Email, result.User!.Email);
         Assert.False(string.IsNullOrEmpty(result.JsonWebToken));
     }
 
@@ -223,7 +223,7 @@ public class AuthServiceTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(payload.Email, result.User.Email);
+        Assert.Equal(payload.Email, result.User!.Email);
         Assert.False(string.IsNullOrEmpty(result.JsonWebToken));
     }
 }
