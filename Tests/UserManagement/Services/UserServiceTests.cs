@@ -3,7 +3,6 @@ using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using Moq;
 using Shared.DTOs.UserManagement;
-using Shared.Responses.UserManagement;
 
 namespace Tests.UserManagement.Services;
 
