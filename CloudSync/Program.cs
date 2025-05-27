@@ -13,7 +13,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAutoMapper(typeof(UserMappingProfile));
+builder.Services.AddAutoMapper(typeof(UserMappingProfile), typeof(InvitedUserMappingProfile));
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
