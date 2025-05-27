@@ -1,8 +1,10 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using CloudSync.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CloudSync.Middleware;
+using CloudSync.Modules.UserManagement.Mappings;
 using CloudSync.Modules.UserManagement.Repositories;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
@@ -10,6 +12,8 @@ using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAutoMapper(typeof(UserMappingProfile));
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
