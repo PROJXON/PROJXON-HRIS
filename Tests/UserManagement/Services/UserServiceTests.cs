@@ -1,4 +1,5 @@
-﻿using CloudSync.Modules.UserManagement.Models;
+﻿using AutoMapper;
+using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using Moq;
@@ -8,13 +9,15 @@ namespace Tests.UserManagement.Services;
 
 public class UserServiceTests
 {
-    private readonly Mock<IUserRepository> userRepositoryMock;
-    private readonly UserService userService;
+    private readonly Mock<IUserRepository> _userRepositoryMock;
+    private readonly Mock<IMapper> _mapperMock;
+    private readonly UserService _userService;
 
     public UserServiceTests()
     {
-        userRepositoryMock = new Mock<IUserRepository>();
-        userService = new UserService(userRepositoryMock.Object);
+        _userRepositoryMock = new Mock<IUserRepository>();
+        _mapperMock = new Mock<IMapper>();
+        _userService = new UserService(_userRepositoryMock.Object, _mapperMock.Object);
     }
     [Fact]
     public async Task GetAllAsync_ReturnsMappedUserResponses()
@@ -36,10 +39,8 @@ public class UserServiceTests
 
         mockRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(users);
 
-        var service = new UserService(mockRepo.Object);
-
         // Act
-        var result = await service.GetAllAsync();
+        var result = await _userService.GetAllAsync();
 
         // Assert
         var userResponses = result.ToList();
@@ -58,9 +59,8 @@ public class UserServiceTests
     {
         var mockRepo = new Mock<IUserRepository>();
         mockRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<User>());
-        var service = new UserService(mockRepo.Object);
 
-        var result = await service.GetAllAsync();
+        var result = await _userService.GetAllAsync();
 
         Assert.Empty(result);
     }
@@ -79,12 +79,12 @@ public class UserServiceTests
             LastLoginDateTime = DateTime.UtcNow.AddDays(-1),
             UserSettings = null
         };
-        userRepositoryMock
+        _userRepositoryMock
             .Setup(r => r.GetByIdAsync(userId))
             .ReturnsAsync(user);
 
         // Act
-        var result = await userService.GetByIdAsync(userId);
+        var result = await _userService.GetByIdAsync(userId);
 
         // Assert
         Assert.NotNull(result);
@@ -107,10 +107,10 @@ public class UserServiceTests
         };
 
         // Act
-        await userService.UpdateAsync(userId, userDto);
+        await _userService.UpdateAsync(userId, userDto);
 
         // Assert
-        userRepositoryMock.Verify(r => r.UpdateAsync(userId, userDto), Times.Once);
+        _userRepositoryMock.Verify(r => r.UpdateAsync(userId, userDto), Times.Once);
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class UserServiceTests
         UserDto? userDto = null;
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => userService.UpdateAsync(userId, userDto!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _userService.UpdateAsync(userId, userDto!));
     }
 
     [Fact]
@@ -131,9 +131,9 @@ public class UserServiceTests
         int userId = 123;
 
         // Act
-        await userService.DeleteAsync(userId);
+        await _userService.DeleteAsync(userId);
 
         // Assert
-        userRepositoryMock.Verify(r => r.DeleteAsync(userId), Times.Once);
+        _userRepositoryMock.Verify(r => r.DeleteAsync(userId), Times.Once);
     }
 }
