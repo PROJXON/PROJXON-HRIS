@@ -1,4 +1,5 @@
-﻿using CloudSync.Modules.UserManagement.Repositories.Interfaces;
+﻿using AutoMapper;
+using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ using Shared.Responses.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Services;
 
-public class InvitedUserService (IInvitedUserRepository invitedUserRepository) : IInvitedUserService
+public class InvitedUserService (IInvitedUserRepository invitedUserRepository, IMapper mapper) : IInvitedUserService
 {
     public async Task<IEnumerable<InvitedUserResponse>> GetAllAsync()
     {

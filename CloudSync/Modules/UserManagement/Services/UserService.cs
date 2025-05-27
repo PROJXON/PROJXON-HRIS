@@ -1,11 +1,12 @@
-﻿using CloudSync.Modules.UserManagement.Repositories.Interfaces;
+﻿using AutoMapper;
+using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Shared.DTOs.UserManagement;
 using Shared.Responses.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Services;
 
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService(IUserRepository userRepository, IMapper mapper) : IUserService
 {
     public async Task<IEnumerable<UserResponse>> GetAllAsync()
     {

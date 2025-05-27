@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AutoMapper;
 using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
@@ -12,7 +13,7 @@ using Shared.Responses.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Services;
 
-public class AuthService(IConfiguration configuration, IInvitedUserRepository invitedUserRepository, IUserRepository userRepository, IGoogleTokenValidator googleTokenValidator) : IAuthService
+public class AuthService(IConfiguration configuration, IInvitedUserRepository invitedUserRepository, IUserRepository userRepository, IGoogleTokenValidator googleTokenValidator, IMapper mapper) : IAuthService
 {
     private readonly IConfigurationSection _jwtSettings = configuration.GetSection("JWT");
 
