@@ -1,7 +1,6 @@
 ﻿using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Google.Apis.Auth;
-using Microsoft.Extensions.Configuration;
 using Shared.Requests.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Services;
