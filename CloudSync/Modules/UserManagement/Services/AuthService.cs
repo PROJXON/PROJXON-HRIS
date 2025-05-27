@@ -6,7 +6,6 @@ using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
-using Google.Apis.Auth;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
