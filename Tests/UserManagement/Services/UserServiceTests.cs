@@ -2,11 +2,21 @@
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using Moq;
+using Shared.DTOs.UserManagement;
+using Shared.Responses.UserManagement;
 
 namespace Tests.UserManagement.Services;
 
 public class UserServiceTests
 {
+    private readonly Mock<IUserRepository> userRepositoryMock;
+    private readonly UserService userService;
+
+    public UserServiceTests()
+    {
+        userRepositoryMock = new Mock<IUserRepository>();
+        userService = new UserService(userRepositoryMock.Object);
+    }
     [Fact]
     public async Task GetAllAsync_ReturnsMappedUserResponses()
     {
@@ -54,5 +64,77 @@ public class UserServiceTests
         var result = await service.GetAllAsync();
 
         Assert.Empty(result);
+    }
+    
+    [Fact]
+    public async Task GetByIdAsync_ReturnsMappedUserResponse()
+    {
+        // Arrange
+        int userId = 123;
+        var user = new User
+        {
+            Id = userId,
+            GoogleUserId = "string",
+            Email = "test@example.com",
+            CreateDateTime = DateTime.UtcNow.AddDays(-10),
+            LastLoginDateTime = DateTime.UtcNow.AddDays(-1),
+            UserSettings = null
+        };
+        userRepositoryMock
+            .Setup(r => r.GetByIdAsync(userId))
+            .ReturnsAsync(user);
+
+        // Act
+        var result = await userService.GetByIdAsync(userId);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(user.Id, result.Id);
+        Assert.Equal(user.Email, result.Email);
+        Assert.Equal(user.CreateDateTime, result.CreateDateTime);
+        Assert.Equal(user.LastLoginDateTime, result.LastLoginDateTime);
+        Assert.Equal(user.UserSettings, result.UserSettings);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_CallsRepositoryUpdate_WhenUserDtoIsNotNull()
+    {
+        // Arrange
+        int userId = 123;
+        var userDto = new UserDto
+        {
+            Email = "updated@example.com",
+            // other properties if any
+        };
+
+        // Act
+        await userService.UpdateAsync(userId, userDto);
+
+        // Assert
+        userRepositoryMock.Verify(r => r.UpdateAsync(userId, userDto), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ThrowsArgumentNullException_WhenUserDtoIsNull()
+    {
+        // Arrange
+        int userId = 123;
+        UserDto? userDto = null;
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentNullException>(() => userService.UpdateAsync(userId, userDto!));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_CallsRepositoryDelete()
+    {
+        // Arrange
+        int userId = 123;
+
+        // Act
+        await userService.DeleteAsync(userId);
+
+        // Assert
+        userRepositoryMock.Verify(r => r.DeleteAsync(userId), Times.Once);
     }
 }
