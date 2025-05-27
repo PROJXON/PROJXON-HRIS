@@ -1,4 +1,5 @@
-﻿using CloudSync.Modules.UserManagement.Models;
+﻿using AutoMapper;
+using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
@@ -12,13 +13,15 @@ namespace Tests.UserManagement.Services;
 
 public class InvitedUserServiceTests
 {
-    private readonly Mock<IInvitedUserRepository> repositoryMock;
-    private readonly InvitedUserService service;
+    private readonly Mock<IInvitedUserRepository> _repositoryMock;
+    private readonly Mock<IMapper> _mapperMock;
+    private readonly InvitedUserService _service;
 
     public InvitedUserServiceTests()
     {
-        repositoryMock = new Mock<IInvitedUserRepository>();
-        service = new InvitedUserService(repositoryMock.Object);
+        _repositoryMock = new Mock<IInvitedUserRepository>();
+        _mapperMock = new Mock<IMapper>();
+        _service = new InvitedUserService(_repositoryMock.Object, _mapperMock.Object);
     }
 
     [Fact]
@@ -45,11 +48,11 @@ public class InvitedUserServiceTests
             }
         };
 
-        repositoryMock.Setup(r => r.GetAllAsync())
+        _repositoryMock.Setup(r => r.GetAllAsync())
             .ReturnsAsync(invitedUsers);
 
         // Act
-        var results = (await service.GetAllAsync()).ToList();
+        var results = (await _service.GetAllAsync()).ToList();
 
         // Assert
         Assert.Equal(invitedUsers.Count, results.Count);
@@ -70,7 +73,7 @@ public class InvitedUserServiceTests
         var request = new InvitedUserRequest { InvitedByEmployeeId = 1, Email = " " };
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<InvitedUserException>(() => service.InviteUserAsync(request));
+        var ex = await Assert.ThrowsAsync<InvitedUserException>(() => _service.InviteUserAsync(request));
         Assert.Equal("Email is required.", ex.Message);
         Assert.Equal(400, ex.StatusCode);
     }
@@ -80,7 +83,7 @@ public class InvitedUserServiceTests
     {
         // Arrange
         var request = new InvitedUserRequest { Email = "already@invited.com", InvitedByEmployeeId = 5 };
-        repositoryMock.Setup(r => r.GetByEmailAsync(request.Email))
+        _repositoryMock.Setup(r => r.GetByEmailAsync(request.Email))
             .ReturnsAsync(new InvitedUser
             {
                 Id = 1,
@@ -92,7 +95,7 @@ public class InvitedUserServiceTests
             }); // simulate existing invite
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<InvitedUserException>(() => service.InviteUserAsync(request));
+        var ex = await Assert.ThrowsAsync<InvitedUserException>(() => _service.InviteUserAsync(request));
         Assert.Equal("Email has already been invited.", ex.Message);
         Assert.Equal(409, ex.StatusCode);
     }
@@ -102,7 +105,7 @@ public class InvitedUserServiceTests
     {
         // Arrange
         var request = new InvitedUserRequest { Email = "new@invite.com", InvitedByEmployeeId = 7 };
-        repositoryMock.Setup(r => r.GetByEmailAsync(request.Email))
+        _repositoryMock.Setup(r => r.GetByEmailAsync(request.Email))
             .ReturnsAsync((InvitedUser?)null); // no existing invite
 
         var addedDto = new InvitedUser
@@ -114,11 +117,11 @@ public class InvitedUserServiceTests
             CreateDateTime = DateTime.UtcNow
         };
 
-        repositoryMock.Setup(r => r.AddAsync(It.IsAny<InvitedUserDto>()))
+        _repositoryMock.Setup(r => r.AddAsync(It.IsAny<InvitedUserDto>()))
             .ReturnsAsync(addedDto);
 
         // Act
-        var result = await service.InviteUserAsync(request);
+        var result = await _service.InviteUserAsync(request);
 
         // Assert
         var okResult = Assert.IsType<InvitedUserResponse>(result.Value);
@@ -136,9 +139,9 @@ public class InvitedUserServiceTests
         int idToDelete = 42;
 
         // Act
-        await service.DeleteInviteAsync(idToDelete);
+        await _service.DeleteInviteAsync(idToDelete);
 
         // Assert
-        repositoryMock.Verify(r => r.DeleteAsync(idToDelete), Times.Once);
+        _repositoryMock.Verify(r => r.DeleteAsync(idToDelete), Times.Once);
     }
 }
