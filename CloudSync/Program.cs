@@ -1,4 +1,3 @@
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using CloudSync.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +12,8 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAutoMapper(typeof(UserMappingProfile), typeof(InvitedUserMappingProfile));
+builder.Services.AddAutoMapper(
+    typeof(UserMappingProfile));
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -39,6 +39,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
+builder.Services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
