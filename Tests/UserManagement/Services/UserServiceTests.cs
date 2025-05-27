@@ -23,7 +23,6 @@ public class UserServiceTests
     public async Task GetAllAsync_ReturnsMappedUserResponses()
     {
         // Arrange
-        var mockRepo = new Mock<IUserRepository>();
         var users = new List<User>
         {
             new User
@@ -37,7 +36,7 @@ public class UserServiceTests
             }
         };
 
-        mockRepo.Setup(r => r.GetAllAsync()).ReturnsAsync(users);
+        _userRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(users);
 
         // Act
         var result = await _userService.GetAllAsync();
