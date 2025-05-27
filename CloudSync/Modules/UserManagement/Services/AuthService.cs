@@ -86,8 +86,6 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
         };
     }
 
-    
-
     private string GenerateJwt(string email)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings["Key"] ?? throw new AuthException("Jwt key not found or missing.", 500)));
