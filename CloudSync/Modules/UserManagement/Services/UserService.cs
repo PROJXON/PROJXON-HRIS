@@ -12,15 +12,8 @@ public class UserService(IUserRepository userRepository, IMapper mapper) : IUser
     {
         var userList = await userRepository.GetAllAsync();
         List<UserResponse> userResponseList = [];
-            
-        userResponseList.AddRange(userList.Select(user => new UserResponse
-        {
-            Id = user.Id,
-            Email = user.Email,
-            CreateDateTime = user.CreateDateTime,
-            LastLoginDateTime = user.LastLoginDateTime,
-            UserSettings = user.UserSettings
-        }));
+        
+        userResponseList.AddRange(userList.Select(mapper.Map<UserResponse>));
 
         return userResponseList;
     }
@@ -28,15 +21,7 @@ public class UserService(IUserRepository userRepository, IMapper mapper) : IUser
     public async Task<UserResponse> GetByIdAsync(int id)
     {
         var user = await userRepository.GetByIdAsync(id);
-        
-        return new UserResponse
-        {
-            Id = user.Id,
-            Email = user.Email,
-            CreateDateTime = user.CreateDateTime,
-            LastLoginDateTime = user.LastLoginDateTime,
-            UserSettings = user.UserSettings
-        };
+        return mapper.Map<UserResponse>(user);
     }
 
     public async Task UpdateAsync(int id, UserDto userDto)
