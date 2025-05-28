@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudSync.Modules.UserManagement.Mappings;
 using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
@@ -10,14 +11,20 @@ namespace Tests.UserManagement.Services;
 public class UserServiceTests
 {
     private readonly Mock<IUserRepository> _userRepositoryMock;
-    private readonly Mock<IMapper> _mapperMock;
     private readonly UserService _userService;
 
     public UserServiceTests()
     {
+                
+        var mapperConfig = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<UserMappingProfile>();
+        });
+
+        var mapper = mapperConfig.CreateMapper();
+        
         _userRepositoryMock = new Mock<IUserRepository>();
-        _mapperMock = new Mock<IMapper>();
-        _userService = new UserService(_userRepositoryMock.Object, _mapperMock.Object);
+        _userService = new UserService(_userRepositoryMock.Object, mapper);
     }
     [Fact]
     public async Task GetAllAsync_ReturnsMappedUserResponses()
