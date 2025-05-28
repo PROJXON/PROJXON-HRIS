@@ -68,6 +68,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
     private async Task<UserResponse> CreateUserFromInviteAsync(InvitedUser invitedUser, string googleUserId)
     {
         var newUser = await userRepository.CreateAsync(invitedUser, googleUserId);
+        await invitedUserRepository.UpdateStatusAsync(invitedUser.Id);
 
         return mapper.Map<UserResponse>(newUser);
     }
