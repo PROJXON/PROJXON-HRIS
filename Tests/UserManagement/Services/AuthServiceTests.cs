@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CloudSync.Modules.UserManagement.Mappings;
 using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
@@ -17,17 +18,20 @@ public class AuthServiceTests
     private readonly Mock<IInvitedUserRepository> _invitedUserRepositoryMock;
     private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly Mock<IGoogleTokenValidator> _googleTokenValidatorMock;
-    private readonly Mock<IConfiguration> _configurationMock;
-    private readonly Mock<IMapper> _mapperMock;
     private readonly AuthService _authService;
 
     public AuthServiceTests()
     {
+        var mapperConfig = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<UserMappingProfile>();
+        });
+
+        var mapper = mapperConfig.CreateMapper();
+        
         _invitedUserRepositoryMock = new Mock<IInvitedUserRepository>();
         _userRepositoryMock = new Mock<IUserRepository>();
-        _configurationMock = new Mock<IConfiguration>();
         _googleTokenValidatorMock = new Mock<IGoogleTokenValidator>();
-        _mapperMock = new Mock<IMapper>();
 
         // Mock configuration section for JWT settings
         var jwtSectionMock1 = new Mock<IConfigurationSection>();
@@ -36,10 +40,10 @@ public class AuthServiceTests
         jwtSectionMock1.Setup(x => x["Key"]).Returns("super-secret-key-that-is-long-enough");
         jwtSectionMock1.Setup(x => x["ExpiresInMinutes"]).Returns("60");
 
-        _configurationMock = new Mock<IConfiguration>();
-        _configurationMock.Setup(c => c.GetSection("JWT")).Returns(jwtSectionMock1.Object);
+        var configurationMock = new Mock<IConfiguration>();
+        configurationMock.Setup(c => c.GetSection("JWT")).Returns(jwtSectionMock1.Object);
 
-        _authService = new AuthService(_configurationMock.Object, _invitedUserRepositoryMock.Object, _userRepositoryMock.Object, _googleTokenValidatorMock.Object, _mapperMock.Object);
+        _authService = new AuthService(configurationMock.Object, _invitedUserRepositoryMock.Object, _userRepositoryMock.Object, _googleTokenValidatorMock.Object, mapper);
     }
 
     [Fact]
@@ -83,16 +87,8 @@ public class AuthServiceTests
         _userRepositoryMock.Setup(r => r.UpdateLastLoginTimeAsync(existingUser.Id))
             .Returns(Task.CompletedTask);
 
-        var authService = new AuthService(
-            _configurationMock.Object,
-            _invitedUserRepositoryMock.Object,
-            _userRepositoryMock.Object,
-            _googleTokenValidatorMock.Object,
-            _mapperMock.Object
-        );
-
         // Act
-        var result = await authService.LoginAsync(request);
+        var result = await _authService.LoginAsync(request);
 
         // Assert
         Assert.NotNull(result);
@@ -122,16 +118,8 @@ public class AuthServiceTests
         _invitedUserRepositoryMock.Setup(r => r.GetByEmailAsync(payload.Email))
             .ReturnsAsync((InvitedUser?)null);
 
-        var authService = new AuthService(
-            _configurationMock.Object,
-            _invitedUserRepositoryMock.Object,
-            _userRepositoryMock.Object,
-            _googleTokenValidatorMock.Object,
-            _mapperMock.Object
-        );
-
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<AuthException>(() => authService.LoginAsync(request));
+        var ex = await Assert.ThrowsAsync<AuthException>(() => _authService.LoginAsync(request));
         Assert.Equal("User has not been invited.", ex.Message);
         Assert.Equal(404, ex.StatusCode);
     }
@@ -166,10 +154,8 @@ public class AuthServiceTests
         _invitedUserRepositoryMock.Setup(r => r.GetByEmailAsync(payload.Email))
             .ReturnsAsync(invitedUser);
 
-        var authService = new AuthService(_configurationMock.Object, _invitedUserRepositoryMock.Object, _userRepositoryMock.Object, _googleTokenValidatorMock.Object,  _mapperMock.Object);
-
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<AuthException>(() => authService.LoginAsync(request));
+        var ex = await Assert.ThrowsAsync<AuthException>(() => _authService.LoginAsync(request));
         Assert.Equal(expectedMessage, ex.Message);
     }
 
@@ -216,10 +202,8 @@ public class AuthServiceTests
         
         _googleTokenValidatorMock.Setup(x => x.ValidateAsync(request)).ReturnsAsync(payload);
 
-        var authService = new AuthService(_configurationMock.Object, _invitedUserRepositoryMock.Object, _userRepositoryMock.Object, _googleTokenValidatorMock.Object,  _mapperMock.Object);
-
         // Act
-        var result = await authService.LoginAsync(request);
+        var result = await _authService.LoginAsync(request);
 
         // Assert
         Assert.NotNull(result);
