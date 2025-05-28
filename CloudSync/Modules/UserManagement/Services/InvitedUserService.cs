@@ -3,7 +3,6 @@ using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.UserManagement;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
@@ -17,14 +16,7 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository, I
         var invitedUserList = await invitedUserRepository.GetAllAsync();
         List<InvitedUserResponse> invitedUserResponseList = [];
             
-        invitedUserResponseList.AddRange(invitedUserList.Select(invitedUser => new InvitedUserResponse
-        {
-            Id = invitedUser.Id,
-            Email = invitedUser.Email,
-            InvitedByEmployeeId = invitedUser.InvitedByEmployeeId,
-            Status = Enum.Parse<InvitedUserStatus>(invitedUser.Status),
-            CreateDateTime = invitedUser.CreateDateTime,
-        }));
+        invitedUserResponseList.AddRange(invitedUserList.Select(mapper.Map<InvitedUserResponse>));
 
         return invitedUserResponseList;
     }
@@ -39,24 +31,10 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository, I
         {
             throw new InvitedUserException("Email has already been invited.", 409);
         }
-        
-        var invitedUserDto = new InvitedUserDto
-        {
-            Email = request.Email,
-            InvitedByEmployeeId = request.InvitedByEmployeeId,
-            Status = nameof(InvitedUserStatus.Pending)
-        };
 
-        var newInvitedUser = await invitedUserRepository.AddAsync(invitedUserDto);
-        
-        return new InvitedUserResponse
-        {
-            Id = newInvitedUser.Id,
-            Email = newInvitedUser.Email,
-            InvitedByEmployeeId = newInvitedUser.InvitedByEmployeeId,
-            Status = Enum.Parse<InvitedUserStatus>(newInvitedUser.Status),
-            CreateDateTime = newInvitedUser.CreateDateTime
-        };
+        var newInvitedUser = await invitedUserRepository.AddAsync(request);
+
+        return mapper.Map<InvitedUserResponse>(newInvitedUser);
     }
 
     public async Task DeleteInviteAsync(int id)
