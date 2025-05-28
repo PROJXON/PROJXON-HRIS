@@ -10,8 +10,11 @@ public class InvitedUserMappingProfile : Profile
 {
     public InvitedUserMappingProfile()
     {
-        CreateMap<InvitedUserRequest, InvitedUserDto>();
-        CreateMap<InvitedUserDto, InvitedUser>();
         CreateMap<InvitedUser, InvitedUserResponse>();
+        CreateMap<InvitedUserRequest, InvitedUser>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => "Pending"))
+            .ForMember(dest => dest.CreateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow))
+            .ForMember(dest => dest.InvitedByEmployee, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
     }
 }
