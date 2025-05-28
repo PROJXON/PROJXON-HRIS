@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using CloudSync.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AutoMapper;
 using CloudSync.Middleware;
 using CloudSync.Modules.UserManagement.Mappings;
 using CloudSync.Modules.UserManagement.Repositories;
@@ -68,6 +69,12 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+    mapper.ConfigurationProvider.AssertConfigurationIsValid();
+}
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
