@@ -56,6 +56,24 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
             throw new InvitedUserException(e.Message, 500);
         }
     }
+    public async Task UpdateStatusAsync(int id)
+    {
+        try
+        {
+            var existingInvite = await context.InvitedUsers.FindAsync(id);
+            if (existingInvite == null)
+                throw new InvitedUserException("No invite exists for this user.", 404);
+
+            existingInvite.Status = nameof(InvitedUserStatus.Pending);
+            
+            context.InvitedUsers.Update(existingInvite);
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            throw new InvitedUserException(e.Message, 500);
+        }
+    }
 
     public async Task DeleteAsync(int id)
     {

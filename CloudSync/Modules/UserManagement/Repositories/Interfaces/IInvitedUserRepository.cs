@@ -9,5 +9,6 @@ public interface IInvitedUserRepository
     Task<IEnumerable<InvitedUser>> GetAllAsync();
     Task<InvitedUser?> GetByEmailAsync(string email);
     Task<InvitedUser> AddAsync(InvitedUserRequest invitedUserRequest);
+    Task UpdateStatusAsync(int id);
     Task DeleteAsync(int id);
 }
