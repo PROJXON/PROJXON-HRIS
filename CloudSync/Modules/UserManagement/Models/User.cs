@@ -34,8 +34,6 @@ public class User
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime LastLoginDateTime { get; set; }
     
-    public bool IsActive { get; set; }
-    
     [Column(TypeName = "jsonb")]
     public string? UserSettings { get; set; }
 }
