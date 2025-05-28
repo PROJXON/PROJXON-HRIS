@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using CloudSync.Modules.UserManagement.Mappings;
 using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
 using Moq;
-using Shared.DTOs.UserManagement;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
@@ -14,14 +14,19 @@ namespace Tests.UserManagement.Services;
 public class InvitedUserServiceTests
 {
     private readonly Mock<IInvitedUserRepository> _repositoryMock;
-    private readonly Mock<IMapper> _mapperMock;
     private readonly InvitedUserService _service;
 
     public InvitedUserServiceTests()
     {
+        var mapperConfig = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<InvitedUserMappingProfile>();
+        });
+
+        var mapper = mapperConfig.CreateMapper();
+        
         _repositoryMock = new Mock<IInvitedUserRepository>();
-        _mapperMock = new Mock<IMapper>();
-        _service = new InvitedUserService(_repositoryMock.Object, _mapperMock.Object);
+        _service = new InvitedUserService(_repositoryMock.Object, mapper);
     }
 
     [Fact]
@@ -117,7 +122,7 @@ public class InvitedUserServiceTests
             CreateDateTime = DateTime.UtcNow
         };
 
-        _repositoryMock.Setup(r => r.AddAsync(It.IsAny<InvitedUserDto>()))
+        _repositoryMock.Setup(r => r.AddAsync(It.IsAny<InvitedUserRequest>()))
             .ReturnsAsync(addedDto);
 
         // Act
