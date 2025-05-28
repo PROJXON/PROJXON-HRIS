@@ -52,7 +52,6 @@ public class UserRepository(DatabaseContext context) : IUserRepository
                 GoogleUserId = googleUserId,
                 Email = invitedUser.Email,
                 LastLoginDateTime = DateTime.UtcNow,
-                IsActive = false,
                 UserSettings = null
             };
 
