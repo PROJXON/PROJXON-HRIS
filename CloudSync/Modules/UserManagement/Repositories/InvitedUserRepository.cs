@@ -4,7 +4,8 @@ using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
 using Shared.DTOs.UserManagement;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
+using Shared.Enums.UserManagement;
+using Shared.Requests.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Repositories;
 
@@ -34,15 +35,15 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
         }
     }
 
-    public async Task<InvitedUser> AddAsync(InvitedUserDto invitedUserDto)
+    public async Task<InvitedUser> AddAsync(InvitedUserRequest invitedUserRequest)
     {
         try
         {
             var invitedUser = new InvitedUser
             {
-                Email = invitedUserDto.Email,
-                InvitedByEmployeeId = invitedUserDto.InvitedByEmployeeId,
-                Status = invitedUserDto.Status
+                Email = invitedUserRequest.Email,
+                InvitedByEmployeeId = invitedUserRequest.InvitedByEmployeeId,
+                Status = nameof(InvitedUserStatus.Pending)
             };
             
             await context.InvitedUsers.AddAsync(invitedUser);
