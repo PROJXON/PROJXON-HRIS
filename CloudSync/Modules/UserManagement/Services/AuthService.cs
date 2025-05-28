@@ -55,14 +55,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
 
     private async Task<GoogleLoginResponse> LoginExistingUserAsync(User existingUser)
     {
-        var existingUserResponse = new UserResponse
-        {
-            Id = existingUser.Id,
-            Email = existingUser.Email,
-            CreateDateTime = existingUser.CreateDateTime,
-            LastLoginDateTime = DateTime.UtcNow,
-            UserSettings = existingUser.UserSettings
-        };
+        var existingUserResponse = mapper.Map<UserResponse>(existingUser);
 
         await userRepository.UpdateLastLoginTimeAsync(existingUser.Id);
 
@@ -77,14 +70,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
     {
         var newUser = await userRepository.CreateAsync(invitedUser, googleUserId);
 
-        return new UserResponse
-        {
-            Id = newUser.Id,
-            Email = newUser.Email,
-            CreateDateTime = newUser.CreateDateTime,
-            LastLoginDateTime = newUser.LastLoginDateTime,
-            UserSettings = newUser.UserSettings
-        };
+        return mapper.Map<UserResponse>(newUser);
     }
 
     private string GenerateJwt(string email)
