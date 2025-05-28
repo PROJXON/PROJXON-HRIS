@@ -3,6 +3,5 @@
 public enum InvitedUserStatus
 {
     Pending,
-    Expired,
     Accepted
 }

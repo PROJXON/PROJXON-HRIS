@@ -126,7 +126,6 @@ public class AuthServiceTests
 
     [Theory]
     [InlineData("Accepted", "User has already accepted invitation.")]
-    [InlineData("Expired", "Invitation has expired.")]
     public async Task LoginAsync_Throws_OnInvalidInviteStatus(string status, string expectedMessage)
     {
         // Arrange

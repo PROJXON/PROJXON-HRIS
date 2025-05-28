@@ -43,7 +43,6 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
         return Enum.Parse<InvitedUserStatus>(existingInvitee.Status) switch
         {
             InvitedUserStatus.Accepted => throw new AuthException("User has already accepted invitation."), // should never happen, existing user should be logged in above
-            InvitedUserStatus.Expired => throw new AuthException("Invitation has expired."),
             InvitedUserStatus.Pending => new GoogleLoginResponse
             {
                 JsonWebToken = GenerateJwt(payload.Email),
