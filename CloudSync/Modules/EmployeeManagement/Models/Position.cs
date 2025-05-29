@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Shared.Enums.UserManagement;
 
 namespace CloudSync.Modules.EmployeeManagement.Models;
 
@@ -21,4 +22,7 @@ public class Position
     public int SubDepartmentId { get; set; }
     [ForeignKey("SubDepartmentId")]
     public required Department SubDepartment { get; set; }
-}
+    
+    [Required]
+    [StringLength(50)]
+    public required string HierarchyLevel { get; set; }}

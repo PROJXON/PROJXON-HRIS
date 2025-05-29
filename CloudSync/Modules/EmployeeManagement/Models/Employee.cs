@@ -85,9 +85,6 @@ public class Employee
     [ForeignKey("CoachId")]
     public Employee? Coach { get; set; }
     
-    [StringLength(20)]
-    public string? HierarchyLevel { get; set; }
-    
     public DateTime? OnboardingDate { get; set; }
     
     public DateTime? OffboardingDate { get; set; }
