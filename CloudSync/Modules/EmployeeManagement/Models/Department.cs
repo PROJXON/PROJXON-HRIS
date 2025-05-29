@@ -12,7 +12,7 @@ public class Department
     public string? Name { get; set; }
     
     [Required]
-    public int ParentDepartmentId { get; set; } 
+    public int? ParentDepartmentId { get; set; } 
     
     [ForeignKey("ParentDepartmentId")]
     public Department? ParentDepartment { get; set; }
