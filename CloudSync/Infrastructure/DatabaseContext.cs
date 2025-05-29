@@ -17,6 +17,11 @@ public class DatabaseContext : DbContext
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<InvitedUser> InvitedUsers { get; set; }
     public virtual DbSet<UserRole> Roles { get; set; }
+    public virtual DbSet<Permission> Permissions { get; set; }
+    public virtual DbSet<Employee> Employees { get; set; }
+    public virtual DbSet<Department> Departments { get; set; }
+    public virtual DbSet<ProjectTeam> ProjectTeams { get; set; }
+    public virtual DbSet<TeamMember> TeamMembers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
