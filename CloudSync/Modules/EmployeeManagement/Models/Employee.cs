@@ -158,6 +158,9 @@ public class Employee
     public string? State { get; set; }
     
     [StringLength(30)]
+    public string? Country { get; set; }
+    
+    [StringLength(30)]
     public string? RecruitingSource { get; set; }
     
     [Column(TypeName = "jsonb")]
