@@ -12,7 +12,6 @@ public class Employee
     [StringLength(40)]
     public string? FirstName { get; set; }
     
-    [Required]
     [StringLength(40)]
     public string? LastName { get; set; }
     
@@ -76,19 +75,16 @@ public class Employee
     [StringLength(40)]
     public string? JobTitle { get; set; }
     
-    [Required]
     public int DepartmentId { get; set; }
     
     [ForeignKey("DepartmentId")]
     public Department? Department { get; set; }
     
-    [Required]
     public int ManagerId { get; set; }
     
     [ForeignKey("ManagerId")]
     public Employee? Manager { get; set; }
     
-    [Required]
     public int CoachId { get; set; }
     
     [ForeignKey("CoachId")]
@@ -117,6 +113,7 @@ public class Employee
     [Url]
     [StringLength(200)]
     public string? ResumeUrl { get; set; }
+    
     [Url]
     [StringLength(200)]
     public string? CoverLetterUrl { get; set; }
@@ -143,12 +140,12 @@ public class Employee
     [StringLength(20)]
     public string? VisaNumber { get; set; }
     
-    public DateTime VisaExpirationDate { get; set; }
+    public DateTime? VisaExpirationDate { get; set; }
     
     [StringLength(20)]
     public string? WorkPermitNumber { get; set; }
     
-    public DateTime WorkExpirationDate { get; set; }
+    public DateTime? WorkExpirationDate { get; set; }
     
     [StringLength(20)]
     public string? EducationLevel { get; set; }
