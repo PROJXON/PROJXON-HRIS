@@ -1,5 +1,6 @@
 using AutoMapper;
 using CloudSync.Modules.EmployeeManagement.Models;
+using Shared.EmployeeManagement.Dtos;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
 
@@ -9,16 +10,6 @@ public class EmployeeMappingProfile : Profile
 {
     public EmployeeMappingProfile()
     {
-        CreateMap<Employee, EmployeeResponse>();
-        CreateMap<UpdateEmployeeRequest, Employee>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.Position, opt => opt.Ignore())
-            .ForMember(dest => dest.Manager, opt => opt.Ignore())
-            .ForMember(dest => dest.Coach, opt => opt.Ignore())
-            .ForMember(dest => dest.CreateDateTime, opt => opt.Ignore())
-            .ForMember(dest => dest.UpdateDateTime, opt => opt.Ignore())
-            ;
         CreateMap<CreateEmployeeRequest, Employee>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.ProjxonEmail, opt => opt.Ignore())
@@ -73,5 +64,22 @@ public class EmployeeMappingProfile : Profile
             .ForMember(dest => dest.CanvasCertificates, opt => opt.Ignore())
             .ForMember(dest => dest.NewCompany, opt => opt.Ignore())
             .ForMember(dest => dest.OnboardingChecklist, opt => opt.Ignore());
+        
+        CreateMap<UpdateEmployeeRequest, EmployeeDto>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.PositionId, opt => opt.Ignore())
+            .ForMember(dest => dest.ManagerId, opt => opt.Ignore())
+            .ForMember(dest => dest.CoachId, opt => opt.Ignore())
+            .ForMember(dest => dest.CreateDateTime, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdateDateTime, opt => opt.Ignore());
+        
+        CreateMap<EmployeeDto, Employee>()
+            .ForMember(dest => dest.Position, opt => opt.Ignore())
+            .ForMember(dest => dest.Manager, opt => opt.Ignore())
+            .ForMember(dest => dest.Coach, opt => opt.Ignore());
+        
+        CreateMap<Employee, EmployeeDto>();
+        CreateMap<EmployeeDto, EmployeeResponse>();
     }
 }
