@@ -136,7 +136,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("state");
 
-                    b.Property<string>("EmployeeStatus")
+                    b.Property<string>("Status")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("status");
@@ -169,7 +169,7 @@ namespace CloudSync.Migrations
                     b.ToTable("candidate", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Enums.Models.Department", b =>
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -179,24 +179,147 @@ namespace CloudSync.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("name");
 
-                    b.Property<int>("ParentDepartmentId")
+                    b.Property<int?>("ParentDepartmentId")
                         .HasColumnType("integer")
                         .HasColumnName("parent_department_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_department");
+                        .HasName("pk_departments");
 
                     b.HasIndex("ParentDepartmentId")
-                        .HasDatabaseName("ix_department_parent_department_id");
+                        .HasDatabaseName("ix_departments_parent_department_id");
 
-                    b.ToTable("department", (string)null);
+                    b.ToTable("departments", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Business"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Executive",
+                            ParentDepartmentId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Consulting",
+                            ParentDepartmentId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Human Resources"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Onboarding",
+                            ParentDepartmentId = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Offboarding",
+                            ParentDepartmentId = 2
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Recruiting",
+                            ParentDepartmentId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Information Technology"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "AI",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "Applications Development",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Name = "Cybersecurity",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Name = "SEO",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Name = "Web Development",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Marketing"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Name = "Market Research",
+                            ParentDepartmentId = 4
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Name = "Social Media",
+                            ParentDepartmentId = 4
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Name = "Copywriting",
+                            ParentDepartmentId = 4
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Name = "Graphic Design",
+                            ParentDepartmentId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Operations"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Name = "Finance",
+                            ParentDepartmentId = 5
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Name = "Legal",
+                            ParentDepartmentId = 5
+                        });
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Enums.Models.Employee", b =>
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -241,7 +364,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("city");
 
-                    b.Property<int>("CoachId")
+                    b.Property<int?>("CoachId")
                         .HasColumnType("integer")
                         .HasColumnName("coach_id");
 
@@ -259,7 +382,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("degrees_earned");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("integer")
                         .HasColumnName("department_id");
 
@@ -325,7 +448,6 @@ namespace CloudSync.Migrations
                         .HasColumnName("job_title");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("character varying(40)")
                         .HasColumnName("last_name");
@@ -335,7 +457,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("linked_in_url");
 
-                    b.Property<int>("ManagerId")
+                    b.Property<int?>("ManagerId")
                         .HasColumnType("integer")
                         .HasColumnName("manager_id");
 
@@ -411,7 +533,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("state");
 
-                    b.Property<string>("EmployeeStatus")
+                    b.Property<string>("Status")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("status");
@@ -430,7 +552,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("update_date_time");
 
-                    b.Property<DateTime>("VisaExpirationDate")
+                    b.Property<DateTime?>("VisaExpirationDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("visa_expiration_date");
 
@@ -449,7 +571,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("work_authorization_type");
 
-                    b.Property<DateTime>("WorkExpirationDate")
+                    b.Property<DateTime?>("WorkExpirationDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("work_expiration_date");
 
@@ -459,21 +581,21 @@ namespace CloudSync.Migrations
                         .HasColumnName("work_permit_number");
 
                     b.HasKey("Id")
-                        .HasName("pk_employee");
+                        .HasName("pk_employees");
 
                     b.HasIndex("CoachId")
-                        .HasDatabaseName("ix_employee_coach_id");
+                        .HasDatabaseName("ix_employees_coach_id");
 
                     b.HasIndex("DepartmentId")
-                        .HasDatabaseName("ix_employee_department_id");
+                        .HasDatabaseName("ix_employees_department_id");
 
                     b.HasIndex("ManagerId")
-                        .HasDatabaseName("ix_employee_manager_id");
+                        .HasDatabaseName("ix_employees_manager_id");
 
-                    b.ToTable("employee", (string)null);
+                    b.ToTable("employees", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Enums.Models.ProjectTeam", b =>
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.ProjectTeam", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -494,12 +616,12 @@ namespace CloudSync.Migrations
                         .HasColumnName("name");
 
                     b.HasKey("Id")
-                        .HasName("pk_project_team");
+                        .HasName("pk_project_teams");
 
-                    b.ToTable("project_team", (string)null);
+                    b.ToTable("project_teams", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Enums.Models.TeamMember", b =>
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.TeamMember", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -522,18 +644,18 @@ namespace CloudSync.Migrations
                         .HasColumnName("role_in_team");
 
                     b.HasKey("Id")
-                        .HasName("pk_team_member");
+                        .HasName("pk_team_members");
 
                     b.HasIndex("EmployeeId")
-                        .HasDatabaseName("ix_team_member_employee_id");
+                        .HasDatabaseName("ix_team_members_employee_id");
 
                     b.HasIndex("ProjectTeamId")
-                        .HasDatabaseName("ix_team_member_project_team_id");
+                        .HasDatabaseName("ix_team_members_project_team_id");
 
-                    b.ToTable("team_member", (string)null);
+                    b.ToTable("team_members", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.InvitedUser", b =>
+            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.InvitedUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -557,7 +679,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("invited_by_employee_id");
 
-                    b.Property<string>("EmployeeStatus")
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
@@ -572,7 +694,7 @@ namespace CloudSync.Migrations
                     b.ToTable("invited_users", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.Permission", b =>
+            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.Permission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -593,12 +715,12 @@ namespace CloudSync.Migrations
                         .HasColumnName("name");
 
                     b.HasKey("Id")
-                        .HasName("pk_permission");
+                        .HasName("pk_permissions");
 
-                    b.ToTable("permission", (string)null);
+                    b.ToTable("permissions", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.User", b =>
+            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -639,7 +761,7 @@ namespace CloudSync.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.UserRole", b =>
+            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.UserRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -662,52 +784,66 @@ namespace CloudSync.Migrations
                         .HasName("pk_roles");
 
                     b.ToTable("roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Administrator"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Human Resources"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Employee"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Guest"
+                        });
                 });
 
             modelBuilder.Entity("CloudSync.Modules.CandidateManagement.Models.Candidate", b =>
                 {
-                    b.HasOne("CloudSync.Modules.Enums.Models.Employee", "Interviewer")
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Interviewer")
                         .WithMany()
                         .HasForeignKey("InterviewerId")
-                        .HasConstraintName("fk_candidate_employee_interviewer_id");
+                        .HasConstraintName("fk_candidate_employees_interviewer_id");
 
                     b.Navigation("Interviewer");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Enums.Models.Department", b =>
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Department", b =>
                 {
-                    b.HasOne("CloudSync.Modules.Enums.Models.Department", "ParentDepartment")
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Department", "ParentDepartment")
                         .WithMany()
                         .HasForeignKey("ParentDepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_department_department_parent_department_id");
+                        .HasConstraintName("fk_departments_departments_parent_department_id");
 
                     b.Navigation("ParentDepartment");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Enums.Models.Employee", b =>
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Employee", b =>
                 {
-                    b.HasOne("CloudSync.Modules.Enums.Models.Employee", "Coach")
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Coach")
                         .WithMany()
                         .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_employee_employee_coach_id");
+                        .HasConstraintName("fk_employees_employees_coach_id");
 
-                    b.HasOne("CloudSync.Modules.Enums.Models.Department", "Department")
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_employee_department_department_id");
+                        .HasConstraintName("fk_employees_departments_department_id");
 
-                    b.HasOne("CloudSync.Modules.Enums.Models.Employee", "Manager")
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_employee_employee_manager_id");
+                        .HasConstraintName("fk_employees_employees_manager_id");
 
                     b.Navigation("Coach");
 
@@ -716,30 +852,30 @@ namespace CloudSync.Migrations
                     b.Navigation("Manager");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Enums.Models.TeamMember", b =>
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.TeamMember", b =>
                 {
-                    b.HasOne("CloudSync.Modules.Enums.Models.Employee", "Employee")
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_team_member_employee_employee_id");
+                        .HasConstraintName("fk_team_members_employees_employee_id");
 
-                    b.HasOne("CloudSync.Modules.Enums.Models.ProjectTeam", "ProjectTeam")
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.ProjectTeam", "ProjectTeam")
                         .WithMany()
                         .HasForeignKey("ProjectTeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_team_member_project_team_project_team_id");
+                        .HasConstraintName("fk_team_members_project_teams_project_team_id");
 
                     b.Navigation("Employee");
 
                     b.Navigation("ProjectTeam");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.InvitedUser", b =>
+            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.InvitedUser", b =>
                 {
-                    b.HasOne("CloudSync.Modules.Dtos.Models.User", "InvitedByEmployee")
+                    b.HasOne("CloudSync.Modules.UserManagement.Models.User", "InvitedByEmployee")
                         .WithMany()
                         .HasForeignKey("InvitedByEmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
