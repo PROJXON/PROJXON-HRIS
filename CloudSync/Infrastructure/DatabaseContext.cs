@@ -50,6 +50,8 @@ public class DatabaseContext : DbContext
         
         modelBuilder.Entity<Employee>()
             .HasKey(u => u.Id);
+
+        modelBuilder.Entity<Position>().HasKey(u => u.Id);
         
         modelBuilder.Entity<Department>()
             .HasKey(u => u.Id);
