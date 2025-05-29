@@ -3,6 +3,7 @@ using CloudSync.Modules.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Dtos;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
+using Shared.Enums.UserManagement;
 
 namespace CloudSync.Modules.EmployeeManagement.Mappings;
 
@@ -68,18 +69,33 @@ public class EmployeeMappingProfile : Profile
         CreateMap<UpdateEmployeeRequest, EmployeeDto>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.PositionId, opt => opt.Ignore())
-            .ForMember(dest => dest.ManagerId, opt => opt.Ignore())
-            .ForMember(dest => dest.CoachId, opt => opt.Ignore())
             .ForMember(dest => dest.CreateDateTime, opt => opt.Ignore())
-            .ForMember(dest => dest.UpdateDateTime, opt => opt.Ignore());
+            .ForMember(dest => dest.UpdateDateTime, opt => opt.Ignore())
+            .ForMember(dest => dest.PositionSummary, opt => opt.Ignore())
+            .ForMember(dest => dest.ManagerSummary, opt => opt.Ignore())
+            .ForMember(dest => dest.CoachSummary, opt => opt.Ignore());
         
         CreateMap<EmployeeDto, Employee>()
             .ForMember(dest => dest.Position, opt => opt.Ignore())
             .ForMember(dest => dest.Manager, opt => opt.Ignore())
             .ForMember(dest => dest.Coach, opt => opt.Ignore());
         
-        CreateMap<Employee, EmployeeDto>();
+        CreateMap<Employee, EmployeeDto>()
+            .ForMember(dest => dest.PositionSummary, opt => opt.MapFrom(src => src.Position))
+            .ForMember(dest => dest.ManagerSummary, opt => opt.MapFrom(src => src.Manager))
+            .ForMember(dest => dest.CoachSummary, opt => opt.MapFrom(src => src.Coach));
+
         CreateMap<EmployeeDto, EmployeeResponse>();
+
+        CreateMap<Employee, ManagerOrCoachSummary>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(u => u.Id))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(u => u.FirstName))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(u => u.LastName))
+            ;
+        
+        CreateMap<Position, PositionSummary>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(u => u.Id))
+            .ForMember(dest => dest.PositionName, opt => opt.MapFrom(u => u.PositionName))
+            .ForMember(dest => dest.HierarchyLevel, opt => opt.MapFrom(u => Enum.Parse<HierarchyLevel>(u.HierarchyLevel)));
     }
 }
