@@ -41,8 +41,6 @@
       <Folder Include="Modules\CandidateManagement\Models\" />
       <Folder Include="Modules\CandidateManagement\Repositories\" />
       <Folder Include="Modules\CandidateManagement\Services\" />
-      <Folder Include="Modules\EmployeeManagement\Repositories\" />
-      <Folder Include="Modules\EmployeeManagement\Services\" />
     </ItemGroup>
 
 </Project>
