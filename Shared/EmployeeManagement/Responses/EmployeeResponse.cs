@@ -21,6 +21,7 @@ public class EmployeeResponse
     public string? Gender { get; set; }
     public string? PreferredPronouns { get; set; }
     public string? PreferredName { get; set; }
+    public int? PositionId { get; set; }
     public int? ManagerId { get; set; }
     public int? CoachId { get; set; }
     public DateTime? OnboardingDate { get; set; }
