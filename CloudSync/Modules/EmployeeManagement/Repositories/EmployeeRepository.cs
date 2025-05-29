@@ -34,7 +34,12 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
 
     public async Task<Employee> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var employee = await context.Employees.FindAsync(id);
+        
+        if (employee == null)
+            throw new EmployeeException("Employee with the given ID does not exist", 404);
+
+        return employee;
     }
 
     public async Task<Employee> CreateAsync(EmployeeDto employeeDto)

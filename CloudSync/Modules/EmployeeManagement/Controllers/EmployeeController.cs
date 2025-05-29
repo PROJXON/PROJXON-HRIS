@@ -22,5 +22,19 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
                         return StatusCode(e.StatusCode, e.Message);
                 }
         }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<EmployeeResponse>> GetById(int id)
+        {
+                try
+                {
+                        var response = await employeeService.GetByIdAsync(id);
+                        return Ok(response);
+                }
+                catch (EmployeeException e)
+                {
+                        return StatusCode(e.StatusCode, e.Message);
+                }
+        }
 }
 

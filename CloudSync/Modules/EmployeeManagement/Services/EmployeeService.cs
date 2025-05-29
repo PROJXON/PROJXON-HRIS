@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
+using CloudSync.Modules.EmployeeManagement.Services.Exceptions;
 using CloudSync.Modules.EmployeeManagement.Services.Interfaces;
+using Shared.EmployeeManagement.Dtos;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
 
@@ -11,9 +13,11 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
     public async Task<IEnumerable<EmployeeResponse>> GetAllAsync()
     {
         var employeeList = await employeeRepository.GetAllAsync();
+        List<EmployeeDto> employeeDtoList = [];
         List<EmployeeResponse> employeeResponseList = [];
 
-        employeeResponseList.AddRange(employeeList.Select(mapper.Map<EmployeeResponse>));
+        employeeDtoList.AddRange(employeeList.Select(mapper.Map<EmployeeDto>));
+        employeeResponseList.AddRange(employeeDtoList.Select(mapper.Map<EmployeeResponse>));
 
         return employeeResponseList;
     }
@@ -30,7 +34,10 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
 
     public async Task<EmployeeResponse> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var employee = await employeeRepository.GetByIdAsync(id);
+        
+        var employeeDto = mapper.Map<EmployeeDto>(employee);
+        return mapper.Map<EmployeeResponse>(employeeDto);
     }
 
     public async Task<EmployeeResponse> CreateAsync(CreateEmployeeRequest request)
