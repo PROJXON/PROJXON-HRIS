@@ -48,8 +48,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IInvitedUserService, InvitedUserService>();
 builder.Services.AddScoped<IInvitedUserRepository, InvitedUserRepository>();
-builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+// builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+// builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
