@@ -5,6 +5,9 @@ namespace CloudSync.Modules.EmployeeManagement.Models;
 
 public class Position
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+    
     [Required]
     [StringLength(50)]
     public required string PositionName { get; set; }
