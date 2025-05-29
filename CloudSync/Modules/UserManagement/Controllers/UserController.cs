@@ -21,7 +21,7 @@ namespace CloudSync.Modules.UserManagement.Controllers;
         }
     }
     
-    [HttpGet("{id}")] public async Task<ActionResult<UserResponse>> GetUser(int id)
+    [HttpGet("{id:int}")] public async Task<ActionResult<UserResponse>> GetUser(int id)
     {
         try
         {
@@ -34,7 +34,7 @@ namespace CloudSync.Modules.UserManagement.Controllers;
         }
     }
     
-    [HttpPut("{id}")] public async Task<ActionResult> PutUser(int id, [FromBody] UserDto userDto)
+    [HttpPut("{id:int}")] public async Task<ActionResult> PutUser(int id, [FromBody] UserDto userDto)
     {
         try
         {
@@ -47,7 +47,7 @@ namespace CloudSync.Modules.UserManagement.Controllers;
         }
     }
     
-    [HttpDelete("{id}")] public async Task<ActionResult> DeleteUser(int id)
+    [HttpDelete("{id:int}")] public async Task<ActionResult> DeleteUser(int id)
     {
         try
         {
