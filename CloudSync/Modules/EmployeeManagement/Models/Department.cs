@@ -8,7 +8,7 @@ public class Department
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
-    [StringLength(20)]
+    [StringLength(50)]
     public string? Name { get; set; }
     
     public int? ParentDepartmentId { get; set; } 
