@@ -1,5 +1,4 @@
 ﻿using Shared.EmployeeManagement.Enums;
-using Shared.Enums.UserManagement;
 
 namespace Shared.EmployeeManagement.Responses;
 
@@ -21,9 +20,9 @@ public class EmployeeResponse
     public string? Gender { get; set; }
     public string? PreferredPronouns { get; set; }
     public string? PreferredName { get; set; }
-    public int? PositionId { get; set; }
-    public int? ManagerId { get; set; }
-    public int? CoachId { get; set; }
+    public PositionSummary? PositionSummary { get; set; }
+    public ManagerOrCoachSummary? ManagerSummary { get; set; }
+    public ManagerOrCoachSummary? CoachSummary { get; set; }
     public DateTime? OnboardingDate { get; set; }
     public DateTime? OffboardingDate { get; set; }
     public EmployeeStatus? Status { get; set; }
