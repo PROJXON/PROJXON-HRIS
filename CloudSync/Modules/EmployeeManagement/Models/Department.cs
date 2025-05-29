@@ -11,7 +11,6 @@ public class Department
     [StringLength(20)]
     public string? Name { get; set; }
     
-    [Required]
     public int? ParentDepartmentId { get; set; } 
     
     [ForeignKey("ParentDepartmentId")]
