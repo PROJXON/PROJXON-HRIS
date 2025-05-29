@@ -34,10 +34,8 @@ public class Employee
     public string? EmergencyContactName { get; set; }
     
     [Phone]
+    [StringLength(15)]
     public string? EmergencyContactPhone { get; set; }
-    
-    [StringLength(9)]
-    public string? SocialSecurityNumber { get; set; }
     
     [StringLength(40)]
     public string? IdNumber { get; set; }
