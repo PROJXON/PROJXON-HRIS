@@ -75,17 +75,17 @@ public class Employee
     [StringLength(40)]
     public string? JobTitle { get; set; }
     
-    public int DepartmentId { get; set; }
+    public int? DepartmentId { get; set; }
     
     [ForeignKey("DepartmentId")]
     public Department? Department { get; set; }
     
-    public int ManagerId { get; set; }
+    public int? ManagerId { get; set; }
     
     [ForeignKey("ManagerId")]
     public Employee? Manager { get; set; }
     
-    public int CoachId { get; set; }
+    public int? CoachId { get; set; }
     
     [ForeignKey("CoachId")]
     public Employee? Coach { get; set; }
