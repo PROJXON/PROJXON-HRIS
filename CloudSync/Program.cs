@@ -4,7 +4,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
 using CloudSync.Middleware;
-using CloudSync.Modules.UserManagement.Mappings;
+using CloudSync.Modules.EmployeeManagement.Repositories;
+using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
+using CloudSync.Modules.EmployeeManagement.Services;
+using CloudSync.Modules.EmployeeManagement.Services.Interfaces;
 using CloudSync.Modules.UserManagement.Repositories;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
@@ -45,6 +48,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IInvitedUserService, InvitedUserService>();
 builder.Services.AddScoped<IInvitedUserRepository, InvitedUserRepository>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
