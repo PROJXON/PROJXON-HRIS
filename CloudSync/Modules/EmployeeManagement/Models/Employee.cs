@@ -75,11 +75,6 @@ public class Employee
     [ForeignKey("PositionId")]
     public Position? Position { get; set; }
     
-    public int? DepartmentId { get; set; }
-    
-    [ForeignKey("DepartmentId")]
-    public Department? Department { get; set; }
-    
     public int? ManagerId { get; set; }
     
     [ForeignKey("ManagerId")]
