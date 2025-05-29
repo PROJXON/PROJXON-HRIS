@@ -169,7 +169,7 @@ namespace CloudSync.Migrations
                     b.ToTable("candidate", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Department", b =>
+            modelBuilder.Entity("CloudSync.Modules.Enums.Models.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -196,7 +196,7 @@ namespace CloudSync.Migrations
                     b.ToTable("department", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Employee", b =>
+            modelBuilder.Entity("CloudSync.Modules.Enums.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -473,7 +473,7 @@ namespace CloudSync.Migrations
                     b.ToTable("employee", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.ProjectTeam", b =>
+            modelBuilder.Entity("CloudSync.Modules.Enums.Models.ProjectTeam", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -499,7 +499,7 @@ namespace CloudSync.Migrations
                     b.ToTable("project_team", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.TeamMember", b =>
+            modelBuilder.Entity("CloudSync.Modules.Enums.Models.TeamMember", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -533,7 +533,7 @@ namespace CloudSync.Migrations
                     b.ToTable("team_member", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.InvitedUser", b =>
+            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.InvitedUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -572,7 +572,7 @@ namespace CloudSync.Migrations
                     b.ToTable("invited_users", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.Permission", b =>
+            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.Permission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -598,7 +598,7 @@ namespace CloudSync.Migrations
                     b.ToTable("permission", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.User", b =>
+            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -639,7 +639,7 @@ namespace CloudSync.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.UserRole", b =>
+            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.UserRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -666,7 +666,7 @@ namespace CloudSync.Migrations
 
             modelBuilder.Entity("CloudSync.Modules.CandidateManagement.Models.Candidate", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Interviewer")
+                    b.HasOne("CloudSync.Modules.Enums.Models.Employee", "Interviewer")
                         .WithMany()
                         .HasForeignKey("InterviewerId")
                         .HasConstraintName("fk_candidate_employee_interviewer_id");
@@ -674,9 +674,9 @@ namespace CloudSync.Migrations
                     b.Navigation("Interviewer");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Department", b =>
+            modelBuilder.Entity("CloudSync.Modules.Enums.Models.Department", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Department", "ParentDepartment")
+                    b.HasOne("CloudSync.Modules.Enums.Models.Department", "ParentDepartment")
                         .WithMany()
                         .HasForeignKey("ParentDepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -686,23 +686,23 @@ namespace CloudSync.Migrations
                     b.Navigation("ParentDepartment");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Employee", b =>
+            modelBuilder.Entity("CloudSync.Modules.Enums.Models.Employee", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Coach")
+                    b.HasOne("CloudSync.Modules.Enums.Models.Employee", "Coach")
                         .WithMany()
                         .HasForeignKey("CoachId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_employee_employee_coach_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Department", "Department")
+                    b.HasOne("CloudSync.Modules.Enums.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_employee_department_department_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Manager")
+                    b.HasOne("CloudSync.Modules.Enums.Models.Employee", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -716,16 +716,16 @@ namespace CloudSync.Migrations
                     b.Navigation("Manager");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.TeamMember", b =>
+            modelBuilder.Entity("CloudSync.Modules.Enums.Models.TeamMember", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                    b.HasOne("CloudSync.Modules.Enums.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_team_member_employee_employee_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.ProjectTeam", "ProjectTeam")
+                    b.HasOne("CloudSync.Modules.Enums.Models.ProjectTeam", "ProjectTeam")
                         .WithMany()
                         .HasForeignKey("ProjectTeamId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -737,9 +737,9 @@ namespace CloudSync.Migrations
                     b.Navigation("ProjectTeam");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.InvitedUser", b =>
+            modelBuilder.Entity("CloudSync.Modules.Dtos.Models.InvitedUser", b =>
                 {
-                    b.HasOne("CloudSync.Modules.UserManagement.Models.User", "InvitedByEmployee")
+                    b.HasOne("CloudSync.Modules.Dtos.Models.User", "InvitedByEmployee")
                         .WithMany()
                         .HasForeignKey("InvitedByEmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
