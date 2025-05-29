@@ -14,10 +14,10 @@ public class EmployeeDto
     public string? PersonalEmail { get; set; }
     public string? EmergencyContactName { get; set; }
     public string? EmergencyContactPhone { get; set; }
-    public int? IdNumber { get; set; }
-    public int? IdType { get; set; }
-    public int? IdCountry { get; set; }
-    public int? IdState { get; set; }
+    public string? IdNumber { get; set; }
+    public string? IdType { get; set; }
+    public string? IdCountry { get; set; }
+    public string? IdState { get; set; }
     public string? BirthCountry { get; set; }
     public string? BirthState { get; set; }
     public string? BirthCity { get; set; }
@@ -45,9 +45,9 @@ public class EmployeeDto
     public string? WorkAuthorizationType { get; set; }
     public string? WorkAuthorizationDocumentUrl { get; set; }
     public string? VisaNumber { get; set; }
-    public string? VisaExpirationDate { get; set; }
+    public DateTime? VisaExpirationDate { get; set; }
     public string? WorkPermitNumber { get; set; }
-    public string? WorkExpirationDate { get; set; }
+    public DateTime? WorkExpirationDate { get; set; }
     public string? EducationLevel { get; set; }
     public List<string>? UniversitiesAttended { get; set; }
     public List<string>? DegreesEarned { get; set; }
