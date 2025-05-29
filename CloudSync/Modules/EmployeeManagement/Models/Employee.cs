@@ -71,9 +71,9 @@ public class Employee
     [StringLength(20)]
     public string? PreferredName { get; set; }
     
-    [Required]
-    [StringLength(40)]
-    public string? JobTitle { get; set; }
+    public int? PositionId { get; set; }
+    [ForeignKey("PositionId")]
+    public Position? Position { get; set; }
     
     public int? DepartmentId { get; set; }
     
