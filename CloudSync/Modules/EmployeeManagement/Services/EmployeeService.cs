@@ -10,7 +10,12 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
 {
     public async Task<IEnumerable<EmployeeResponse>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var employeeList = await employeeRepository.GetAllAsync();
+        List<EmployeeResponse> employeeResponseList = [];
+
+        employeeResponseList.AddRange(employeeList.Select(mapper.Map<EmployeeResponse>));
+
+        return employeeResponseList;
     }
 
     public async Task<IEnumerable<EmployeeResponse>> GetByDepartmentAsync(string department)
