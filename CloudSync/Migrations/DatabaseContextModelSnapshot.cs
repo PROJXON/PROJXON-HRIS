@@ -136,7 +136,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("state");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("EmployeeStatus")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("status");
@@ -411,7 +411,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("state");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("EmployeeStatus")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("status");
@@ -557,7 +557,7 @@ namespace CloudSync.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("invited_by_employee_id");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("EmployeeStatus")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
