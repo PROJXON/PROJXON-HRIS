@@ -28,11 +28,17 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<User>()
             .HasKey(u => u.Id);
         
-        modelBuilder.Entity<UserRole>()
-            .HasKey(u => u.Id);
-        
         modelBuilder.Entity<InvitedUser>()
             .HasKey(u => u.Id);
+        
+        modelBuilder.Entity<UserRole>()
+            .HasKey(u => u.Id);
+        modelBuilder.Entity<UserRole>().HasData(
+            new UserRole { Id = 0, Name = "Administrator" },
+            new UserRole { Id = 1, Name = "Human Resources" },
+            new UserRole { Id = 2, Name = "Employee" },
+            new UserRole { Id = 4, Name = "Guest" }
+        );
         
         modelBuilder.Entity<Permission>()
             .HasKey(u => u.Id);
