@@ -21,11 +21,8 @@ public class EmployeeResponse
     public string? Gender { get; set; }
     public string? PreferredPronouns { get; set; }
     public string? PreferredName { get; set; }
-    public string? JobTitle { get; set; }
-    public int? DepartmentId { get; set; }
     public int? ManagerId { get; set; }
     public int? CoachId { get; set; }
-    public HierarchyLevel? HierarchyLevel { get; set; }
     public DateTime? OnboardingDate { get; set; }
     public DateTime? OffboardingDate { get; set; }
     public EmployeeStatus? Status { get; set; }
