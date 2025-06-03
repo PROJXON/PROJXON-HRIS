@@ -54,6 +54,36 @@ public class DatabaseContext : DbContext
 
         modelBuilder.Entity<Employee>().OwnsOne(e => e.BasicInfo);
         modelBuilder.Entity<Employee>().OwnsOne(e => e.ContactInfo);
+        
+        modelBuilder.Entity<Employee>()
+            .HasOne(e => e.PositionDetails)
+            .WithOne()
+            .HasForeignKey<Employee>(e => e.EmployeeDetailsId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Employee>()
+            .HasOne(e => e.Documents)
+            .WithOne()
+            .HasForeignKey<Employee>(e => e.EmployeeDocumentsId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Employee>()
+            .HasOne(e => e.Legal)
+            .WithOne()
+            .HasForeignKey<Employee>(e => e.EmployeeLegalId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Employee>()
+            .HasOne(e => e.Education)
+            .WithOne()
+            .HasForeignKey<Employee>(e => e.EmployeeEducationId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Employee>()
+            .HasOne(e => e.Training)
+            .WithOne()
+            .HasForeignKey<Employee>(e => e.EmployeeTrainingId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Address>()
             .HasKey(u => u.Id);
