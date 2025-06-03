@@ -52,6 +52,9 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Employee>()
             .HasKey(u => u.Id);
 
+        modelBuilder.Entity<Employee>().OwnsOne(e => e.BasicInfo);
+        modelBuilder.Entity<Employee>().OwnsOne(e => e.ContactInfo);
+
         modelBuilder.Entity<Address>()
             .HasKey(u => u.Id);
 
