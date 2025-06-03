@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace CloudSync.Modules.EmployeeManagement.Models;
 
+[Owned]
 public class EmployeeContactInfo
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
