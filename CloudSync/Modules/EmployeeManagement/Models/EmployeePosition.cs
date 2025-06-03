@@ -10,18 +10,18 @@ public class EmployeePosition
     public int Id { get; set; }
     
     [StringLength(50)]
-    public string PositionName { get; set; }
+    public string? PositionName { get; set; }
     
-    public int DepartmentId { get; set; }
+    public int? DepartmentId { get; set; }
     [ForeignKey("DepartmentId")]
-    public Department Department { get; set; }
+    public Department? Department { get; set; }
     
-    public int SubDepartmentId { get; set; }
+    public int? SubDepartmentId { get; set; }
     [ForeignKey("SubDepartmentId")]
-    public Department SubDepartment { get; set; }
+    public Department? SubDepartment { get; set; }
     
     [StringLength(50)]
-    public string HierarchyLevel { get; set; }
+    public string? HierarchyLevel { get; set; }
     
     public int? PositionId { get; set; }
     
