@@ -30,4 +30,7 @@ public class Address
     [Required]
     [StringLength(15)]
     public required string PostalCode { get; set; }
+    
+    [StringLength(30)]
+    public string? TimeZone { get; set; }
 }
