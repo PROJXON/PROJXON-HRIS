@@ -38,7 +38,7 @@ public class EmployeeMappingProfile : Profile
             .ForMember(dest => dest.Coach, opt => opt.Ignore())
             .ForMember(dest => dest.OnboardingDate, opt => opt.Ignore())
             .ForMember(dest => dest.OffboardingDate, opt => opt.Ignore())
-            .ForMember(dest => dest.Status, opt => opt.Ignore())
+            .ForMember(dest => dest.EmploymentStatus, opt => opt.Ignore())
             .ForMember(dest => dest.CreateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow))
             .ForMember(dest => dest.UpdateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow))
             .ForMember(dest => dest.ProfilePictureUrl, opt => opt.Ignore())
@@ -93,7 +93,7 @@ public class EmployeeMappingProfile : Profile
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(u => u.LastName))
             ;
         
-        CreateMap<Position, PositionSummary>()
+        CreateMap<EmployeePosition, PositionSummary>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(u => u.Id))
             .ForMember(dest => dest.PositionName, opt => opt.MapFrom(u => u.PositionName))
             .ForMember(dest => dest.HierarchyLevel, opt => opt.MapFrom(u => Enum.Parse<HierarchyLevel>(u.HierarchyLevel)));

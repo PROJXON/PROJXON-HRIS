@@ -4,7 +4,7 @@ using Shared.Enums.UserManagement;
 
 namespace CloudSync.Modules.EmployeeManagement.Models;
 
-public class Position
+public class EmployeePosition
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }

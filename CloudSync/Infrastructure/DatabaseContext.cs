@@ -55,7 +55,7 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Address>()
             .HasKey(u => u.Id);
 
-        modelBuilder.Entity<Position>().HasKey(u => u.Id);
+        modelBuilder.Entity<EmployeePosition>().HasKey(u => u.Id);
         
         modelBuilder.Entity<Department>()
             .HasKey(u => u.Id);

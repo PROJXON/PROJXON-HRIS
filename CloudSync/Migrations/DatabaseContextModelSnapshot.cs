@@ -585,7 +585,7 @@ namespace CloudSync.Migrations
                     b.ToTable("employees", (string)null);
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Position", b =>
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeePosition", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -871,7 +871,7 @@ namespace CloudSync.Migrations
                         .HasForeignKey("ManagerId")
                         .HasConstraintName("fk_employees_employees_manager_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Position", "Position")
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.EmployeePosition", "EmployeePosition")
                         .WithMany()
                         .HasForeignKey("PositionId")
                         .HasConstraintName("fk_employees_position_position_id");
@@ -880,10 +880,10 @@ namespace CloudSync.Migrations
 
                     b.Navigation("Manager");
 
-                    b.Navigation("Position");
+                    b.Navigation("EmployeePosition");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Position", b =>
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeePosition", b =>
                 {
                     b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Department", "Department")
                         .WithMany()
