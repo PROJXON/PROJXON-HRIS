@@ -19,6 +19,7 @@ public class DatabaseContext : DbContext
     public virtual DbSet<UserRole> Roles { get; set; }
     public virtual DbSet<Permission> Permissions { get; set; }
     public virtual DbSet<Employee> Employees { get; set; }
+    public virtual DbSet<Address> Addresses { get; set; }
     public virtual DbSet<Department> Departments { get; set; }
     public virtual DbSet<ProjectTeam> ProjectTeams { get; set; }
     public virtual DbSet<TeamMember> TeamMembers { get; set; }
@@ -49,6 +50,9 @@ public class DatabaseContext : DbContext
             .HasKey(u => u.Id);
         
         modelBuilder.Entity<Employee>()
+            .HasKey(u => u.Id);
+
+        modelBuilder.Entity<Address>()
             .HasKey(u => u.Id);
 
         modelBuilder.Entity<Position>().HasKey(u => u.Id);
