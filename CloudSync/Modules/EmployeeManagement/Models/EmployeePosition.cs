@@ -9,20 +9,45 @@ public class EmployeePosition
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
-    [Required]
     [StringLength(50)]
-    public required string PositionName { get; set; }
+    public string PositionName { get; set; }
     
-    [Required]
     public int DepartmentId { get; set; }
     [ForeignKey("DepartmentId")]
-    public required Department Department { get; set; }
+    public Department Department { get; set; }
     
-    [Required]
     public int SubDepartmentId { get; set; }
     [ForeignKey("SubDepartmentId")]
-    public required Department SubDepartment { get; set; }
+    public Department SubDepartment { get; set; }
     
-    [Required]
     [StringLength(50)]
-    public required string HierarchyLevel { get; set; }}
+    public string HierarchyLevel { get; set; }
+    
+    public int? PositionId { get; set; }
+    
+    [ForeignKey("PositionId")]
+    public EmployeePosition? PositionDetails { get; set; }
+    
+    public int? ManagerId { get; set; }
+    
+    [ForeignKey("ManagerId")]
+    public Employee? Manager { get; set; }
+    
+    public int? CoachId { get; set; }
+    
+    [ForeignKey("CoachId")]
+    public Employee? Coach { get; set; }
+    
+    public DateTime? OnboardingDate { get; set; }
+    
+    public DateTime? OffboardingDate { get; set; }
+    
+    [StringLength(30)]
+    public string? EmploymentStatus { get; set; }
+    
+    [StringLength(30)]
+    public string? EmploymentType { get; set; }
+    
+    [StringLength(30)]
+    public string? RecruitingSource { get; set; }
+}
