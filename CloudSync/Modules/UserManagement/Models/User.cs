@@ -18,15 +18,15 @@ public class User
     [StringLength(40)]
     public required string Email { get; set; }
     
-    // public int RoleId { get; set; } 
-    //
-    // [ForeignKey("RoleId")]
-    // public UserRole? Role { get; set; }
-    //
-    // public int EmployeeId { get; set; }
-    //
-    // [ForeignKey("EmployeeId")]
-    // public Employee? Employee { get; set; }
+    public int RoleId { get; set; } 
+    
+    [ForeignKey("RoleId")]
+    public UserRole? Role { get; set; }
+    
+    public int EmployeeId { get; set; }
+    
+    [ForeignKey("EmployeeId")]
+    public Employee? Employee { get; set; }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime CreateDateTime { get; set; } = DateTime.UtcNow;
