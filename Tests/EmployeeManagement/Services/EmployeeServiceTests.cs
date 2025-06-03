@@ -33,8 +33,6 @@ public class EmployeeServiceTests
         // Arrange
         var employees = new List<Employee>
         {
-            new() { Id = 1, FirstName = "John", LastName = "Doe" },
-            new() { Id = 2, FirstName = "Jane", LastName = "Smith" }
         };
 
         var expectedResponses = new List<EmployeeResponse>
@@ -61,11 +59,9 @@ public class EmployeeServiceTests
     public async Task GetByIdAsync_ShouldReturnMappedEmployee()
     {
         // Arrange
-        var employee = new Employee { Id = 1, FirstName = "John", LastName = "Doe" };
         var expectedResponse = new EmployeeResponse { Id = 1, FirstName = "John", LastName = "Doe" };
 
-        _mockRepository.Setup(repo => repo.GetByIdAsync(1))
-            .ReturnsAsync(employee);
+        _mockRepository.Setup(repo => repo.GetByIdAsync(1));
 
         // Act
         var result = await _employeeService.GetByIdAsync(1);
