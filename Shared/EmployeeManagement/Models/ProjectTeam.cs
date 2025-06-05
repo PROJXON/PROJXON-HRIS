@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace CloudSync.Modules.EmployeeManagement.Models;
+namespace Shared.EmployeeManagement.Models;
 
 public class ProjectTeam
 {

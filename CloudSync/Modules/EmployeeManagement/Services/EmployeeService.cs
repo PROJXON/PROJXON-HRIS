@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
-using CloudSync.Modules.EmployeeManagement.Services.Exceptions;
 using CloudSync.Modules.EmployeeManagement.Services.Interfaces;
 using Shared.EmployeeManagement.Dtos;
 using Shared.EmployeeManagement.Requests;
@@ -42,7 +41,10 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
 
     public async Task<EmployeeResponse> CreateAsync(CreateEmployeeRequest request)
     {
-        throw new NotImplementedException();
+        var newEmployee = await employeeRepository.CreateAsync(request);
+
+        var employeeResponse = mapper.Map<EmployeeResponse>(newEmployee);
+        return employeeResponse;
     }
 
     public async Task UpdateAsync(int id, UpdateEmployeeRequest request)

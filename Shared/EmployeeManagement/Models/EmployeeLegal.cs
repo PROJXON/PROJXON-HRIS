@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CloudSync.Modules.EmployeeManagement.Models;
+namespace Shared.EmployeeManagement.Models;
 
 public class EmployeeLegal
 {

@@ -1,5 +1,5 @@
-﻿using CloudSync.Modules.EmployeeManagement.Models;
-using Shared.EmployeeManagement.Dtos;
+﻿using Shared.EmployeeManagement.Dtos;
+using Shared.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 
 namespace CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;

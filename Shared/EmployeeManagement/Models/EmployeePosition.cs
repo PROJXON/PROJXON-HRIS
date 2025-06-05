@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Shared.Enums.UserManagement;
 
-namespace CloudSync.Modules.EmployeeManagement.Models;
+namespace Shared.EmployeeManagement.Models;
 
 public class EmployeePosition
 {

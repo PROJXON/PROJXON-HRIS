@@ -1,10 +1,9 @@
 ﻿using CloudSync.Infrastructure;
-using CloudSync.Modules.EmployeeManagement.Models;
 using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
 using CloudSync.Modules.EmployeeManagement.Services.Exceptions;
-using CloudSync.Modules.UserManagement.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Shared.EmployeeManagement.Dtos;
+using Shared.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 
 namespace CloudSync.Modules.EmployeeManagement.Repositories;
