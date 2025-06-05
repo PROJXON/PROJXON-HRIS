@@ -1,5 +1,6 @@
 ﻿using CloudSync.Modules.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Dtos;
+using Shared.EmployeeManagement.Requests;
 
 namespace CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
 
@@ -9,7 +10,7 @@ public interface IEmployeeRepository
     Task<IEnumerable<Employee>> GetByDepartmentAsync(string department);
     Task<IEnumerable<Employee>> GetByRoleAsync(string role);
     Task<Employee> GetByIdAsync(int id);
-    Task<Employee> CreateAsync(EmployeeDto employeeDto);
+    Task<Employee> CreateAsync(CreateEmployeeRequest request);
     Task UpdateAsync(int id, EmployeeDto employeeDto);
     Task DeleteAsync(int id);
 }
