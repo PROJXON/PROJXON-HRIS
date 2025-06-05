@@ -7,28 +7,15 @@ public class Employee
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
+    // Owned
     public EmployeeBasic BasicInfo { get; set; } = new();
     public EmployeeContactInfo ContactInfo { get; set; } = new();
-    
-    public int? EmployeeDetailsId { get; set; }
-    [ForeignKey("EmployeeDetailsId")]
-    public EmployeePosition? PositionDetails { get; set; }
-    
-    public int? EmployeeDocumentsId { get; set; }
-    [ForeignKey("EmployeeDocumentsId")]
-    public EmployeeDocuments? Documents { get; set; }
-    
-    public int? EmployeeLegalId { get; set; }
-    [ForeignKey("EmployeeLegalId")]
-    public EmployeeLegal? Legal { get; set; }
-    
-    public int? EmployeeEducationId { get; set; }
-    [ForeignKey("EmployeeEducationId")]
-    public EmployeeEducation? Education { get; set; }
-    
-    public int? EmployeeTrainingId { get; set; }
-    [ForeignKey("EmployeeTrainingId")]
-    public EmployeeTraining? Training{ get; set; }
+
+    public EmployeePosition? PositionDetails { get; set; } = new();
+    public EmployeeDocuments? Documents { get; set; } = new();
+    public EmployeeLegal? Legal { get; set; } = new();
+    public EmployeeEducation? Education { get; set; } = new();
+    public EmployeeTraining? Training{ get; set; } = new();
     
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime CreateDateTime { get; set; }
