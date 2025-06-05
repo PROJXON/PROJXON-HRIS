@@ -19,11 +19,11 @@ public class DatabaseContext : DbContext
     public virtual DbSet<UserRole> Roles { get; set; }
     public virtual DbSet<Permission> Permissions { get; set; }
     public virtual DbSet<Employee> Employees { get; set; }
-    public DbSet<EmployeePosition> EmployeePositions { get; set; }
-    public DbSet<EmployeeDocuments> EmployeeDocuments { get; set; }
-    public DbSet<EmployeeLegal> EmployeeLegals { get; set; }
-    public DbSet<EmployeeEducation> EmployeeEducations { get; set; }
-    public DbSet<EmployeeTraining> EmployeeTrainings { get; set; }
+    public virtual DbSet<EmployeePosition> EmployeePositions { get; set; }
+    public virtual DbSet<EmployeeDocuments> EmployeeDocuments { get; set; }
+    public virtual DbSet<EmployeeLegal> EmployeeLegals { get; set; }
+    public virtual DbSet<EmployeeEducation> EmployeeEducations { get; set; }
+    public virtual DbSet<EmployeeTraining> EmployeeTrainings { get; set; }
     public virtual DbSet<Address> Addresses { get; set; }
     public virtual DbSet<Department> Departments { get; set; }
     public virtual DbSet<ProjectTeam> ProjectTeams { get; set; }
