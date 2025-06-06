@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Shared.Enums.UserManagement;
 
 namespace Shared.EmployeeManagement.Models;
 
@@ -10,7 +9,6 @@ public class EmployeePosition
     public int Id { get; set; }
     
     public required Employee Employee { get; set; }
-
     
     [StringLength(50)]
     public string? PositionName { get; set; }
