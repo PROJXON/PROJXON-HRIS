@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using CloudSync.Modules.EmployeeManagement.Models;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using Shared.EmployeeManagement.Models;
 
 #nullable disable
 
@@ -125,11 +125,6 @@ namespace CloudSync.Migrations
                     contact_info_personal_email = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
                     contact_info_emergency_contact_name = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
                     contact_info_emergency_contact_phone = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true),
-                    employee_details_id = table.Column<int>(type: "integer", nullable: true),
-                    employee_documents_id = table.Column<int>(type: "integer", nullable: true),
-                    employee_legal_id = table.Column<int>(type: "integer", nullable: true),
-                    employee_education_id = table.Column<int>(type: "integer", nullable: true),
-                    employee_training_id = table.Column<int>(type: "integer", nullable: true),
                     create_date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     update_date_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

@@ -2,19 +2,19 @@
 using System;
 using System.Collections.Generic;
 using CloudSync.Infrastructure;
-using CloudSync.Modules.EmployeeManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using Shared.EmployeeManagement.Models;
 
 #nullable disable
 
 namespace CloudSync.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250606194102_InitialCreate")]
+    [Migration("20250606200725_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -22,7 +22,7 @@ namespace CloudSync.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -170,557 +170,6 @@ namespace CloudSync.Migrations
                         .HasDatabaseName("ix_candidate_interviewer_id");
 
                     b.ToTable("candidate", (string)null);
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AddressLine1")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("character varying(80)")
-                        .HasColumnName("address_line1");
-
-                    b.Property<string>("AddressLine2")
-                        .HasMaxLength(80)
-                        .HasColumnType("character varying(80)")
-                        .HasColumnName("address_line2");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("city");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("country");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("character varying(15)")
-                        .HasColumnName("postal_code");
-
-                    b.Property<string>("StateOrProvince")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("state_or_province");
-
-                    b.Property<string>("TimeZone")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("time_zone");
-
-                    b.HasKey("Id")
-                        .HasName("pk_addresses");
-
-                    b.ToTable("addresses", (string)null);
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Department", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("name");
-
-                    b.Property<int?>("ParentDepartmentId")
-                        .HasColumnType("integer")
-                        .HasColumnName("parent_department_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_departments");
-
-                    b.HasIndex("ParentDepartmentId")
-                        .HasDatabaseName("ix_departments_parent_department_id");
-
-                    b.ToTable("departments", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Business"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Executive",
-                            ParentDepartmentId = 1
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Consulting",
-                            ParentDepartmentId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Human Resources"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Onboarding",
-                            ParentDepartmentId = 2
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Offboarding",
-                            ParentDepartmentId = 2
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "Recruiting",
-                            ParentDepartmentId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Information Technology"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "AI",
-                            ParentDepartmentId = 3
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Name = "Applications Development",
-                            ParentDepartmentId = 3
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Name = "Cybersecurity",
-                            ParentDepartmentId = 3
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Name = "SEO",
-                            ParentDepartmentId = 3
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Name = "Web Development",
-                            ParentDepartmentId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Marketing"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Name = "Market Research",
-                            ParentDepartmentId = 4
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Name = "Social Media",
-                            ParentDepartmentId = 4
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Name = "Copywriting",
-                            ParentDepartmentId = 4
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Name = "Graphic Design",
-                            ParentDepartmentId = 4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Operations"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Name = "Finance",
-                            ParentDepartmentId = 5
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Name = "Legal",
-                            ParentDepartmentId = 5
-                        });
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Employee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("create_date_time");
-
-                    b.Property<int?>("EmployeeDetailsId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employee_details_id");
-
-                    b.Property<int?>("EmployeeDocumentsId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employee_documents_id");
-
-                    b.Property<int?>("EmployeeEducationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employee_education_id");
-
-                    b.Property<int?>("EmployeeLegalId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employee_legal_id");
-
-                    b.Property<int?>("EmployeeTrainingId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employee_training_id");
-
-                    b.Property<DateTime>("UpdateDateTime")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("update_date_time");
-
-                    b.HasKey("Id")
-                        .HasName("pk_employees");
-
-                    b.ToTable("employees", (string)null);
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeDocuments", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    b.Property<string>("CoverLetterUrl")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("cover_letter_url");
-
-                    b.Property<string>("GitHubUrl")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("git_hub_url");
-
-                    b.Property<string>("LinkedInUrl")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("linked_in_url");
-
-                    b.Property<string>("PersonalWebsiteUrl")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("personal_website_url");
-
-                    b.Property<string>("ProfilePictureUrl")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("profile_picture_url");
-
-                    b.Property<string>("ResumeUrl")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("resume_url");
-
-                    b.HasKey("Id")
-                        .HasName("pk_employee_documents");
-
-                    b.ToTable("employee_documents", (string)null);
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeEducation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    b.Property<List<string>>("DegreesEarned")
-                        .HasColumnType("jsonb")
-                        .HasColumnName("degrees_earned");
-
-                    b.Property<string>("EducationLevel")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("education_level");
-
-                    b.Property<List<string>>("UniversitiesAttended")
-                        .HasColumnType("jsonb")
-                        .HasColumnName("universities_attended");
-
-                    b.HasKey("Id")
-                        .HasName("pk_employee_educations");
-
-                    b.ToTable("employee_educations", (string)null);
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeLegal", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    b.Property<string>("IdCountry")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("id_country");
-
-                    b.Property<string>("IdNumber")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("id_number");
-
-                    b.Property<string>("IdState")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("id_state");
-
-                    b.Property<string>("IdType")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("id_type");
-
-                    b.Property<DateTime?>("VisaExpirationDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("visa_expiration_date");
-
-                    b.Property<string>("VisaNumber")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("visa_number");
-
-                    b.Property<string>("WorkAuthorizationDocumentUrl")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("work_authorization_document_url");
-
-                    b.Property<string>("WorkAuthorizationType")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("work_authorization_type");
-
-                    b.Property<DateTime?>("WorkExpirationDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("work_expiration_date");
-
-                    b.Property<string>("WorkPermitNumber")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("work_permit_number");
-
-                    b.HasKey("Id")
-                        .HasName("pk_employee_legals");
-
-                    b.ToTable("employee_legals", (string)null);
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeePosition", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    b.Property<int?>("CoachId")
-                        .HasColumnType("integer")
-                        .HasColumnName("coach_id");
-
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("integer")
-                        .HasColumnName("department_id");
-
-                    b.Property<string>("EmploymentStatus")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("employment_status");
-
-                    b.Property<string>("EmploymentType")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("employment_type");
-
-                    b.Property<string>("HierarchyLevel")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("hierarchy_level");
-
-                    b.Property<int?>("ManagerId")
-                        .HasColumnType("integer")
-                        .HasColumnName("manager_id");
-
-                    b.Property<DateTime?>("OffboardingDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("offboarding_date");
-
-                    b.Property<DateTime?>("OnboardingDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("onboarding_date");
-
-                    b.Property<int?>("PositionId")
-                        .HasColumnType("integer")
-                        .HasColumnName("position_id");
-
-                    b.Property<string>("PositionName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("position_name");
-
-                    b.Property<string>("RecruitingSource")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("recruiting_source");
-
-                    b.Property<int?>("SubDepartmentId")
-                        .HasColumnType("integer")
-                        .HasColumnName("sub_department_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_employee_positions");
-
-                    b.HasIndex("CoachId")
-                        .HasDatabaseName("ix_employee_positions_coach_id");
-
-                    b.HasIndex("DepartmentId")
-                        .HasDatabaseName("ix_employee_positions_department_id");
-
-                    b.HasIndex("ManagerId")
-                        .HasDatabaseName("ix_employee_positions_manager_id");
-
-                    b.HasIndex("PositionId")
-                        .HasDatabaseName("ix_employee_positions_position_id");
-
-                    b.HasIndex("SubDepartmentId")
-                        .HasDatabaseName("ix_employee_positions_sub_department_id");
-
-                    b.ToTable("employee_positions", (string)null);
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeTraining", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    b.Property<List<string>>("CanvasCertificates")
-                        .HasColumnType("jsonb")
-                        .HasColumnName("canvas_certificates");
-
-                    b.Property<List<string>>("CanvasCoursesCompleted")
-                        .HasColumnType("jsonb")
-                        .HasColumnName("canvas_courses_completed");
-
-                    b.Property<string>("NewCompany")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)")
-                        .HasColumnName("new_company");
-
-                    b.Property<List<string>>("OnboardingChecklist")
-                        .HasColumnType("jsonb")
-                        .HasColumnName("onboarding_checklist");
-
-                    b.HasKey("Id")
-                        .HasName("pk_employee_trainings");
-
-                    b.ToTable("employee_trainings", (string)null);
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.ProjectTeam", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)")
-                        .HasColumnName("description");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_project_teams");
-
-                    b.ToTable("project_teams", (string)null);
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.TeamMember", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("employee_id");
-
-                    b.Property<int>("ProjectTeamId")
-                        .HasColumnType("integer")
-                        .HasColumnName("project_team_id");
-
-                    b.Property<string>("RoleInTeam")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("role_in_team");
-
-                    b.HasKey("Id")
-                        .HasName("pk_team_members");
-
-                    b.HasIndex("EmployeeId")
-                        .HasDatabaseName("ix_team_members_employee_id");
-
-                    b.HasIndex("ProjectTeamId")
-                        .HasDatabaseName("ix_team_members_project_team_id");
-
-                    b.ToTable("team_members", (string)null);
                 });
 
             modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.InvitedUser", b =>
@@ -890,9 +339,540 @@ namespace CloudSync.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AddressLine1")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("address_line1");
+
+                    b.Property<string>("AddressLine2")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("address_line2");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("city");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("country");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)")
+                        .HasColumnName("postal_code");
+
+                    b.Property<string>("StateOrProvince")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("state_or_province");
+
+                    b.Property<string>("TimeZone")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("time_zone");
+
+                    b.HasKey("Id")
+                        .HasName("pk_addresses");
+
+                    b.ToTable("addresses", (string)null);
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("name");
+
+                    b.Property<int?>("ParentDepartmentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("parent_department_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_departments");
+
+                    b.HasIndex("ParentDepartmentId")
+                        .HasDatabaseName("ix_departments_parent_department_id");
+
+                    b.ToTable("departments", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Business"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Executive",
+                            ParentDepartmentId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Consulting",
+                            ParentDepartmentId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Human Resources"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Onboarding",
+                            ParentDepartmentId = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Offboarding",
+                            ParentDepartmentId = 2
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Recruiting",
+                            ParentDepartmentId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Information Technology"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "AI",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "Applications Development",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Name = "Cybersecurity",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Name = "SEO",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Name = "Web Development",
+                            ParentDepartmentId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Marketing"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Name = "Market Research",
+                            ParentDepartmentId = 4
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Name = "Social Media",
+                            ParentDepartmentId = 4
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Name = "Copywriting",
+                            ParentDepartmentId = 4
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Name = "Graphic Design",
+                            ParentDepartmentId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Operations"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Name = "Finance",
+                            ParentDepartmentId = 5
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Name = "Legal",
+                            ParentDepartmentId = 5
+                        });
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.Employee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("create_date_time");
+
+                    b.Property<DateTime>("UpdateDateTime")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("update_date_time");
+
+                    b.HasKey("Id")
+                        .HasName("pk_employees");
+
+                    b.ToTable("employees", (string)null);
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeeDocuments", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CoverLetterUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("cover_letter_url");
+
+                    b.Property<string>("GitHubUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("git_hub_url");
+
+                    b.Property<string>("LinkedInUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("linked_in_url");
+
+                    b.Property<string>("PersonalWebsiteUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("personal_website_url");
+
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("profile_picture_url");
+
+                    b.Property<string>("ResumeUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("resume_url");
+
+                    b.HasKey("Id")
+                        .HasName("pk_employee_documents");
+
+                    b.ToTable("employee_documents", (string)null);
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeeEducation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<List<string>>("DegreesEarned")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("degrees_earned");
+
+                    b.Property<string>("EducationLevel")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("education_level");
+
+                    b.Property<List<string>>("UniversitiesAttended")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("universities_attended");
+
+                    b.HasKey("Id")
+                        .HasName("pk_employee_educations");
+
+                    b.ToTable("employee_educations", (string)null);
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeeLegal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<string>("IdCountry")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("id_country");
+
+                    b.Property<string>("IdNumber")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("id_number");
+
+                    b.Property<string>("IdState")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("id_state");
+
+                    b.Property<string>("IdType")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("id_type");
+
+                    b.Property<DateTime?>("VisaExpirationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("visa_expiration_date");
+
+                    b.Property<string>("VisaNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("visa_number");
+
+                    b.Property<string>("WorkAuthorizationDocumentUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("work_authorization_document_url");
+
+                    b.Property<string>("WorkAuthorizationType")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("work_authorization_type");
+
+                    b.Property<DateTime?>("WorkExpirationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("work_expiration_date");
+
+                    b.Property<string>("WorkPermitNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("work_permit_number");
+
+                    b.HasKey("Id")
+                        .HasName("pk_employee_legals");
+
+                    b.ToTable("employee_legals", (string)null);
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeePosition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<int?>("CoachId")
+                        .HasColumnType("integer")
+                        .HasColumnName("coach_id");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("department_id");
+
+                    b.Property<string>("EmploymentStatus")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("employment_status");
+
+                    b.Property<string>("EmploymentType")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("employment_type");
+
+                    b.Property<string>("HierarchyLevel")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("hierarchy_level");
+
+                    b.Property<int?>("ManagerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("manager_id");
+
+                    b.Property<DateTime?>("OffboardingDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("offboarding_date");
+
+                    b.Property<DateTime?>("OnboardingDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("onboarding_date");
+
+                    b.Property<int?>("PositionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("position_id");
+
+                    b.Property<string>("PositionName")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("position_name");
+
+                    b.Property<string>("RecruitingSource")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("recruiting_source");
+
+                    b.Property<int?>("SubDepartmentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("sub_department_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_employee_positions");
+
+                    b.HasIndex("CoachId")
+                        .HasDatabaseName("ix_employee_positions_coach_id");
+
+                    b.HasIndex("DepartmentId")
+                        .HasDatabaseName("ix_employee_positions_department_id");
+
+                    b.HasIndex("ManagerId")
+                        .HasDatabaseName("ix_employee_positions_manager_id");
+
+                    b.HasIndex("PositionId")
+                        .HasDatabaseName("ix_employee_positions_position_id");
+
+                    b.HasIndex("SubDepartmentId")
+                        .HasDatabaseName("ix_employee_positions_sub_department_id");
+
+                    b.ToTable("employee_positions", (string)null);
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeeTraining", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<List<string>>("CanvasCertificates")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("canvas_certificates");
+
+                    b.Property<List<string>>("CanvasCoursesCompleted")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("canvas_courses_completed");
+
+                    b.Property<string>("NewCompany")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("new_company");
+
+                    b.Property<List<string>>("OnboardingChecklist")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("onboarding_checklist");
+
+                    b.HasKey("Id")
+                        .HasName("pk_employee_trainings");
+
+                    b.ToTable("employee_trainings", (string)null);
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.ProjectTeam", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_project_teams");
+
+                    b.ToTable("project_teams", (string)null);
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.TeamMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employee_id");
+
+                    b.Property<int>("ProjectTeamId")
+                        .HasColumnType("integer")
+                        .HasColumnName("project_team_id");
+
+                    b.Property<string>("RoleInTeam")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("role_in_team");
+
+                    b.HasKey("Id")
+                        .HasName("pk_team_members");
+
+                    b.HasIndex("EmployeeId")
+                        .HasDatabaseName("ix_team_members_employee_id");
+
+                    b.HasIndex("ProjectTeamId")
+                        .HasDatabaseName("ix_team_members_project_team_id");
+
+                    b.ToTable("team_members", (string)null);
+                });
+
             modelBuilder.Entity("CloudSync.Modules.CandidateManagement.Models.Candidate", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Interviewer")
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Interviewer")
                         .WithMany()
                         .HasForeignKey("InterviewerId")
                         .HasConstraintName("fk_candidate_employees_interviewer_id");
@@ -900,9 +880,42 @@ namespace CloudSync.Migrations
                     b.Navigation("Interviewer");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Department", b =>
+            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.InvitedUser", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Department", "ParentDepartment")
+                    b.HasOne("CloudSync.Modules.UserManagement.Models.User", "InvitedByEmployee")
+                        .WithMany()
+                        .HasForeignKey("InvitedByEmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_invited_users_users_invited_by_employee_id");
+
+                    b.Navigation("InvitedByEmployee");
+                });
+
+            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.User", b =>
+                {
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_users_employees_employee_id");
+
+                    b.HasOne("CloudSync.Modules.UserManagement.Models.UserRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_users_roles_role_id");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.Department", b =>
+                {
+                    b.HasOne("Shared.EmployeeManagement.Models.Department", "ParentDepartment")
                         .WithMany()
                         .HasForeignKey("ParentDepartmentId")
                         .HasConstraintName("fk_departments_departments_parent_department_id");
@@ -910,9 +923,9 @@ namespace CloudSync.Migrations
                     b.Navigation("ParentDepartment");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Employee", b =>
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.Employee", b =>
                 {
-                    b.OwnsOne("CloudSync.Modules.EmployeeManagement.Models.EmployeeBasic", "BasicInfo", b1 =>
+                    b.OwnsOne("Shared.EmployeeManagement.Models.EmployeeBasic", "BasicInfo", b1 =>
                         {
                             b1.Property<int>("EmployeeId")
                                 .HasColumnType("integer")
@@ -999,7 +1012,7 @@ namespace CloudSync.Migrations
                                 .HasConstraintName("fk_employees_employees_id");
                         });
 
-                    b.OwnsOne("CloudSync.Modules.EmployeeManagement.Models.EmployeeContactInfo", "ContactInfo", b1 =>
+                    b.OwnsOne("Shared.EmployeeManagement.Models.EmployeeContactInfo", "ContactInfo", b1 =>
                         {
                             b1.Property<int>("EmployeeId")
                                 .HasColumnType("integer")
@@ -1058,7 +1071,7 @@ namespace CloudSync.Migrations
 
                             b1.ToTable("employees");
 
-                            b1.HasOne("CloudSync.Modules.EmployeeManagement.Models.Address", "Address")
+                            b1.HasOne("Shared.EmployeeManagement.Models.Address", "Address")
                                 .WithMany()
                                 .HasForeignKey("AddressId")
                                 .HasConstraintName("fk_employees_addresses_contact_info_address_id");
@@ -1077,11 +1090,11 @@ namespace CloudSync.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeDocuments", b =>
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeeDocuments", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Employee")
                         .WithOne("Documents")
-                        .HasForeignKey("CloudSync.Modules.EmployeeManagement.Models.EmployeeDocuments", "Id")
+                        .HasForeignKey("Shared.EmployeeManagement.Models.EmployeeDocuments", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_employee_documents_employees_id");
@@ -1089,11 +1102,11 @@ namespace CloudSync.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeEducation", b =>
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeeEducation", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Employee")
                         .WithOne("Education")
-                        .HasForeignKey("CloudSync.Modules.EmployeeManagement.Models.EmployeeEducation", "Id")
+                        .HasForeignKey("Shared.EmployeeManagement.Models.EmployeeEducation", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_employee_educations_employees_id");
@@ -1101,11 +1114,11 @@ namespace CloudSync.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeLegal", b =>
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeeLegal", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Employee")
                         .WithOne("Legal")
-                        .HasForeignKey("CloudSync.Modules.EmployeeManagement.Models.EmployeeLegal", "Id")
+                        .HasForeignKey("Shared.EmployeeManagement.Models.EmployeeLegal", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_employee_legals_employees_id");
@@ -1113,36 +1126,36 @@ namespace CloudSync.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeePosition", b =>
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeePosition", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Coach")
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Coach")
                         .WithMany()
                         .HasForeignKey("CoachId")
                         .HasConstraintName("fk_employee_positions_employees_coach_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Department", "Department")
+                    b.HasOne("Shared.EmployeeManagement.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId")
                         .HasConstraintName("fk_employee_positions_departments_department_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Employee")
                         .WithOne("PositionDetails")
-                        .HasForeignKey("CloudSync.Modules.EmployeeManagement.Models.EmployeePosition", "Id")
+                        .HasForeignKey("Shared.EmployeeManagement.Models.EmployeePosition", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_employee_positions_employees_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Manager")
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Manager")
                         .WithMany()
                         .HasForeignKey("ManagerId")
                         .HasConstraintName("fk_employee_positions_employees_manager_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.EmployeePosition", "PositionDetails")
+                    b.HasOne("Shared.EmployeeManagement.Models.EmployeePosition", "PositionDetails")
                         .WithMany()
                         .HasForeignKey("PositionId")
                         .HasConstraintName("fk_employee_positions_employee_positions_position_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Department", "SubDepartment")
+                    b.HasOne("Shared.EmployeeManagement.Models.Department", "SubDepartment")
                         .WithMany()
                         .HasForeignKey("SubDepartmentId")
                         .HasConstraintName("fk_employee_positions_departments_sub_department_id");
@@ -1160,11 +1173,11 @@ namespace CloudSync.Migrations
                     b.Navigation("SubDepartment");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeTraining", b =>
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.EmployeeTraining", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Employee")
                         .WithOne("Training")
-                        .HasForeignKey("CloudSync.Modules.EmployeeManagement.Models.EmployeeTraining", "Id")
+                        .HasForeignKey("Shared.EmployeeManagement.Models.EmployeeTraining", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_employee_trainings_employees_id");
@@ -1172,16 +1185,16 @@ namespace CloudSync.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.TeamMember", b =>
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.TeamMember", b =>
                 {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                    b.HasOne("Shared.EmployeeManagement.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_team_members_employees_employee_id");
 
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.ProjectTeam", "ProjectTeam")
+                    b.HasOne("Shared.EmployeeManagement.Models.ProjectTeam", "ProjectTeam")
                         .WithMany()
                         .HasForeignKey("ProjectTeamId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1193,40 +1206,7 @@ namespace CloudSync.Migrations
                     b.Navigation("ProjectTeam");
                 });
 
-            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.InvitedUser", b =>
-                {
-                    b.HasOne("CloudSync.Modules.UserManagement.Models.User", "InvitedByEmployee")
-                        .WithMany()
-                        .HasForeignKey("InvitedByEmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_invited_users_users_invited_by_employee_id");
-
-                    b.Navigation("InvitedByEmployee");
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.UserManagement.Models.User", b =>
-                {
-                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_employees_employee_id");
-
-                    b.HasOne("CloudSync.Modules.UserManagement.Models.UserRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_users_roles_role_id");
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Employee", b =>
+            modelBuilder.Entity("Shared.EmployeeManagement.Models.Employee", b =>
                 {
                     b.Navigation("Documents");
 
