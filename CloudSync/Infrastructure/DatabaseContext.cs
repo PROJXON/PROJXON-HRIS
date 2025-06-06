@@ -87,7 +87,11 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Address>()
             .HasKey(u => u.Id);
 
+        modelBuilder.Entity<EmployeeDocuments>().HasKey(u => u.Id);
+        modelBuilder.Entity<EmployeeEducation>().HasKey(u => u.Id);
+        modelBuilder.Entity<EmployeeLegal>().HasKey(u => u.Id);
         modelBuilder.Entity<EmployeePosition>().HasKey(u => u.Id);
+        modelBuilder.Entity<EmployeeTraining>().HasKey(u => u.Id);
         
         modelBuilder.Entity<Department>()
             .HasKey(u => u.Id);
