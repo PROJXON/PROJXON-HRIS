@@ -8,6 +8,8 @@ public class EmployeeTraining
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
+    public required Employee Employee { get; set; }
+    
     [Column(TypeName = "jsonb")]
     public List<string>? CanvasCoursesCompleted { get; set; }
     

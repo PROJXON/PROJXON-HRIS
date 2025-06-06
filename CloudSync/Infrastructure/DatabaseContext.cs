@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using CloudSync.Modules.EmployeeManagement.Models;
 using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.CandidateManagement.Models;
-using Shared.EmployeeManagement.Models;
 
 namespace CloudSync.Infrastructure;
 
@@ -19,11 +19,11 @@ public class DatabaseContext : DbContext
     public virtual DbSet<UserRole> Roles { get; set; }
     public virtual DbSet<Permission> Permissions { get; set; }
     public virtual DbSet<Employee> Employees { get; set; }
-    public virtual DbSet<EmployeePosition> EmployeePositions { get; set; }
-    public virtual DbSet<EmployeeDocuments> EmployeeDocuments { get; set; }
-    public virtual DbSet<EmployeeLegal> EmployeeLegals { get; set; }
-    public virtual DbSet<EmployeeEducation> EmployeeEducations { get; set; }
-    public virtual DbSet<EmployeeTraining> EmployeeTrainings { get; set; }
+    public DbSet<EmployeePosition> EmployeePositions { get; set; }
+    public DbSet<EmployeeDocuments> EmployeeDocuments { get; set; }
+    public DbSet<EmployeeLegal> EmployeeLegals { get; set; }
+    public DbSet<EmployeeEducation> EmployeeEducations { get; set; }
+    public DbSet<EmployeeTraining> EmployeeTrainings { get; set; }
     public virtual DbSet<Address> Addresses { get; set; }
     public virtual DbSet<Department> Departments { get; set; }
     public virtual DbSet<ProjectTeam> ProjectTeams { get; set; }
@@ -60,23 +60,28 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Employee>().OwnsOne(e => e.ContactInfo);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.PositionDetails)
-            .WithOne()
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeePosition>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Documents)
-            .WithOne()
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeeDocuments>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Legal)
-            .WithOne()
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeeLegal>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Education)
-            .WithOne()
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeeEducation>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Training)
-            .WithOne()
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeeTraining>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Address>()
