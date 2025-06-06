@@ -60,28 +60,28 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Employee>().OwnsOne(e => e.ContactInfo);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.PositionDetails)
-            .WithOne()
-            .HasForeignKey<Employee>(e => e.EmployeeDetailsId)
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeePosition>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Documents)
-            .WithOne()
-            .HasForeignKey<Employee>(e => e.EmployeeDocumentsId)
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeeDocuments>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Legal)
-            .WithOne()
-            .HasForeignKey<Employee>(e => e.EmployeeLegalId)
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeeLegal>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Education)
-            .WithOne()
-            .HasForeignKey<Employee>(e => e.EmployeeEducationId)
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeeEducation>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Training)
-            .WithOne()
-            .HasForeignKey<Employee>(e => e.EmployeeTrainingId)
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeeTraining>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Address>()

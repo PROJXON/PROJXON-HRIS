@@ -9,6 +9,9 @@ public class EmployeePosition
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
+    public required Employee Employee { get; set; }
+
+    
     [StringLength(50)]
     public string? PositionName { get; set; }
     
