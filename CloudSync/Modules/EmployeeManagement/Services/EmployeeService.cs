@@ -67,7 +67,12 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
 
     public async Task UpdateAsync(int id, UpdateEmployeeRequest request)
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(request);
+        
+
+        var updatedEmployee = mapper.Map<Employee>(request);
+
+        await employeeRepository.UpdateAsync(id, updatedEmployee);
     }
 
     public async Task DeleteAsync(int id)
