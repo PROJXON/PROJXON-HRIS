@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
 using CloudSync.Modules.EmployeeManagement.Services.Interfaces;
-using Shared.EmployeeManagement.Dtos;
 using Shared.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
@@ -13,11 +12,9 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
     public async Task<IEnumerable<EmployeeResponse>> GetAllAsync()
     {
         var employeeList = await employeeRepository.GetAllAsync();
-        List<EmployeeDto> employeeDtoList = [];
         List<EmployeeResponse> employeeResponseList = [];
 
-        employeeDtoList.AddRange(employeeList.Select(mapper.Map<EmployeeDto>));
-        employeeResponseList.AddRange(employeeDtoList.Select(mapper.Map<EmployeeResponse>));
+        employeeResponseList.AddRange(employeeList.Select(mapper.Map<EmployeeResponse>));
 
         return employeeResponseList;
     }
@@ -36,7 +33,7 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
     {
         var employee = await employeeRepository.GetByIdAsync(id);
         
-        var employeeDto = mapper.Map<EmployeeDto>(employee);
+        var employeeDto = mapper.Map<EmployeeResponse>(employee);
         return mapper.Map<EmployeeResponse>(employeeDto);
     }
 
@@ -54,7 +51,7 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
             CreateDateTime = DateTime.UtcNow,
             UpdateDateTime = DateTime.UtcNow
         };
-
+        
         employee.PositionDetails.Employee = employee;
         employee.Documents.Employee = employee;
         employee.Legal.Employee = employee;
