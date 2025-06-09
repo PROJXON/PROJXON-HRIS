@@ -62,8 +62,7 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
         
         var createdEmployee = await employeeRepository.CreateAsync(employee);
 
-        var employeeResponse = mapper.Map<EmployeeResponse>(createdEmployee);
-        return employeeResponse;
+        return mapper.Map<EmployeeResponse>(createdEmployee);
     }
 
     public async Task UpdateAsync(int id, UpdateEmployeeRequest request)
