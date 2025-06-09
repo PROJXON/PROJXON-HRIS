@@ -2,7 +2,6 @@
 
 public class EmployeeLegalResponse
 {
-    public int Id { get; set; }
     public string? IdNumber { get; set; }
     public string? IdType { get; set; }
     public string? IdCountry { get; set; }

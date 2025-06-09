@@ -4,7 +4,6 @@ namespace Shared.EmployeeManagement.Responses;
 
 public class EmployeePositionResponse
 {
-    public int Id { get; set; }
     public string? PositionName { get; set; }
     public int? DepartmentId { get; set; }
     public Department? Department { get; set; }

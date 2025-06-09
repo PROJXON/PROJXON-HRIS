@@ -2,7 +2,6 @@
 
 public class EmployeeDocumentsResponse
 {
-    public int Id { get; set; }
     public string? ProfilePictureUrl { get; set; }
     public string? ResumeUrl { get; set; }
     public string? CoverLetterUrl { get; set; }
