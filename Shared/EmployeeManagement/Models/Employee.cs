@@ -17,9 +17,6 @@ public class Employee
     public EmployeeEducation? Education { get; set; }
     public EmployeeTraining? Training{ get; set; }
     
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime CreateDateTime { get; set; }
-    
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime UpdateDateTime { get; set; }
 }
