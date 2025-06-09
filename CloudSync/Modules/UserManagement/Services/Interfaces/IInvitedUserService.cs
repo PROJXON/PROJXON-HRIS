@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
 
