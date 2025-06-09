@@ -2,6 +2,7 @@
 using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
 using CloudSync.Modules.EmployeeManagement.Services.Interfaces;
 using Shared.EmployeeManagement.Dtos;
+using Shared.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
 
@@ -41,9 +42,30 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
 
     public async Task<EmployeeResponse> CreateAsync(CreateEmployeeRequest request)
     {
-        var newEmployee = await employeeRepository.CreateAsync(request);
+        var employee = new Employee
+        {
+            BasicInfo = new EmployeeBasic(),
+            ContactInfo = new EmployeeContactInfo(),
+            Documents = new EmployeeDocuments(),
+            Education = new EmployeeEducation(),
+            Legal = new EmployeeLegal(),
+            PositionDetails = new EmployeePosition(),
+            Training = new EmployeeTraining(),
+            CreateDateTime = DateTime.UtcNow,
+            UpdateDateTime = DateTime.UtcNow
+        };
 
-        var employeeResponse = mapper.Map<EmployeeResponse>(newEmployee);
+        employee.PositionDetails.Employee = employee;
+        employee.Documents.Employee = employee;
+        employee.Legal.Employee = employee;
+        employee.Education.Employee = employee;
+        employee.Training.Employee = employee;
+        employee.BasicInfo.FirstName = request.FirstName;
+        employee.BasicInfo.LastName = request.LastName;
+        
+        var createdEmployee = await employeeRepository.CreateAsync(employee);
+
+        var employeeResponse = mapper.Map<EmployeeResponse>(createdEmployee);
         return employeeResponse;
     }
 
