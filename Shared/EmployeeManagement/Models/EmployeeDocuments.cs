@@ -8,7 +8,7 @@ public class EmployeeDocuments
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
-    public Employee Employee { get; set; }
+    public Employee? Employee { get; set; }
     
     [Url]
     [StringLength(200)]

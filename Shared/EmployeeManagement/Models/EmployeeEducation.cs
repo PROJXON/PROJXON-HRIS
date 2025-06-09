@@ -8,7 +8,7 @@ public class EmployeeEducation
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
-    public Employee Employee { get; set; }
+    public Employee? Employee { get; set; }
     
     [StringLength(20)]
     public string? EducationLevel { get; set; }

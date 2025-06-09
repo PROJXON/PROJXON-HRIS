@@ -8,7 +8,7 @@ public class EmployeeLegal
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     
-    public Employee Employee { get; set; }
+    public Employee? Employee { get; set; }
     
     [StringLength(40)]
     public string? IdNumber { get; set; }
