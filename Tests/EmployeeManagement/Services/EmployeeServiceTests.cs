@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using CloudSync.Modules.EmployeeManagement.Mappings;
-using CloudSync.Modules.EmployeeManagement.Models;
 using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
 using CloudSync.Modules.EmployeeManagement.Services;
 using Moq;
+using Shared.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
 
@@ -30,15 +30,18 @@ public class EmployeeServiceTests
     [Fact]
     public async Task GetAllAsync_ShouldReturnMappedEmployees()
     {
+        var now = DateTime.UtcNow;
         // Arrange
         var employees = new List<Employee>
         {
+            new() { Id = 1, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocuments(), Education = new EmployeeEducation(), Legal = new EmployeeLegal(), PositionDetails = new EmployeePosition(), Training = new EmployeeTraining(), UpdateDateTime = now },
+            new() { Id = 2, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocuments(), Education = new EmployeeEducation(), Legal = new EmployeeLegal(), PositionDetails = new EmployeePosition(), Training = new EmployeeTraining(), UpdateDateTime = now }
         };
 
         var expectedResponses = new List<EmployeeResponse>
         {
-            new() { Id = 1, FirstName = "John", LastName = "Doe" },
-            new() { Id = 2, FirstName = "Jane", LastName = "Smith" }
+            new() { Id = 1, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocuments(), Education = new EmployeeEducation(), Legal = new EmployeeLegal(), PositionDetails = new EmployeePosition(), Training = new EmployeeTraining(), UpdateDateTime = now },
+            new() { Id = 2, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocuments(), Education = new EmployeeEducation(), Legal = new EmployeeLegal(), PositionDetails = new EmployeePosition(), Training = new EmployeeTraining(), UpdateDateTime = now }
         };
 
         _mockRepository.Setup(repo => repo.GetAllAsync())
@@ -49,7 +52,7 @@ public class EmployeeServiceTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(2, result.Count());
+        Assert.Equal(employees.Count, result.Count());
         Assert.Collection(result,
             item => Assert.Equal(1, item.Id),
             item => Assert.Equal(2, item.Id));
@@ -58,10 +61,11 @@ public class EmployeeServiceTests
     [Fact]
     public async Task GetByIdAsync_ShouldReturnMappedEmployee()
     {
+        var now = DateTime.UtcNow;
         // Arrange
-        var expectedResponse = new EmployeeResponse { Id = 1, FirstName = "John", LastName = "Doe" };
+        var expectedResponse = new EmployeeResponse { Id = 1, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocuments(), Education = new EmployeeEducation(), Legal = new EmployeeLegal(), PositionDetails = new EmployeePosition(), Training = new EmployeeTraining(), UpdateDateTime = DateTime.UtcNow };
 
-        _mockRepository.Setup(repo => repo.GetByIdAsync(1));
+        _mockRepository.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(new Employee { Id = 1, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocuments(), Education = new EmployeeEducation(), Legal = new EmployeeLegal(), PositionDetails = new EmployeePosition(), Training = new EmployeeTraining(), UpdateDateTime = DateTime.UtcNow });
 
         // Act
         var result = await _employeeService.GetByIdAsync(1);
@@ -69,8 +73,8 @@ public class EmployeeServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal(1, result.Id);
-        Assert.Equal("John", result.FirstName);
-        Assert.Equal("Doe", result.LastName);
+        Assert.Equal(expectedResponse.CreateDateTime, result.CreateDateTime);
+        Assert.Equal(expectedResponse.BasicInfo.FirstName, result.BasicInfo.FirstName);
     }
 
     [Fact]
@@ -87,18 +91,6 @@ public class EmployeeServiceTests
         // Act & Assert
         await Assert.ThrowsAsync<NotImplementedException>(() => 
             _employeeService.GetByRoleAsync("Developer"));
-    }
-
-    [Fact]
-    public async Task CreateAsync_ShouldThrowNotImplementedException()
-    {
-        // Act & Assert
-        await Assert.ThrowsAsync<NotImplementedException>(() => 
-            _employeeService.CreateAsync(new CreateEmployeeRequest
-            {
-                FirstName = "Blah",
-                LastName = "Bleh"
-            }));
     }
 
     [Fact]
