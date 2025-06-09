@@ -10,26 +10,26 @@ public class Address
     
     [Required]
     [StringLength(80)]
-    public required string AddressLine1 { get; set; }
+    public string? AddressLine1 { get; set; }
     
     [StringLength(80)]
     public string? AddressLine2 { get; set; }
     
     [Required]
     [StringLength(50)]
-    public required string Country { get; set; }
+    public string? Country { get; set; }
     
     [Required]
     [StringLength(50)]
-    public required string StateOrProvince { get; set; }
+    public string? StateOrProvince { get; set; }
     
     [Required]
     [StringLength(50)]
-    public required string City { get; set; }
+    public string? City { get; set; }
     
     [Required]
     [StringLength(15)]
-    public required string PostalCode { get; set; }
+    public string? PostalCode { get; set; }
     
     [StringLength(30)]
     public string? TimeZone { get; set; }
