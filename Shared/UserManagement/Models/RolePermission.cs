@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CloudSync.Modules.UserManagement.Models;
+namespace Shared.UserManagement.Models;
 
 public class RolePermission
 {

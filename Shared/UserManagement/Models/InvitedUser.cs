@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Shared.Enums.UserManagement;
 
-namespace CloudSync.Modules.UserManagement.Models;
+namespace Shared.UserManagement.Models;
 
 public class InvitedUser
 {
