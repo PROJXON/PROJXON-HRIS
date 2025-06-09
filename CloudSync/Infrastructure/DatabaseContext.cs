@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shared.EmployeeManagement.Models;
-using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.CandidateManagement.Models;
+using Shared.UserManagement.Models;
 
 namespace CloudSync.Infrastructure;
 
