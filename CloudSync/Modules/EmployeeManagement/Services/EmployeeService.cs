@@ -72,6 +72,6 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
 
     public async Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        await employeeRepository.DeleteAsync(id);
     }
 }
