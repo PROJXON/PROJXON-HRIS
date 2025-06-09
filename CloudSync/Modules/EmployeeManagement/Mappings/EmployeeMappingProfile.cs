@@ -15,15 +15,14 @@ public class EmployeeMappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.CreateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow))
             .ForMember(dest => dest.UpdateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow))
-            .ForMember(dest => dest.BasicInfo, opt => opt.Ignore())
-            .ForMember(dest => dest.ContactInfo, opt => opt.Ignore())
+            .ForMember(dest => dest.ContactInfo, opt => opt.MapFrom(_ => new EmployeeContactInfo()))
+            .ForPath(dest => dest.BasicInfo.LastName, opt => opt.MapFrom(u => u.LastName))
+            .ForPath(dest => dest.BasicInfo.FirstName, opt => opt.MapFrom(u => u.FirstName))
             .ForMember(dest => dest.Documents, opt => opt.Ignore())
             .ForMember(dest => dest.Education, opt => opt.Ignore())
             .ForMember(dest => dest.Legal, opt => opt.Ignore())
-            .ForMember(dest => dest.Training, opt => opt.Ignore())
             .ForMember(dest => dest.PositionDetails, opt => opt.Ignore())
-            .ForPath(dest => dest.BasicInfo.FirstName, opt => opt.MapFrom(u => u.FirstName))
-            .ForPath(dest => dest.BasicInfo.LastName, opt => opt.MapFrom(u => u.LastName));
+            .ForMember(dest => dest.Training, opt => opt.Ignore());
 
         CreateMap<UpdateEmployeeRequest, EmployeeDto>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -38,7 +37,9 @@ public class EmployeeMappingProfile : Profile
         CreateMap<EmployeeDto, EmployeeResponse>();
 
         CreateMap<Employee, ManagerOrCoachSummary>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(u => u.Id));
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(u => u.Id))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(u => u.BasicInfo.FirstName))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(u => u.BasicInfo.LastName));
         
         CreateMap<EmployeePosition, PositionSummary>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(u => u.Id))
