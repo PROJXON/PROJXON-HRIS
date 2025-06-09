@@ -53,6 +53,20 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
                 }
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> PutEmployee(int id, [FromBody] UpdateEmployeeRequest request)
+        {
+                try
+                {
+                        await employeeService.UpdateAsync(id, request);
+                        return NoContent();
+                }
+                catch (UserException e)
+                {
+                        return StatusCode(e.StatusCode, new { message = e.Message });
+                }
+        }
+
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteEmployee(int id)
         {
