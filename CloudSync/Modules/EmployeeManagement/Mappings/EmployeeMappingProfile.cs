@@ -11,21 +11,7 @@ public class EmployeeMappingProfile : Profile
 {
     public EmployeeMappingProfile()
     {
-        CreateMap<CreateEmployeeRequest, Employee>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.CreateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow))
-            .ForMember(dest => dest.UpdateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow))
-            .ForMember(dest => dest.ContactInfo, opt => opt.MapFrom(_ => new EmployeeContactInfo()))
-            .ForPath(dest => dest.BasicInfo.LastName, opt => opt.MapFrom(u => u.LastName))
-            .ForPath(dest => dest.BasicInfo.FirstName, opt => opt.MapFrom(u => u.FirstName))
-            .ForMember(dest => dest.Documents, opt => opt.Ignore())
-            .ForMember(dest => dest.Education, opt => opt.Ignore())
-            .ForMember(dest => dest.Legal, opt => opt.Ignore())
-            .ForMember(dest => dest.PositionDetails, opt => opt.Ignore())
-            .ForMember(dest => dest.Training, opt => opt.Ignore());
-
         CreateMap<UpdateEmployeeRequest, EmployeeDto>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.CreateDateTime, opt => opt.Ignore())
             .ForMember(dest => dest.UpdateDateTime, opt => opt.Ignore());
