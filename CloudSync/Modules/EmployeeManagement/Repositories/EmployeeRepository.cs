@@ -38,26 +38,40 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
 
     public async Task<Employee> GetByIdAsync(int id)
     {
-        var employee = await context.Employees
-            .Include(e => e.Documents)
-            .Include(e => e.Education)
-            .Include(e => e.Legal)
-            .Include(e => e.PositionDetails)
-            .Include(e => e.Training)
-            .FirstOrDefaultAsync(e => e.Id == id);
-        
-        if (employee == null)
-            throw new EmployeeException("Employee with the given ID does not exist", 404);
+        try
+        {
+            var employee = await context.Employees
+                .Include(e => e.Documents)
+                .Include(e => e.Education)
+                .Include(e => e.Legal)
+                .Include(e => e.PositionDetails)
+                .Include(e => e.Training)
+                .FirstOrDefaultAsync(e => e.Id == id);
+            
+            if (employee == null)
+                throw new EmployeeException("Employee with the given ID does not exist", 404);
 
-        return employee;
+            return employee;
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
     }
 
     public async Task<Employee> CreateAsync(Employee employee)
     {
-        await context.Employees.AddAsync(employee);
-        await context.SaveChangesAsync();
+        try
+        {
+            await context.Employees.AddAsync(employee);
+            await context.SaveChangesAsync();
 
-        return employee;
+            return employee;
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
     }
 
     public async Task UpdateAsync(int id, Employee employee)
