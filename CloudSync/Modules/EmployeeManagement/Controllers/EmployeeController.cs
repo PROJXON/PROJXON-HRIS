@@ -1,5 +1,6 @@
 ﻿using CloudSync.Modules.EmployeeManagement.Services.Exceptions;
 using CloudSync.Modules.EmployeeManagement.Services.Interfaces;
+using CloudSync.Modules.UserManagement.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
@@ -47,6 +48,20 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
                         return Ok(response);
                 }
                 catch (EmployeeException e)
+                {
+                        return StatusCode(e.StatusCode, new { message = e.Message });
+                }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> DeleteEmployee(int id)
+        {
+                try
+                {
+                        await employeeService.DeleteAsync(id);
+                        return NoContent();
+                }
+                catch (UserException e)
                 {
                         return StatusCode(e.StatusCode, new { message = e.Message });
                 }
