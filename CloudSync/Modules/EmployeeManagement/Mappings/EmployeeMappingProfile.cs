@@ -2,7 +2,6 @@ using AutoMapper;
 using Shared.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
-using Shared.Enums.UserManagement;
 
 namespace CloudSync.Modules.EmployeeManagement.Mappings;
 
