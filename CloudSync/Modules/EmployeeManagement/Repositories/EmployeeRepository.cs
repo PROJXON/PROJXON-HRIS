@@ -4,7 +4,6 @@ using CloudSync.Modules.EmployeeManagement.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Shared.EmployeeManagement.Dtos;
 using Shared.EmployeeManagement.Models;
-using Shared.EmployeeManagement.Requests;
 
 namespace CloudSync.Modules.EmployeeManagement.Repositories;
 
@@ -42,9 +41,12 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
         return employee;
     }
 
-    public async Task<Employee> CreateAsync(CreateEmployeeRequest request)
+    public async Task<Employee> CreateAsync(Employee employee)
     {
-        throw new NotImplementedException();
+        await context.Employees.AddAsync(employee);
+        await context.SaveChangesAsync();
+
+        return employee;
     }
 
     public async Task UpdateAsync(int id, EmployeeDto employeeDto)
