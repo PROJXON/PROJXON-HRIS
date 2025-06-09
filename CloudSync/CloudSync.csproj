@@ -38,7 +38,6 @@
 
     <ItemGroup>
       <Folder Include="Modules\CandidateManagement\Controllers\" />
-      <Folder Include="Modules\CandidateManagement\Models\" />
       <Folder Include="Modules\CandidateManagement\Repositories\" />
       <Folder Include="Modules\CandidateManagement\Services\" />
     </ItemGroup>

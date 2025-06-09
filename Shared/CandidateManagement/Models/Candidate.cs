@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Shared.EmployeeManagement.Models;
 
-namespace CloudSync.Modules.CandidateManagement.Models;
+namespace Shared.CandidateManagement.Models;
 
 public class Candidate
 {
