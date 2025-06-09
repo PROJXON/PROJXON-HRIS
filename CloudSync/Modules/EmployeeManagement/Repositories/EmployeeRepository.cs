@@ -12,7 +12,13 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
     {
         try
         {
-            return await context.Employees.ToListAsync();
+            return await context.Employees
+                .Include(e => e.Documents)
+                .Include(e => e.Education)
+                .Include(e => e.Legal)
+                .Include(e => e.PositionDetails)
+                .Include(e => e.Training)
+                .ToListAsync();
         }
         catch (Exception e)
         {
@@ -32,7 +38,13 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
 
     public async Task<Employee> GetByIdAsync(int id)
     {
-        var employee = await context.Employees.FindAsync(id);
+        var employee = await context.Employees
+            .Include(e => e.Documents)
+            .Include(e => e.Education)
+            .Include(e => e.Legal)
+            .Include(e => e.PositionDetails)
+            .Include(e => e.Training)
+            .FirstOrDefaultAsync(e => e.Id == id);
         
         if (employee == null)
             throw new EmployeeException("Employee with the given ID does not exist", 404);
