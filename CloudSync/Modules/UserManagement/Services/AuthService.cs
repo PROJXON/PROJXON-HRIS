@@ -2,7 +2,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
-using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
@@ -10,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
+using Shared.UserManagement.Models;
 
 namespace CloudSync.Modules.UserManagement.Services;
 

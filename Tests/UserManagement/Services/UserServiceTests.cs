@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using CloudSync.Modules.UserManagement.Mappings;
-using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using Moq;
-using Shared.DTOs.UserManagement;
+using Shared.UserManagement.Models;
+using Shared.UserManagement.Requests;
 
 namespace Tests.UserManagement.Services;
 
@@ -106,17 +106,18 @@ public class UserServiceTests
     {
         // Arrange
         int userId = 123;
-        var userDto = new UserDto
+        var updateUserRequest = new UpdateUserRequest
         {
             Email = "updated@example.com",
+            GoogleUserId = "blah"
             // other properties if any
         };
 
         // Act
-        await _userService.UpdateAsync(userId, userDto);
+        await _userService.UpdateAsync(userId, updateUserRequest);
 
         // Assert
-        _userRepositoryMock.Verify(r => r.UpdateAsync(userId, userDto), Times.Once);
+        _userRepositoryMock.Verify(r => r.UpdateAsync(userId, updateUserRequest), Times.Once);
     }
 
     [Fact]
@@ -124,10 +125,15 @@ public class UserServiceTests
     {
         // Arrange
         int userId = 123;
-        UserDto? userDto = null;
+        UpdateUserRequest? updateUserRequest = new UpdateUserRequest
+        {
+            Email = "updated@example.com",
+            GoogleUserId = "blah"
+            // other properties if any
+        };
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => _userService.UpdateAsync(userId, userDto!));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _userService.UpdateAsync(userId, updateUserRequest));
     }
 
     [Fact]

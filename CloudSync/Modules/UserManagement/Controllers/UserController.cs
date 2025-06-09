@@ -8,7 +8,7 @@ namespace CloudSync.Modules.UserManagement.Controllers;
 
 [Route("api/[controller]")] [ApiController] public class UserController(IUserService userService) : ControllerBase
 {
-    [HttpGet] public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+    [HttpGet] public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
     {
         try
         {

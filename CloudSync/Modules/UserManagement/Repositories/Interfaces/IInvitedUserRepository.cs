@@ -1,6 +1,5 @@
-﻿using CloudSync.Modules.UserManagement.Models;
-using Shared.DTOs.UserManagement;
-using Shared.Requests.UserManagement;
+﻿using Shared.Requests.UserManagement;
+using Shared.UserManagement.Models;
 
 namespace CloudSync.Modules.UserManagement.Repositories.Interfaces;
 

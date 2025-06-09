@@ -1,9 +1,9 @@
 ﻿using CloudSync.Infrastructure;
-using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Shared.DTOs.UserManagement;
+using Shared.UserManagement.Models;
+using Shared.UserManagement.Requests;
 
 namespace CloudSync.Modules.UserManagement.Repositories;
 
@@ -66,11 +66,11 @@ public class UserRepository(DatabaseContext context) : IUserRepository
         }
     }
 
-    public async Task UpdateAsync(int id, UserDto userDto)
+    public async Task UpdateAsync(int id, UpdateUserRequest request)
     {
         try
         {
-            if (id != userDto.Id)
+            if (id != request.Id)
             {
                 throw new UserException("The provided ID does not match the user ID.");
             }
@@ -79,8 +79,8 @@ public class UserRepository(DatabaseContext context) : IUserRepository
             if (existingUser == null)
                 throw new UserException("User with the given ID does not exist.", 404);
 
-            existingUser.Email = userDto.Email;
-            existingUser.UserSettings = userDto.UserSettings;
+            existingUser.Email = request.Email;
+            existingUser.UserSettings = request.UserSettings;
                 
             await context.SaveChangesAsync();
         }

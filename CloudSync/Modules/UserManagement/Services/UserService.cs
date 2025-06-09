@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
-using Shared.DTOs.UserManagement;
 using Shared.Responses.UserManagement;
+using Shared.UserManagement.Requests;
 
 namespace CloudSync.Modules.UserManagement.Services;
 
@@ -24,11 +24,11 @@ public class UserService(IUserRepository userRepository, IMapper mapper) : IUser
         return mapper.Map<UserResponse>(user);
     }
 
-    public async Task UpdateAsync(int id, UserDto userDto)
+    public async Task UpdateAsync(int id, UpdateUserRequest request)
     {
-        ArgumentNullException.ThrowIfNull(userDto);
+        ArgumentNullException.ThrowIfNull(request);
         
-        await userRepository.UpdateAsync(id, userDto);
+        await userRepository.UpdateAsync(id, request);
     }
 
     public async Task DeleteAsync(int id)
