@@ -7,10 +7,6 @@ namespace Shared.EmployeeManagement.Models;
 [Owned]
 public class EmployeeContactInfo
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-    
-    
     [Phone]
     [StringLength(20)]
     public string? Phone { get; set; }

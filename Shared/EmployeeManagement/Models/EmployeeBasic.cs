@@ -5,9 +5,6 @@ namespace Shared.EmployeeManagement.Models;
 
 public class EmployeeBasic
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-    
     [Required]
     [StringLength(40)]
     public string? FirstName { get; set; }
