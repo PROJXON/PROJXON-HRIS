@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CloudSync.Modules.UserManagement.Mappings;
-using CloudSync.Modules.UserManagement.Models;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
@@ -8,6 +7,7 @@ using Moq;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
+using Shared.UserManagement.Models;
 
 namespace Tests.UserManagement.Services;
 
