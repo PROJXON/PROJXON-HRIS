@@ -1,6 +1,7 @@
 ﻿using CloudSync.Modules.EmployeeManagement.Services.Exceptions;
 using CloudSync.Modules.EmployeeManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
 
 namespace CloudSync.Modules.EmployeeManagement.Controllers;
@@ -34,6 +35,20 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
                 catch (EmployeeException e)
                 {
                         return StatusCode(e.StatusCode, e.Message);
+                }
+        }
+
+        [HttpPost("create")]
+        public async Task<ActionResult<EmployeeResponse>> CreateEmployee([FromBody] CreateEmployeeRequest request)
+        {
+                try
+                {
+                        var response = await employeeService.CreateAsync(request);
+                        return Ok(response);
+                }
+                catch (EmployeeException e)
+                {
+                        return StatusCode(e.StatusCode, new { message = e.Message });
                 }
         }
 }
