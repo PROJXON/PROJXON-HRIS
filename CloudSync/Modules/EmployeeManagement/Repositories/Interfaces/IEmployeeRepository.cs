@@ -10,7 +10,7 @@ public interface IEmployeeRepository
     Task<IEnumerable<Employee>> GetByDepartmentAsync(string department);
     Task<IEnumerable<Employee>> GetByRoleAsync(string role);
     Task<Employee> GetByIdAsync(int id);
-    Task<Employee> CreateAsync(CreateEmployeeRequest request);
+    Task<Employee> CreateAsync(Employee employee);
     Task UpdateAsync(int id, EmployeeDto employeeDto);
     Task DeleteAsync(int id);
 }
