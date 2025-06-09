@@ -551,12 +551,10 @@ namespace CloudSync.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreateDateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("create_date_time");
 
                     b.Property<DateTime>("UpdateDateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("update_date_time");
 
@@ -963,13 +961,6 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_gender");
 
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasColumnName("basic_info_id");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
                             b1.Property<string>("LastName")
                                 .HasMaxLength(40)
                                 .HasColumnType("character varying(40)")
@@ -1028,13 +1019,6 @@ namespace CloudSync.Migrations
                                 .HasMaxLength(15)
                                 .HasColumnType("character varying(15)")
                                 .HasColumnName("contact_info_emergency_contact_phone");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasColumnName("contact_info_id");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
 
                             b1.Property<string>("InternationalPhone")
                                 .HasMaxLength(30)

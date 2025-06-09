@@ -102,7 +102,6 @@ namespace CloudSync.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    basic_info_id = table.Column<int>(type: "integer", nullable: false),
                     basic_info_first_name = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     basic_info_last_name = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
                     basic_info_nationality = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
@@ -116,7 +115,6 @@ namespace CloudSync.Migrations
                     basic_info_preferred_pronouns = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
                     basic_info_preferred_name = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
                     basic_info_nick_name = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
-                    contact_info_id = table.Column<int>(type: "integer", nullable: false),
                     contact_info_phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     contact_info_international_phone = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
                     contact_info_international_phone_type = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: true),
