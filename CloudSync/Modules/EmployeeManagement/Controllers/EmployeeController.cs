@@ -38,7 +38,7 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
                 }
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<ActionResult<EmployeeResponse>> CreateEmployee([FromBody] CreateEmployeeRequest request)
         {
                 try
