@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Shared.Responses.UserManagement;
+using Shared.UserManagement.Requests;
 
 namespace CloudSync.Modules.UserManagement.Controllers;
 
@@ -33,11 +34,11 @@ namespace CloudSync.Modules.UserManagement.Controllers;
         }
     }
     
-    [HttpPut("{id:int}")] public async Task<ActionResult> PutUser(int id, [FromBody] UserDto userDto)
+    [HttpPut("{id:int}")] public async Task<ActionResult> PutUser(int id, [FromBody] UpdateUserRequest request)
     {
         try
         {
-            await userService.UpdateAsync(id, userDto);
+            await userService.UpdateAsync(id, request);
             return NoContent();
         }
         catch (UserException e)
