@@ -81,6 +81,20 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
 
     public async Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var employee = await context.Employees.FindAsync(id);
+            if (employee == null)
+            {
+                throw new EmployeeException("Employee with the given ID doesn't not exist", 404);
+            }
+
+            context.Employees.Remove(employee);
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
     }
 }
