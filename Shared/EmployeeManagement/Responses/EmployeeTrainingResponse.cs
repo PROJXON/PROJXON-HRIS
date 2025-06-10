@@ -1,9 +1,7 @@
-﻿namespace Shared.EmployeeManagement.Responses;
+﻿using Shared.EmployeeManagement.BaseDtos;
 
-public class EmployeeTrainingResponse
+namespace Shared.EmployeeManagement.Responses;
+
+public class EmployeeTrainingResponse : EmployeeTrainingBase
 {
-    public List<string>? CanvasCoursesCompleted { get; set; }
-    public List<string>? CanvasCertificates { get; set; }
-    public string? NewCompany { get; set; }
-    public List<string>? OnboardingChecklist { get; set; }
 }
