@@ -76,7 +76,31 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
 
     public async Task UpdateAsync(int id, Employee employee)
     {
-        throw new NotImplementedException();
+        try
+        {
+            if (id != employee.Id)
+            {
+                throw new EmployeeException("The provided ID does not match the employee ID.");
+            }
+
+            var existingEmployee = await context.Employees
+                .Include(e => e.Documents)
+                .Include(e => e.Education)
+                .Include(e => e.Legal)
+                .Include(e => e.PositionDetails)
+                .Include(e => e.Training)
+                .FirstOrDefaultAsync(e => e.Id == id);
+            if (existingEmployee == null)
+                throw new EmployeeException("Employee with the givenID does not exist.", 404);
+
+            existingEmployee.UpdateDateTime = DateTime.UtcNow;
+
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
     }
 
     public async Task DeleteAsync(int id)
