@@ -91,7 +91,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (existingEmployee == null)
-                throw new EmployeeException("Employee with the givenID does not exist.", 404);
+                throw new EmployeeException("Employee with the given ID does not exist.", 404);
 
             existingEmployee.UpdateDateTime = DateTime.UtcNow;
 
