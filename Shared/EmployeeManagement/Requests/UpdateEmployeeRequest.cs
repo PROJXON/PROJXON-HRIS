@@ -4,12 +4,12 @@ namespace Shared.EmployeeManagement.Requests;
 
 public class UpdateEmployeeRequest
 {
-    public EmployeeBasic BasicInfo { get; set; } = new();
-    public EmployeeContactInfo ContactInfo { get; set; } = new();
+    public EmployeeBasic? BasicInfo { get; set; }
+    public EmployeeContactInfo? ContactInfo { get; set; }
 
-    public EmployeePosition? PositionDetails { get; set; } = new();
-    public EmployeeDocuments? Documents { get; set; } = new();
-    public EmployeeLegal? Legal { get; set; } = new();
-    public EmployeeEducation? Education { get; set; } = new();
-    public EmployeeTraining? Training{ get; set; } = new();
+    public EmployeePositionRequest? PositionDetails { get; set; }
+    public EmployeeDocumentsRequest? Documents { get; set; }
+    public EmployeeLegalRequest? Legal { get; set; }
+    public EmployeeEducationRequest? Education { get; set; }
+    public EmployeeTrainingRequest? Training{ get; set; }
 }
