@@ -1,11 +1,8 @@
-﻿namespace Shared.EmployeeManagement.Responses;
+﻿using Shared.EmployeeManagement.BaseDtos;
 
-public class EmployeeDocumentsResponse
+namespace Shared.EmployeeManagement.Responses;
+
+public class EmployeeDocumentsResponse : EmployeeDocumentsBase
 {
-    public string? ProfilePictureUrl { get; set; }
-    public string? ResumeUrl { get; set; }
-    public string? CoverLetterUrl { get; set; }
-    public string? LinkedInUrl { get; set; }
-    public string? GitHubUrl { get; set; }
-    public string? PersonalWebsiteUrl { get; set; }
+
 }

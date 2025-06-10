@@ -1,11 +1,8 @@
-﻿namespace Shared.EmployeeManagement.Requests;
+﻿using Shared.EmployeeManagement.BaseDtos;
 
-public class EmployeeDocumentsRequest
+namespace Shared.EmployeeManagement.Requests;
+
+public class EmployeeDocumentsRequest : EmployeeDocumentsBase
 {
-    public string? ProfilePictureUrl { get; set; }
-    public string? ResumeUrl { get; set; }
-    public string? CoverLetterUrl { get; set; }
-    public string? LinkedInUrl { get; set; }
-    public string? GitHubUrl { get; set; }
-    public string? PersonalWebsiteUrl { get; set; }
+    
 }
