@@ -13,6 +13,12 @@ public class EmployeeMappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.CreateDateTime, opt => opt.Ignore())
             .ForMember(dest => dest.UpdateDateTime, opt => opt.Ignore());
+        
+        CreateMap<EmployeeDocumentsRequest, EmployeeDocuments>();
+        CreateMap<EmployeeEducationRequest, EmployeeEducation>();
+        CreateMap<EmployeeLegalRequest, EmployeeLegal>();
+        CreateMap<EmployeePositionRequest, EmployeePosition>();
+        CreateMap<EmployeeTrainingRequest, EmployeeTraining>();
 
         CreateMap<Employee, EmployeeResponse>();
         
