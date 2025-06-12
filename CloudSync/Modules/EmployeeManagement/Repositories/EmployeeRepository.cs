@@ -26,16 +26,6 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
         }
     }
 
-    public async Task<IEnumerable<Employee>> GetByDepartmentAsync(int departmentId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IEnumerable<Employee>> GetByRoleAsync(string role)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Employee> GetByIdAsync(int id)
     {
         try
@@ -58,6 +48,31 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
             throw new EmployeeException(e.Message, 500);
         }
     }
+    
+    public async Task<IEnumerable<Employee>> GetByDepartmentAsync(int departmentId)
+    {
+        try
+        {
+            return await context.Employees
+                .Include(e => e.Documents)
+                .Include(e => e.Education)
+                .Include(e => e.Legal)
+                .Include(e => e.PositionDetails)
+                .Include(e => e.Training)
+                .Where(e => e.PositionDetails != null && e.PositionDetails.DepartmentId == departmentId)
+                .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
+    }
+
+    public async Task<IEnumerable<Employee>> GetByRoleAsync(string role)
+    {
+        throw new NotImplementedException();
+    }
+
 
     public async Task<Employee> CreateAsync(Employee employee)
     {
