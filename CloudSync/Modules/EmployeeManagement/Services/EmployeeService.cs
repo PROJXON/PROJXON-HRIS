@@ -19,7 +19,7 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
         return employeeResponseList;
     }
 
-    public async Task<IEnumerable<EmployeeResponse>> GetByDepartmentAsync(string department)
+    public async Task<IEnumerable<EmployeeResponse>> GetByDepartmentAsync(int departmentId)
     {
         throw new NotImplementedException();
     }
