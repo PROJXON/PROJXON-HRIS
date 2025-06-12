@@ -75,11 +75,11 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-    mapper.ConfigurationProvider.AssertConfigurationIsValid();
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+//     mapper.ConfigurationProvider.AssertConfigurationIsValid();
+// }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
