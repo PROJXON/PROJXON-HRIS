@@ -39,6 +39,20 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
                 }
         }
 
+        [HttpGet("department/{id:int}")]
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetByDepartment(int id)
+        {
+                try
+                {
+                        var response = await employeeService.GetByDepartmentAsync(id);
+                        return Ok(response);
+                }
+                catch (EmployeeException e)
+                {
+                        return StatusCode(e.StatusCode, new { message = e.Message });
+                }
+        }
+
         [HttpPost]
         public async Task<ActionResult<EmployeeResponse>> CreateEmployee([FromBody] CreateEmployeeRequest request)
         {
