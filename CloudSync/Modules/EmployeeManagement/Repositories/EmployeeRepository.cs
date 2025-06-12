@@ -98,9 +98,9 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
             existingEmployee.ContactInfo = employee.ContactInfo;
             existingEmployee.Documents = employee.Documents;
             existingEmployee.Education = employee.Education;
-            // existingEmployee.Legal = employee.Legal;
-            // existingEmployee.PositionDetails = employee.PositionDetails;
-            // existingEmployee.Training = employee.Training;
+            existingEmployee.Legal = employee.Legal;
+            existingEmployee.PositionDetails = employee.PositionDetails;
+            existingEmployee.Training = employee.Training;
 
             await context.SaveChangesAsync();
         }
