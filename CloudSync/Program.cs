@@ -12,6 +12,7 @@ using CloudSync.Modules.UserManagement.Repositories;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
+using Npgsql;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,8 +40,13 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 builder.Services.AddControllers();
+
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(
+    builder.Configuration.GetConnectionString("PostgresConnection"));
+dataSourceBuilder.EnableDynamicJson();
+var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<DatabaseContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
+    options.UseNpgsql(dataSource));
 
 builder.Services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -75,11 +81,11 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// using (var scope = app.Services.CreateScope())
-// {
-//     var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-//     mapper.ConfigurationProvider.AssertConfigurationIsValid();
-// }
+using (var scope = app.Services.CreateScope())
+{
+    var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+    mapper.ConfigurationProvider.AssertConfigurationIsValid();
+}
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
