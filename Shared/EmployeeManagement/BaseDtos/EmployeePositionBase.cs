@@ -1,4 +1,3 @@
-using Shared.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Responses;
 
 namespace Shared.EmployeeManagement.BaseDtos;
