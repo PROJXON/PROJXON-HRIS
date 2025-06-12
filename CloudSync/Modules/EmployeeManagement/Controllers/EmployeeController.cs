@@ -39,12 +39,12 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
                 }
         }
 
-        [HttpGet("department/{id:int}")]
-        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetByDepartment(int id)
+        [HttpGet("department/{departmentId:int}")]
+        public async Task<ActionResult<IEnumerable<EmployeeResponse>>> GetByDepartment(int departmentId)
         {
                 try
                 {
-                        var response = await employeeService.GetByDepartmentAsync(id);
+                        var response = await employeeService.GetByDepartmentAsync(departmentId);
                         return Ok(response);
                 }
                 catch (EmployeeException e)
