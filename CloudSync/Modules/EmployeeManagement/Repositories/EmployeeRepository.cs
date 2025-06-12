@@ -116,7 +116,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (employee == null)
             {
-                throw new EmployeeException("Employee with the given ID doesn't not exist", 404);
+                throw new EmployeeException("Employee with the given ID does not exist", 404);
             }
 
             context.Employees.Remove(employee);
