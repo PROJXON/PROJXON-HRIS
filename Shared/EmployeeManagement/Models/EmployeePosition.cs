@@ -24,11 +24,6 @@ public class EmployeePosition
     [StringLength(50)]
     public string? HierarchyLevel { get; set; }
     
-    public int? PositionId { get; set; }
-    
-    [ForeignKey("PositionId")]
-    public EmployeePosition? PositionDetails { get; set; }
-    
     public int? ManagerId { get; set; }
     
     [ForeignKey("ManagerId")]
