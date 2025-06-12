@@ -1,4 +1,4 @@
-﻿using CloudSync.Infrastructure;
+using CloudSync.Infrastructure;
 using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
 using CloudSync.Modules.EmployeeManagement.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -47,7 +47,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.PositionDetails)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
-            
+
             if (employee == null)
                 throw new EmployeeException("Employee with the given ID does not exist", 404);
 
@@ -94,6 +94,13 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 throw new EmployeeException("Employee with the given ID does not exist.", 404);
 
             existingEmployee.UpdateDateTime = DateTime.UtcNow;
+            existingEmployee.BasicInfo = employee.BasicInfo;
+            existingEmployee.ContactInfo = employee.ContactInfo;
+            existingEmployee.Documents = employee.Documents;
+            existingEmployee.Education = employee.Education;
+            // existingEmployee.Legal = employee.Legal;
+            // existingEmployee.PositionDetails = employee.PositionDetails;
+            // existingEmployee.Training = employee.Training;
 
             await context.SaveChangesAsync();
         }
