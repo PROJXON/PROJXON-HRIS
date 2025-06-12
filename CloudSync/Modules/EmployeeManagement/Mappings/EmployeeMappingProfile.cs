@@ -16,11 +16,19 @@ public class EmployeeMappingProfile : Profile
         CreateMap<EmployeeDocumentsRequest, EmployeeDocuments>()
             .ForMember(dest => dest.Employee, opt => opt.Ignore());
         CreateMap<EmployeeEducationRequest, EmployeeEducation>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Employee, opt => opt.Ignore());
         CreateMap<EmployeeLegalRequest, EmployeeLegal>()
             .ForMember(dest => dest.Employee, opt => opt.Ignore());
         CreateMap<EmployeePositionRequest, EmployeePosition>()
-            .ForMember(dest => dest.Employee, opt => opt.Ignore());
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Employee, opt => opt.Ignore())
+            .ForMember(dest => dest.Department, opt => opt.Ignore())
+            .ForMember(dest => dest.SubDepartment, opt => opt.Ignore())
+            .ForMember(dest => dest.Manager, opt => opt.Ignore())
+            .ForMember(dest => dest.Coach, opt => opt.Ignore())
+            .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(u => u.Manager.Id))
+            .ForMember(dest => dest.CoachId, opt => opt.MapFrom(u => u.Coach.Id));
         CreateMap<EmployeeTrainingRequest, EmployeeTraining>()
             .ForMember(dest => dest.Employee, opt => opt.Ignore());
 
