@@ -26,7 +26,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
         }
     }
 
-    public async Task<IEnumerable<Employee>> GetByDepartmentAsync(string department)
+    public async Task<IEnumerable<Employee>> GetByDepartmentAsync(int departmentId)
     {
         throw new NotImplementedException();
     }
