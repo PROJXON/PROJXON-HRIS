@@ -4,6 +4,7 @@ namespace Shared.EmployeeManagement.BaseDtos;
 
 public class EmployeePositionBase
 {
+    public int Id { get; set; }
     public string? PositionName { get; set; }
     public int? DepartmentId { get; set; }
     public int? SubDepartmentId { get; set; }

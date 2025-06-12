@@ -1,7 +1,8 @@
-﻿namespace Shared.EmployeeManagement.BaseDtos;
+namespace Shared.EmployeeManagement.BaseDtos;
 
 public class EmployeeLegalBase
 {
+    public int Id { get; set; }
     public string? IdNumber { get; set; }
     public string? IdType { get; set; }
     public string? IdCountry { get; set; }
