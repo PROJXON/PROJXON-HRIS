@@ -27,8 +27,8 @@ public class EmployeeMappingProfile : Profile
             .ForMember(dest => dest.SubDepartment, opt => opt.Ignore())
             .ForMember(dest => dest.Manager, opt => opt.Ignore())
             .ForMember(dest => dest.Coach, opt => opt.Ignore())
-            .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(u => u.Manager.Id))
-            .ForMember(dest => dest.CoachId, opt => opt.MapFrom(u => u.Coach.Id));
+            .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(u => u.Manager != null ? u.Manager.Id : (int?)null))
+            .ForMember(dest => dest.CoachId, opt => opt.MapFrom(u => u.Coach != null ? u.Coach.Id : (int?)null));
         CreateMap<EmployeeTrainingRequest, EmployeeTraining>()
             .ForMember(dest => dest.Employee, opt => opt.Ignore());
 
