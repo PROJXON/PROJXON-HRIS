@@ -56,6 +56,8 @@ builder.Services.AddScoped<IInvitedUserService, InvitedUserService>();
 builder.Services.AddScoped<IInvitedUserRepository, InvitedUserRepository>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
