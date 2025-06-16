@@ -76,22 +76,6 @@ public class EmployeeServiceTests
         Assert.Equal(expectedResponse.CreateDateTime, result.CreateDateTime);
         Assert.Equal(expectedResponse.BasicInfo.FirstName, result.BasicInfo.FirstName);
     }
-
-    [Fact]
-    public async Task GetByDepartmentAsync_ShouldThrowNotImplementedException()
-    {
-        // Act & Assert
-        await Assert.ThrowsAsync<NotImplementedException>(() => 
-            _employeeService.GetByDepartmentAsync("IT"));
-    }
-
-    [Fact]
-    public async Task GetByRoleAsync_ShouldThrowNotImplementedException()
-    {
-        // Act & Assert
-        await Assert.ThrowsAsync<NotImplementedException>(() => 
-            _employeeService.GetByRoleAsync("Developer"));
-    }
     
     [Fact]
     public async Task CreateAsync_ShouldCreateEmployeeAndReturnResponse()
