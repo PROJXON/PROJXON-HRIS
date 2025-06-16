@@ -67,13 +67,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
             throw new EmployeeException(e.Message, 500);
         }
     }
-
-    public async Task<IEnumerable<Employee>> GetByRoleAsync(string role)
-    {
-        throw new NotImplementedException();
-    }
-
-
+    
     public async Task<Employee> CreateAsync(Employee employee)
     {
         try
