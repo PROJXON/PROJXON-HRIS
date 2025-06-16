@@ -2,11 +2,11 @@
 
 public class DataAccessException : CloudSyncException
 {
-    public DataAccessException(string message, int statusCode = 400) : base(message, statusCode)
+    public DataAccessException(string message) : base(message)
     {
     }
 
-    public DataAccessException(string message, Exception innerException, int statusCode = 400) : base(message, innerException, statusCode)
+    public DataAccessException(string message, Exception innerException) : base(message, innerException)
     {
     }
 }
