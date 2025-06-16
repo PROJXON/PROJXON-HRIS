@@ -2,11 +2,11 @@ namespace CloudSync.Exceptions.Business;
 
 public class ValidationException : CloudSyncException
 {
-    public ValidationException(string message, int statusCode = 400) : base(message, statusCode)
+    public ValidationException(string message) : base(message, 400)
     {
     }
 
-    public ValidationException(string message, Exception innerException, int statusCode = 400) : base(message, innerException, statusCode)
+    public ValidationException(string message, Exception innerException) : base(message, innerException, 400)
     {
     }
 }
