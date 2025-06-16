@@ -7,7 +7,6 @@ public interface IEmployeeService
 {
     Task<IEnumerable<EmployeeResponse>> GetAllAsync();
     Task<IEnumerable<EmployeeResponse>> GetByDepartmentAsync(int id);
-    Task<IEnumerable<EmployeeResponse>> GetByRoleAsync(string role);
     Task<EmployeeResponse> GetByIdAsync(int id);
     Task<EmployeeResponse> CreateAsync(CreateEmployeeRequest request);
     Task UpdateAsync(int id, UpdateEmployeeRequest request);

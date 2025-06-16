@@ -37,12 +37,6 @@ public class EmployeeService(IEmployeeRepository employeeRepository, IMapper map
         return employeeResponseList;
     }
 
-    public async Task<IEnumerable<EmployeeResponse>> GetByRoleAsync(string role)
-    {
-        throw new NotImplementedException();
-    }
-
-
     public async Task<EmployeeResponse> CreateAsync(CreateEmployeeRequest request)
     {
         var employee = new Employee
