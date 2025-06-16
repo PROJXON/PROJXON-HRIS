@@ -9,7 +9,6 @@ namespace CloudSync.Modules.UserManagement.Controllers;
 [Route("api/[controller]")]
 public class AuthController(IAuthService authService) : ControllerBase
 {
-    // POST /api/auth/login
     [HttpPost("login")]
     public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
     {
