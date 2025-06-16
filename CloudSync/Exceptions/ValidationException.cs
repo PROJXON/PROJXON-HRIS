@@ -1,4 +1,4 @@
-namespace CloudSync.Exceptions.Business;
+namespace CloudSync.Exceptions;
 
 public class ValidationException : CloudSyncException
 {
