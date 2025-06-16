@@ -1,6 +1,4 @@
-﻿using System.Net;
-using Newtonsoft.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
+﻿using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CloudSync.Middleware;
 
