@@ -1,6 +1,6 @@
-﻿using CloudSync.Infrastructure;
+﻿using CloudSync.Exceptions.Business;
+using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
-using CloudSync.Modules.UserManagement.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Shared.UserManagement.Models;
 using Shared.UserManagement.Requests;
@@ -11,31 +11,17 @@ public class UserRepository(DatabaseContext context) : IUserRepository
 {
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        try
-        {
             return await context.Users.ToListAsync();
-        }
-        catch (Exception e)
-        {
-            throw new UserException(e.Message, 500);
-        }
     }
 
     public async Task<User> GetByIdAsync(int id)
     {
-        try
-        {
             var user = await context.Users.FindAsync(id);
 
             if (user == null)
-                throw new UserException("User with the given ID does not exist.", 404);
+                throw new EntityNotFoundException("User with the given ID does not exist.");
 
             return user;
-        }
-        catch (Exception e)
-        {
-            throw new UserException(e.Message, 500);
-        }
     }
 
     public async Task<User?> GetByGoogleUserIdAsync(string googleUserId)
@@ -45,8 +31,6 @@ public class UserRepository(DatabaseContext context) : IUserRepository
 
     public async Task<User> CreateAsync(InvitedUser invitedUser, string googleUserId)
     {
-        try
-        {
             var newUser = new User
             {
                 GoogleUserId = googleUserId,
@@ -59,42 +43,30 @@ public class UserRepository(DatabaseContext context) : IUserRepository
             await context.SaveChangesAsync();
 
             return newUser;
-        }
-        catch (Exception e)
-        {
-            throw new UserException(e.Message, 500);
-        }
     }
 
     public async Task UpdateAsync(int id, UpdateUserRequest request)
     {
-        try
-        {
             if (id != request.Id)
             {
-                throw new UserException("The provided ID does not match the user ID.");
+                throw new ValidationException("The provided ID does not match the user ID.");
             }
 
             var existingUser = await context.Users.FindAsync(id);
             if (existingUser == null)
-                throw new UserException("User with the given ID does not exist.", 404);
+                throw new EntityNotFoundException("User with the given ID does not exist.");
 
             existingUser.Email = request.Email;
             existingUser.UserSettings = request.UserSettings;
                 
             await context.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            throw new UserException(e.Message, 500);
-        }
     }
 
     public async Task UpdateLastLoginTimeAsync(int id)
     {
         var existingUser = await context.Users.FindAsync(id);
         if (existingUser == null)
-            throw new UserException("User with the given ID does not exist.", 404);
+            throw new EntityNotFoundException("User with the given ID does not exist.");
         
         existingUser.LastLoginDateTime = DateTime.UtcNow;
 
@@ -103,20 +75,13 @@ public class UserRepository(DatabaseContext context) : IUserRepository
 
     public async Task DeleteAsync(int id)
     {
-        try
+        var user = await context.Users.FindAsync(id);
+        if (user == null)
         {
-            var user = await context.Users.FindAsync(id);
-            if (user == null)
-            {
-                throw new UserException("User with the given ID does not exist.", 404);
-            }
-            
-            context.Users.Remove(user);
-            await context.SaveChangesAsync();
+            throw new EntityNotFoundException("User with the given ID does not exist.");
         }
-        catch (Exception e)
-        {
-            throw new UserException(e.Message, 500);
-        }
+        
+        context.Users.Remove(user);
+        await context.SaveChangesAsync();
     }
 }
