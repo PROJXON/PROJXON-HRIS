@@ -1,6 +1,6 @@
-﻿using CloudSync.Infrastructure;
+﻿using CloudSync.Exceptions.Business;
+using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
-using CloudSync.Modules.UserManagement.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
@@ -12,32 +12,16 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
 {
     public async Task<IEnumerable<InvitedUser>> GetAllAsync()
     {
-        try
-        {
             return await context.InvitedUsers.ToListAsync();
-        }
-        catch (Exception e)
-        {
-            throw new InvitedUserException(e.Message, 500);
-        }
     }
     
     public async Task<InvitedUser?> GetByEmailAsync(string email)
     {
-        try
-        {
             return await context.InvitedUsers.FirstOrDefaultAsync(u => u.Email == email);
-        }
-        catch (Exception e)
-        {
-            throw new InvitedUserException(e.Message, 500);
-        }
     }
 
     public async Task<InvitedUser> AddAsync(InvitedUserRequest invitedUserRequest)
     {
-        try
-        {
             var invitedUser = new InvitedUser
             {
                 Email = invitedUserRequest.Email,
@@ -49,45 +33,26 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
             await context.SaveChangesAsync();
             
             return invitedUser;
-        }
-        catch (Exception e)
-        {
-            throw new InvitedUserException(e.Message, 500);
-        }
     }
     public async Task UpdateStatusAsync(int id)
     {
-        try
-        {
             var existingInvite = await context.InvitedUsers.FindAsync(id);
             if (existingInvite == null)
-                throw new InvitedUserException("No invite exists for this user.", 404);
+                throw new EntityNotFoundException("No invite exists for this user.");
 
             existingInvite.Status = nameof(InvitedUserStatus.Pending);
             
             context.InvitedUsers.Update(existingInvite);
             await context.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            throw new InvitedUserException(e.Message, 500);
-        }
     }
 
     public async Task DeleteAsync(int id)
     {
-        try
-        {
             var existingInvite = await context.InvitedUsers.FindAsync(id);
             if (existingInvite == null)
-                throw new InvitedUserException("No invite exists for this user.", 404);
+                throw new EntityNotFoundException("No invite exists for this user.");
             
             context.InvitedUsers.Remove(existingInvite);
             await context.SaveChangesAsync();
-        }
-        catch (Exception e)
-        {
-            throw new InvitedUserException(e.Message, 500);
-        }
     }
 }
