@@ -35,6 +35,8 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
             ConfigurationException ex => ex.StatusCode, 
             DataAccessException ex => ex.StatusCode, 
             ExternalServiceException ex => ex.StatusCode, 
+            UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
+            ArgumentException => StatusCodes.Status400BadRequest,
             _ => StatusCodes.Status500InternalServerError
         };
 
