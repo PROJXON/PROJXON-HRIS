@@ -1,4 +1,4 @@
-﻿using CloudSync.Modules.UserManagement.Services.Exceptions;
+﻿using CloudSync.Exceptions.Business;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Google.Apis.Auth;
 using Shared.Requests.UserManagement;
@@ -26,11 +26,11 @@ public class GoogleTokenValidator(IConfiguration configuration) : IGoogleTokenVa
         }
         catch (InvalidJwtException e) when (e.Message.Contains("expired"))
         {
-            throw new AuthException("Google ID token has expired.", 401);
+            throw new AuthenticationException("Google ID token has expired.");
         }
         catch (InvalidJwtException)
         {
-            throw new AuthException("Invalid Google id token", 401);
+            throw new AuthenticationException("Invalid Google id token");
         }
     }
 }
