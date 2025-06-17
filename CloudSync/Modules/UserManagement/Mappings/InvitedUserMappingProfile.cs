@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
-using Shared.UserManagement.Models;
+using CloudSync.Modules.UserManagement.Models;
 
 namespace CloudSync.Modules.UserManagement.Mappings;
 

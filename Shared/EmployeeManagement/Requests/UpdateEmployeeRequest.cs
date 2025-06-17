@@ -1,12 +1,10 @@
-using Shared.EmployeeManagement.Models;
-
 namespace Shared.EmployeeManagement.Requests;
 
 public class UpdateEmployeeRequest
 {
     public int Id { get; set; }
-    public EmployeeBasic? BasicInfo { get; set; }
-    public EmployeeContactInfo? ContactInfo { get; set; }
+    public EmployeeBasicRequest? BasicInfo { get; set; }
+    public EmployeeContactInfoRequest? ContactInfo { get; set; }
 
     public EmployeePositionRequest? PositionDetails { get; set; }
     public EmployeeDocumentsRequest? Documents { get; set; }

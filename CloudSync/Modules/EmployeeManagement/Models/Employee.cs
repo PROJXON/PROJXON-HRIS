@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Shared.EmployeeManagement.Models;
+namespace CloudSync.Modules.EmployeeManagement.Models;
 
 public class Employee
 {

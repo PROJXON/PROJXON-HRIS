@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Shared.EmployeeManagement.Models;
+using CloudSync.Modules.EmployeeManagement.Models;
 
-namespace Shared.CandidateManagement.Models;
+namespace CloudSync.Modules.CandidateManagement.Models;
 
 public class Candidate
 {

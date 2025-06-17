@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
 using CloudSync.Modules.EmployeeManagement.Services.Interfaces;
-using Shared.EmployeeManagement.Models;
+using CloudSync.Modules.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
 

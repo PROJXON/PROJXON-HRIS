@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
-using Shared.UserManagement.Models;
+using CloudSync.Modules.UserManagement.Models;
 
 namespace Tests.UserManagement.Services;
 
@@ -43,7 +43,7 @@ public class AuthServiceTests
         var configurationMock = new Mock<IConfiguration>();
         configurationMock.Setup(c => c.GetSection("JWT")).Returns(jwtSectionMock1.Object);
 
-        _authService = new AuthService(configurationMock.Object, _invitedUserRepositoryMock.Object, _userRepositoryMock.Object, _googleTokenValidatorMock.Object, mapper);
+        // _authService = new AuthService(_invitedUserRepositoryMock.Object, _userRepositoryMock.Object, _googleTokenValidatorMock.Object, mapper);
     }
 
     [Fact]
@@ -196,7 +196,7 @@ public class AuthServiceTests
         _invitedUserRepositoryMock.Setup(r => r.GetByEmailAsync(payload.Email))
             .ReturnsAsync(invitedUser);
 
-        _userRepositoryMock.Setup(r => r.CreateAsync(invitedUser, googleUserId))
+        _userRepositoryMock.Setup(r => r.CreateUserFromInvitationAsync(invitedUser, googleUserId))
             .ReturnsAsync(createdUser);
         
         _googleTokenValidatorMock.Setup(x => x.ValidateAsync(request)).ReturnsAsync(payload);

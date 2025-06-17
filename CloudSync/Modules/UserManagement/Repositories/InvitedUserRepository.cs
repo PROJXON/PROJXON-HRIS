@@ -3,7 +3,7 @@ using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
-using Shared.UserManagement.Models;
+using CloudSync.Modules.UserManagement.Models;
 
 namespace CloudSync.Modules.UserManagement.Repositories;
 

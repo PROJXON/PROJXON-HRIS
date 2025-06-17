@@ -1,17 +1,12 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using AutoMapper;
 using CloudSync.Exceptions.Business;
-using CloudSync.Exceptions.Infrastructure;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Google.Apis.Auth;
-using Microsoft.IdentityModel.Tokens;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
-using Shared.UserManagement.Models;
+using CloudSync.Modules.UserManagement.Models;
 using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace CloudSync.Modules.UserManagement.Services;

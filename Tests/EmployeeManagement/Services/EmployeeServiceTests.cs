@@ -3,7 +3,7 @@ using CloudSync.Modules.EmployeeManagement.Mappings;
 using CloudSync.Modules.EmployeeManagement.Repositories.Interfaces;
 using CloudSync.Modules.EmployeeManagement.Services;
 using Moq;
-using Shared.EmployeeManagement.Models;
+using CloudSync.Modules.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
 
@@ -40,8 +40,8 @@ public class EmployeeServiceTests
 
         var expectedResponses = new List<EmployeeResponse>
         {
-            new() { Id = 1, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocumentsResponse(), Education = new EmployeeEducationResponse(), Legal = new EmployeeLegalResponse(), PositionDetails = new EmployeePositionResponse(), Training = new EmployeeTrainingResponse(), UpdateDateTime = now },
-            new() { Id = 2, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocumentsResponse(), Education = new EmployeeEducationResponse(), Legal = new EmployeeLegalResponse(), PositionDetails = new EmployeePositionResponse(), Training = new EmployeeTrainingResponse(), UpdateDateTime = now }
+            new() { Id = 1, BasicInfo = new EmployeeBasicResponse(), ContactInfo = new EmployeeContactInfoResponse(), CreateDateTime = now, Documents = new EmployeeDocumentsResponse(), Education = new EmployeeEducationResponse(), Legal = new EmployeeLegalResponse(), PositionDetails = new EmployeePositionResponse(), Training = new EmployeeTrainingResponse(), UpdateDateTime = now },
+            new() { Id = 2, BasicInfo = new EmployeeBasicResponse(), ContactInfo = new EmployeeContactInfoResponse(), CreateDateTime = now, Documents = new EmployeeDocumentsResponse(), Education = new EmployeeEducationResponse(), Legal = new EmployeeLegalResponse(), PositionDetails = new EmployeePositionResponse(), Training = new EmployeeTrainingResponse(), UpdateDateTime = now }
         };
 
         _mockRepository.Setup(repo => repo.GetAllAsync())
@@ -63,7 +63,7 @@ public class EmployeeServiceTests
     {
         var now = DateTime.UtcNow;
         // Arrange
-        var expectedResponse = new EmployeeResponse { Id = 1, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocumentsResponse(), Education = new EmployeeEducationResponse(), Legal = new EmployeeLegalResponse(), PositionDetails = new EmployeePositionResponse(), Training = new EmployeeTrainingResponse(), UpdateDateTime = DateTime.UtcNow };
+        var expectedResponse = new EmployeeResponse { Id = 1, BasicInfo = new EmployeeBasicResponse(), ContactInfo = new EmployeeContactInfoResponse(), CreateDateTime = now, Documents = new EmployeeDocumentsResponse(), Education = new EmployeeEducationResponse(), Legal = new EmployeeLegalResponse(), PositionDetails = new EmployeePositionResponse(), Training = new EmployeeTrainingResponse(), UpdateDateTime = DateTime.UtcNow };
 
         _mockRepository.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(new Employee { Id = 1, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocuments(), Education = new EmployeeEducation(), Legal = new EmployeeLegal(), PositionDetails = new EmployeePosition(), Training = new EmployeeTraining(), UpdateDateTime = DateTime.UtcNow });
 
@@ -109,7 +109,7 @@ public class EmployeeServiceTests
         employee.BasicInfo.LastName = request.LastName;
 
         var createdEmployee = employee;
-        var employeeResponse = new EmployeeResponse{BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo()};
+        var employeeResponse = new EmployeeResponse{BasicInfo = new EmployeeBasicResponse(), ContactInfo = new EmployeeContactInfoResponse()};
 
         mockRepo.Setup(r => r.CreateAsync(It.IsAny<Employee>()))
             .ReturnsAsync(createdEmployee);

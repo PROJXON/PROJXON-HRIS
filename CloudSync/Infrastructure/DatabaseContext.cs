@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Shared.CandidateManagement.Models;
-using Shared.EmployeeManagement.Models;
-using Shared.UserManagement.Models;
+using CloudSync.Modules.CandidateManagement.Models;
+using CloudSync.Modules.EmployeeManagement.Models;
+using CloudSync.Modules.UserManagement.Models;
 
 namespace CloudSync.Infrastructure;
 
@@ -84,8 +84,7 @@ public class DatabaseContext : DbContext
             .HasForeignKey<EmployeeTraining>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Address>()
-            .HasKey(u => u.Id);
+        modelBuilder.Entity<EmployeeContactInfo>().OwnsOne(e => e.Address);
 
         modelBuilder.Entity<EmployeeDocuments>().HasKey(u => u.Id);
         modelBuilder.Entity<EmployeeEducation>().HasKey(u => u.Id);

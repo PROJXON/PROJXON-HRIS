@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Shared.EmployeeManagement.Models;
+using CloudSync.Modules.EmployeeManagement.Models;
 
-namespace Shared.UserManagement.Models;
+namespace CloudSync.Modules.UserManagement.Models;
 
 public class User
 {

@@ -1,5 +1,5 @@
 using AutoMapper;
-using Shared.EmployeeManagement.Models;
+using CloudSync.Modules.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
 

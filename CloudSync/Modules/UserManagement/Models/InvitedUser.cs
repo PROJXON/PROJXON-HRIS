@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Shared.Responses.UserManagement;
 
-namespace Shared.UserManagement.Models;
+namespace CloudSync.Modules.UserManagement.Models;
 
 public class InvitedUser
 {
@@ -18,7 +19,7 @@ public class InvitedUser
     public required int InvitedByEmployeeId { get; set; }
     
     [ForeignKey("InvitedByEmployeeId")]
-    public User? InvitedByEmployee { get; set; }
+    public UserResponse? InvitedByEmployee { get; set; }
 
     public DateTime CreateDateTime { get; set; } = DateTime.UtcNow;
     

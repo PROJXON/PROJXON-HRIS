@@ -7,7 +7,7 @@ using Moq;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
-using Shared.UserManagement.Models;
+using CloudSync.Modules.UserManagement.Models;
 
 namespace Tests.UserManagement.Services;
 
@@ -129,7 +129,7 @@ public class InvitedUserServiceTests
         var result = await _service.InviteUserAsync(request);
 
         // Assert
-        var okResult = Assert.IsType<InvitedUserResponse>(result.Value);
+        var okResult = Assert.IsType<InvitedUserResponse>(result);
         Assert.Equal(addedDto.Id, okResult.Id);
         Assert.Equal(addedDto.Email, okResult.Email);
         Assert.Equal(addedDto.InvitedByEmployeeId, okResult.InvitedByEmployeeId);

@@ -1,12 +1,10 @@
-﻿using Shared.EmployeeManagement.Models;
-
-namespace Shared.EmployeeManagement.Responses;
+﻿namespace Shared.EmployeeManagement.Responses;
 
 public class EmployeeResponse
 {
     public int? Id { get; set; }
-    public required EmployeeBasic BasicInfo { get; set; }
-    public required EmployeeContactInfo ContactInfo { get; set; }
+    public required EmployeeBasicResponse BasicInfo { get; set; }
+    public required EmployeeContactInfoResponse ContactInfo { get; set; }
 
     public EmployeePositionResponse? PositionDetails { get; set; }
     public EmployeeDocumentsResponse? Documents { get; set; }
