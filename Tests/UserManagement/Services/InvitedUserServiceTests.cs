@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using CloudSync.Exceptions.Business;
 using CloudSync.Modules.UserManagement.Mappings;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
-using CloudSync.Modules.UserManagement.Services.Exceptions;
 using Moq;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
@@ -78,7 +78,7 @@ public class InvitedUserServiceTests
         var request = new InvitedUserRequest { InvitedByEmployeeId = 1, Email = " " };
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<InvitedUserException>(() => _service.InviteUserAsync(request));
+        var ex = await Assert.ThrowsAsync<ValidationException>(() => _service.InviteUserAsync(request));
         Assert.Equal("Email is required.", ex.Message);
         Assert.Equal(400, ex.StatusCode);
     }
@@ -100,7 +100,7 @@ public class InvitedUserServiceTests
             }); // simulate existing invite
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<InvitedUserException>(() => _service.InviteUserAsync(request));
+        var ex = await Assert.ThrowsAsync<DuplicateEntityException>(() => _service.InviteUserAsync(request));
         Assert.Equal("Email has already been invited.", ex.Message);
         Assert.Equal(409, ex.StatusCode);
     }

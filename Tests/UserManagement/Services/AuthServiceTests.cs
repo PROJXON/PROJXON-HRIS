@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using CloudSync.Exceptions.Business;
 using CloudSync.Modules.UserManagement.Mappings;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
-using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Google.Apis.Auth;
 using Microsoft.Extensions.Configuration;
@@ -51,7 +51,7 @@ public class AuthServiceTests
     {
         var request = new GoogleLoginRequest { IdToken = null! };
 
-        var ex = await Assert.ThrowsAsync<AuthException>(() => _authService.LoginAsync(request));
+        var ex = await Assert.ThrowsAsync<AuthenticationException>(() => _authService.LoginAsync(request));
         Assert.Equal("Missing ID token.", ex.Message);
     }
     
@@ -119,7 +119,7 @@ public class AuthServiceTests
             .ReturnsAsync((InvitedUser?)null);
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<AuthException>(() => _authService.LoginAsync(request));
+        var ex = await Assert.ThrowsAsync<AuthenticationException>(() => _authService.LoginAsync(request));
         Assert.Equal("User has not been invited.", ex.Message);
         Assert.Equal(404, ex.StatusCode);
     }
@@ -154,7 +154,7 @@ public class AuthServiceTests
             .ReturnsAsync(invitedUser);
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<AuthException>(() => _authService.LoginAsync(request));
+        var ex = await Assert.ThrowsAsync<AuthenticationException>(() => _authService.LoginAsync(request));
         Assert.Equal(expectedMessage, ex.Message);
     }
 
