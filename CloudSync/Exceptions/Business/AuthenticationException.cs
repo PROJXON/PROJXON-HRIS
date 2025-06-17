@@ -8,4 +8,5 @@ public class AuthenticationException : CloudSyncException
 
     public AuthenticationException(string message, Exception innerException) : base(message, innerException, 401)
     {
+    }
 }
