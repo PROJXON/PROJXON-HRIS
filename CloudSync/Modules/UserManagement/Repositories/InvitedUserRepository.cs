@@ -1,5 +1,4 @@
-﻿using CloudSync.Exceptions.Business;
-using CloudSync.Infrastructure;
+﻿using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Shared.Enums.UserManagement;
