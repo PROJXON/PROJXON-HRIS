@@ -2,14 +2,16 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using CloudSync.Exceptions.Business;
+using CloudSync.Exceptions.Infrastructure;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
-using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
 using Shared.UserManagement.Models;
+using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace CloudSync.Modules.UserManagement.Services;
 
@@ -23,7 +25,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
         
         if (string.IsNullOrWhiteSpace(request.IdToken))
         {
-            throw new AuthException("Missing ID token.");
+            throw new ValidationException("Missing ID token.");
         }
         
         var existingUser = await userRepository.GetByGoogleUserIdAsync(payload.Subject);
@@ -37,18 +39,18 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
         
         if (existingInvitee == null)
         {
-            throw new AuthException("User has not been invited.", 404);
+            throw new EntityNotFoundException("User has not been invited.");
         }
 
         return Enum.Parse<InvitedUserStatus>(existingInvitee.Status) switch
         {
-            InvitedUserStatus.Accepted => throw new AuthException("User has already accepted invitation."), // should never happen, existing user should be logged in above
+            InvitedUserStatus.Accepted => throw new DuplicateEntityException("User has already accepted invitation."), // should never happen, existing user should be logged in above
             InvitedUserStatus.Pending => new GoogleLoginResponse
             {
                 JsonWebToken = GenerateJwt(payload.Email),
                 User = await CreateUserFromInviteAsync(existingInvitee, payload.Subject)
             },
-            _ => throw new AuthException("Error logging in or creating new user.", 500)
+            _ => throw new AuthenticationException("Error logging in or creating new user.")
         };
     }
 
@@ -75,14 +77,14 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
 
     private string GenerateJwt(string email)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings["Key"] ?? throw new AuthException("Jwt key not found or missing.", 500)));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings["Key"] ?? throw new ConfigurationException("Jwt key not found or missing.")));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         
         var token = new JwtSecurityToken(
             issuer: _jwtSettings["Issuer"],
             audience: _jwtSettings["Audience"],
             claims: [new Claim(ClaimTypes.Name, email)],
-            expires: DateTime.UtcNow.AddMinutes(double.Parse(_jwtSettings["ExpiresInMinutes"] ?? throw new AuthException("Jwt key not found or missing.", 500))),
+            expires: DateTime.UtcNow.AddMinutes(double.Parse(_jwtSettings["ExpiresInMinutes"] ?? throw new ConfigurationException("Jwt key not found or missing."))),
             signingCredentials: creds
         );
             
