@@ -7,9 +7,6 @@ namespace CloudSync.Modules.EmployeeManagement.Models;
 [Owned]
 public class Address
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
-    
     [Required]
     [StringLength(80)]
     public string? AddressLine1 { get; set; }
