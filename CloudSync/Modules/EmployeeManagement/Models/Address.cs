@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
-namespace Shared.EmployeeManagement.Models;
+namespace CloudSync.Modules.EmployeeManagement.Models;
 
+[Owned]
 public class Address
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
