@@ -1,4 +1,6 @@
-﻿using JsonSerializer = System.Text.Json.JsonSerializer;
+﻿using CloudSync.Exceptions.Business;
+using CloudSync.Exceptions.Infrastructure;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CloudSync.Middleware;
 
@@ -24,8 +26,15 @@ public class ErrorHandlingMiddleware(RequestDelegate next, ILogger<ErrorHandling
 
         var statusCode = e switch
         {
-            UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
-            ArgumentException => StatusCodes.Status400BadRequest,
+            AuthenticationException ex => ex.StatusCode, 
+            AuthorizationException ex => ex.StatusCode, 
+            BusinessRuleException ex => ex.StatusCode, 
+            DuplicateEntityException ex => ex.StatusCode, 
+            EntityNotFoundException ex => ex.StatusCode, 
+            ValidationException ex => ex.StatusCode, 
+            ConfigurationException ex => ex.StatusCode, 
+            DataAccessException ex => ex.StatusCode, 
+            ExternalServiceException ex => ex.StatusCode, 
             _ => StatusCodes.Status500InternalServerError
         };
 
