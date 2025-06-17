@@ -34,25 +34,21 @@ public class InvitedUserRepository(DatabaseContext context) : IInvitedUserReposi
             
             return invitedUser;
     }
-    public async Task UpdateStatusAsync(int id)
+    
+    public void AcceptInvite(InvitedUser invitedUser)
     {
-            var existingInvite = await context.InvitedUsers.FindAsync(id);
-            if (existingInvite == null)
-                throw new EntityNotFoundException("No invite exists for this user.");
-
-            existingInvite.Status = nameof(InvitedUserStatus.Pending);
-            
-            context.InvitedUsers.Update(existingInvite);
-            await context.SaveChangesAsync();
+            invitedUser.Status = nameof(InvitedUserStatus.Accepted);
+            context.InvitedUsers.Update(invitedUser);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
             var existingInvite = await context.InvitedUsers.FindAsync(id);
             if (existingInvite == null)
-                throw new EntityNotFoundException("No invite exists for this user.");
+                return false;
             
             context.InvitedUsers.Remove(existingInvite);
             await context.SaveChangesAsync();
+            return true;
     }
 }

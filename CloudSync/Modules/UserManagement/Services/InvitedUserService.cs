@@ -13,14 +13,10 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository, I
     public async Task<IEnumerable<InvitedUserResponse>> GetAllAsync()
     {
         var invitedUserList = await invitedUserRepository.GetAllAsync();
-        List<InvitedUserResponse> invitedUserResponseList = [];
-            
-        invitedUserResponseList.AddRange(invitedUserList.Select(mapper.Map<InvitedUserResponse>));
-
-        return invitedUserResponseList;
+        return invitedUserList.Select(mapper.Map<InvitedUserResponse>);
     }
     
-    public async Task<ActionResult<InvitedUserResponse>> InviteUserAsync(InvitedUserRequest request)
+    public async Task<InvitedUserResponse> InviteUserAsync(InvitedUserRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Email))
             throw new ValidationException("Email is required.");
@@ -38,6 +34,8 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository, I
 
     public async Task DeleteInviteAsync(int id)
     {
-        await invitedUserRepository.DeleteAsync(id);
+        var wasDeleted = await invitedUserRepository.DeleteAsync(id);
+        if (!wasDeleted)
+            throw new EntityNotFoundException("No invite exists for this user.");
     }
 }

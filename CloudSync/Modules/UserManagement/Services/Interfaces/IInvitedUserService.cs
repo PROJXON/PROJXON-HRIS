@@ -7,6 +7,6 @@ namespace CloudSync.Modules.UserManagement.Services.Interfaces;
 public interface IInvitedUserService
 {
     Task<IEnumerable<InvitedUserResponse>> GetAllAsync();
-    Task<ActionResult<InvitedUserResponse>> InviteUserAsync(InvitedUserRequest request);
+    Task<InvitedUserResponse> InviteUserAsync(InvitedUserRequest request);
     Task DeleteInviteAsync(int id);
 }
