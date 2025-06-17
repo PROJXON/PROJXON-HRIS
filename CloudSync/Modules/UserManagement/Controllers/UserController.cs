@@ -9,26 +9,26 @@ namespace CloudSync.Modules.UserManagement.Controllers;
 {
     [HttpGet] public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
     {
-            var response = await userService.GetAllAsync();
-            return Ok(response);
+        var response = await userService.GetAllAsync();
+        return Ok(response);
     }
     
     [HttpGet("{id:int}")] public async Task<ActionResult<UserResponse>> GetUser(int id)
     {
-            var response = await userService.GetByIdAsync(id);
-            return Ok(response);
+        var response = await userService.GetByIdAsync(id);
+        return Ok(response);
     }
     
     [HttpPut("{id:int}")] public async Task<ActionResult> PutUser(int id, [FromBody] UpdateUserRequest request)
     {
-            await userService.UpdateAsync(id, request);
-            return NoContent();
+        await userService.UpdateAsync(id, request);
+        return NoContent();
     }
     
     [HttpDelete("{id:int}")] public async Task<ActionResult> DeleteUser(int id)
     {
-            await userService.DeleteAsync(id);
-            return NoContent();
+        await userService.DeleteAsync(id);
+        return NoContent();
     }
 }
 
