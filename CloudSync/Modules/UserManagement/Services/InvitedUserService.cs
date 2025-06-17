@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
+using CloudSync.Exceptions.Business;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
-using CloudSync.Modules.UserManagement.Services.Exceptions;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
 
@@ -24,12 +23,12 @@ public class InvitedUserService (IInvitedUserRepository invitedUserRepository, I
     public async Task<ActionResult<InvitedUserResponse>> InviteUserAsync(InvitedUserRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Email))
-            throw new InvitedUserException("Email is required.", 400);
+            throw new ValidationException("Email is required.");
         
         var existingInvite = await invitedUserRepository.GetByEmailAsync(request.Email);
         if (existingInvite != null)
         {
-            throw new InvitedUserException("Email has already been invited.", 409);
+            throw new DuplicateEntityException("Email has already been invited.");
         }
 
         var newInvitedUser = await invitedUserRepository.AddAsync(request);
