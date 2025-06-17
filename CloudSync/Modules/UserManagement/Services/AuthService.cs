@@ -15,18 +15,15 @@ using ValidationException = System.ComponentModel.DataAnnotations.ValidationExce
 
 namespace CloudSync.Modules.UserManagement.Services;
 
-public class AuthService(IConfiguration configuration, IInvitedUserRepository invitedUserRepository, IUserRepository userRepository, IGoogleTokenValidator googleTokenValidator, IMapper mapper) : IAuthService
+public class AuthService(IInvitedUserRepository invitedUserRepository, IUserRepository userRepository, IGoogleTokenValidator googleTokenValidator, IJwtTokenService jwtTokenService, IMapper mapper) : IAuthService
 {
-    private readonly IConfigurationSection _jwtSettings = configuration.GetSection("JWT");
-
     public async Task<GoogleLoginResponse> LoginAsync(GoogleLoginRequest request)
     {
+        if (string.IsNullOrWhiteSpace(request.IdToken))
+            throw new ValidationException("Missing ID token.");
+        
         var payload = await googleTokenValidator.ValidateAsync(request);
         
-        if (string.IsNullOrWhiteSpace(request.IdToken))
-        {
-            throw new ValidationException("Missing ID token.");
-        }
         
         var existingUser = await userRepository.GetByGoogleUserIdAsync(payload.Subject);
 
@@ -47,7 +44,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
             InvitedUserStatus.Accepted => throw new DuplicateEntityException("User has already accepted invitation."), // should never happen, existing user should be logged in above
             InvitedUserStatus.Pending => new GoogleLoginResponse
             {
-                JsonWebToken = GenerateJwt(payload.Email),
+                JsonWebToken = jwtTokenService.GenerateToken(payload.Email),
                 User = await CreateUserFromInviteAsync(existingInvitee, payload.Subject)
             },
             _ => throw new AuthenticationException("Error logging in or creating new user.")
@@ -62,7 +59,7 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
 
         return new GoogleLoginResponse
         {
-            JsonWebToken = GenerateJwt(existingUser.Email),
+            JsonWebToken = jwtTokenService.GenerateToken(existingUser.Email),
             User = existingUserResponse
         };
     }
@@ -75,19 +72,5 @@ public class AuthService(IConfiguration configuration, IInvitedUserRepository in
         return mapper.Map<UserResponse>(newUser);
     }
 
-    private string GenerateJwt(string email)
-    {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings["Key"] ?? throw new ConfigurationException("Jwt key not found or missing.")));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        
-        var token = new JwtSecurityToken(
-            issuer: _jwtSettings["Issuer"],
-            audience: _jwtSettings["Audience"],
-            claims: [new Claim(ClaimTypes.Name, email)],
-            expires: DateTime.UtcNow.AddMinutes(double.Parse(_jwtSettings["ExpiresInMinutes"] ?? throw new ConfigurationException("Jwt key not found or missing."))),
-            signingCredentials: creds
-        );
-            
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
+    
 }
