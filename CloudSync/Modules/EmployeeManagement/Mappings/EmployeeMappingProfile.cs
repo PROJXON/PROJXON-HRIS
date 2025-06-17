@@ -13,6 +13,9 @@ public class EmployeeMappingProfile : Profile
             .ForMember(dest => dest.CreateDateTime, opt => opt.Ignore())
             .ForMember(dest => dest.UpdateDateTime, opt => opt.Ignore());
 
+        CreateMap<EmployeeBasicRequest, EmployeeBasic>();
+        CreateMap<EmployeeContactInfoRequest, EmployeeContactInfo>();
+        CreateMap<AddressRequest, Address>();
         CreateMap<EmployeeDocumentsRequest, EmployeeDocuments>()
             .ForMember(dest => dest.Employee, opt => opt.Ignore());
         CreateMap<EmployeeEducationRequest, EmployeeEducation>()
@@ -34,6 +37,9 @@ public class EmployeeMappingProfile : Profile
 
         CreateMap<Employee, EmployeeResponse>();
 
+        CreateMap<EmployeeBasic, EmployeeBasicResponse>();
+        CreateMap<EmployeeContactInfo, EmployeeContactInfoResponse>();
+        CreateMap<Address, AddressResponse>();
         CreateMap<EmployeeDocuments, EmployeeDocumentsResponse>();
         CreateMap<EmployeeEducation, EmployeeEducationResponse>();
         CreateMap<EmployeeLegal, EmployeeLegalResponse>();
