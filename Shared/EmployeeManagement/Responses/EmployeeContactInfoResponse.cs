@@ -4,5 +4,5 @@ namespace Shared.EmployeeManagement.Responses;
 
 public class EmployeeContactInfoResponse : EmployeeContactInfoBase
 {
-    public AddressResponse? AddressResponse { get; set; }
+    public AddressResponse? Address { get; set; }
 }
