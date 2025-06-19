@@ -11,7 +11,7 @@ using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using CloudSync.Modules.UserManagement.Models;
 
-namespace Tests.UserManagement.Services;
+namespace Tests.Unit.UserManagement.Services;
 
 public class AuthServiceTests
 {

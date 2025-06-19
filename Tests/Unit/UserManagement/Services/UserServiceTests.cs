@@ -6,7 +6,7 @@ using Moq;
 using CloudSync.Modules.UserManagement.Models;
 using Shared.UserManagement.Requests;
 
-namespace Tests.UserManagement.Services;
+namespace Tests.Unit.UserManagement.Services;
 
 public class UserServiceTests
 {

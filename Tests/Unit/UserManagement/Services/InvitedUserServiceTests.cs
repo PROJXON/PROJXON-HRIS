@@ -9,7 +9,7 @@ using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
 using CloudSync.Modules.UserManagement.Models;
 
-namespace Tests.UserManagement.Services;
+namespace Tests.Unit.UserManagement.Services;
 
 public class InvitedUserServiceTests
 {

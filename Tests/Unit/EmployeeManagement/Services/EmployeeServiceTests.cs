@@ -7,7 +7,7 @@ using CloudSync.Modules.EmployeeManagement.Models;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
 
-namespace Tests.EmployeeManagement.Services;
+namespace Tests.Unit.EmployeeManagement.Services;
 
 public class EmployeeServiceTests
 {
