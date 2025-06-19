@@ -57,7 +57,10 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Employee>()
             .HasKey(u => u.Id);
         modelBuilder.Entity<Employee>().OwnsOne(e => e.BasicInfo);
-        modelBuilder.Entity<Employee>().OwnsOne(e => e.ContactInfo);
+        modelBuilder.Entity<Employee>().OwnsOne(e => e.ContactInfo, contactInfo =>
+        {
+            contactInfo.OwnsOne(ci => ci.Address);
+        });
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.PositionDetails)
             .WithOne(d => d.Employee)
@@ -83,8 +86,6 @@ public class DatabaseContext : DbContext
             .WithOne(d => d.Employee)
             .HasForeignKey<EmployeeTraining>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<EmployeeContactInfo>().OwnsOne(e => e.Address);
 
         modelBuilder.Entity<EmployeeDocuments>().HasKey(u => u.Id);
         modelBuilder.Entity<EmployeeEducation>().HasKey(u => u.Id);
