@@ -107,14 +107,13 @@ public class UserServiceTests
     public async Task GetByIdAsync_ThrowsEntityNotFoundException_WhenUserDoesNotExist()
     {
         // Arrange
-        const int userId = 999;
         _userRepositoryMock
-            .Setup(r => r.GetByIdAsync(userId))
+            .Setup(r => r.GetByIdAsync(Id))
             .ReturnsAsync((User?)null);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
-            () => _userService.GetByIdAsync(userId));
+            () => _userService.GetByIdAsync(Id));
         
         Assert.Equal("User with the given ID does not exist.", exception.Message);
     }
@@ -154,7 +153,7 @@ public class UserServiceTests
         // Arrange
         var updateUserRequest = new UpdateUserRequest
         {
-            Id = 456, // Different ID - this should cause validation error
+            Id = 456,
             Email = "updated@example.com",
             GoogleUserId = "updated-google-id"
         };
