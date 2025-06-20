@@ -345,7 +345,7 @@ public class AuthServiceTests
         {
             Id = 1,
             Email = TestEmail,
-            Status = ((int)999).ToString(),
+            Status = (999).ToString(),
             InvitedByEmployeeId = 0 // Invalid enum value
         };
         
