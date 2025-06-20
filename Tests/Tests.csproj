@@ -29,6 +29,7 @@
       <Folder Include="E2E\" />
       <Folder Include="Integration\" />
       <Folder Include="Performance\" />
+      <Folder Include="TestInfrastructure\Mocks\" />
       <Folder Include="Unit\" />
     </ItemGroup>
 
