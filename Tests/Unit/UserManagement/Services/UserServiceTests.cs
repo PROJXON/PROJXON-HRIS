@@ -6,6 +6,7 @@ using Moq;
 using CloudSync.Modules.UserManagement.Models;
 using Shared.UserManagement.Requests;
 using CloudSync.Exceptions.Business;
+using Tests.TestInfrastructure.Builders.UserManagement;
 
 namespace Tests.Unit.UserManagement.Services;
 
@@ -33,15 +34,9 @@ public class UserServiceTests
         // Arrange
         var users = new List<User>
         {
-            new User
-            {
-                Id = 1,
-                GoogleUserId = "string",
-                Email = "test@example.com",
-                CreateDateTime = DateTime.UtcNow.AddDays(-10),
-                LastLoginDateTime = DateTime.UtcNow,
-                UserSettings = null,
-            }
+            new UserTestDataBuilder()
+                .WithId(Id)
+                .Build()
         };
 
         _userRepositoryMock.Setup(r => r.GetAllAsync()).ReturnsAsync(users);
@@ -78,15 +73,9 @@ public class UserServiceTests
     public async Task GetByIdAsync_ReturnsMappedUserResponse_WhenUserExists()
     {
         // Arrange
-        var user = new User
-        {
-            Id = Id,
-            GoogleUserId = "string",
-            Email = "test@example.com",
-            CreateDateTime = DateTime.UtcNow.AddDays(-10),
-            LastLoginDateTime = DateTime.UtcNow.AddDays(-1),
-            UserSettings = null
-        };
+        var user = new UserTestDataBuilder()
+            .WithId(Id)
+            .Build();
         _userRepositoryMock
             .Setup(r => r.GetByIdAsync(Id))
             .ReturnsAsync(user);
@@ -195,8 +184,12 @@ public class UserServiceTests
     public async Task GetByIdAsync_VerifiesRepositoryCalledWithCorrectId()
     {
         // Arrange
-        const string googleId = "test";
-        var user = new User { GoogleUserId = googleId, Email = "test@example.com" };
+        var user = new UserTestDataBuilder()
+            .WithId(Id)
+            .WithEmail("specific@test.com")
+            .CreatedDaysAgo(10)
+            .LastLoginDaysAgo(1)
+            .Build();
         _userRepositoryMock.Setup(r => r.GetByIdAsync(Id)).ReturnsAsync(user);
 
         // Act
@@ -209,8 +202,6 @@ public class UserServiceTests
     [Fact]
     public async Task DeleteAsync_VerifiesRepositoryCalledWithCorrectId()
     {
-        // Arrange
-
         // Act
         await _userService.DeleteAsync(Id);
 
