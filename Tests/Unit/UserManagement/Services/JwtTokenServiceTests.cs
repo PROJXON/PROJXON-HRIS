@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using CloudSync.Exceptions.Business;
 using CloudSync.Modules.UserManagement.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -124,12 +125,10 @@ public class JwtTokenServiceTests
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData(null)]
-    public void GenerateToken_WithInvalidEmail_StillGeneratesToken(string email)
+    public void GenerateToken_WithEmptyEmail_DoesNotGenerateToken(string email)
     {
         // Act & Assert - the method doesn't validate email format, just uses it as a claim
-        var exception = Record.Exception(() => _tokenService.GenerateToken(email));
-        Assert.Null(exception);
+        Assert.Throws<ValidationException>(() => _tokenService.GenerateToken(email));
     }
 
     [Fact]
