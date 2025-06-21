@@ -1,11 +1,11 @@
-﻿using System.Configuration;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using CloudSync.Exceptions.Business;
 using CloudSync.Modules.UserManagement.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using ConfigurationException = CloudSync.Exceptions.Infrastructure.ConfigurationException;
 
 namespace Tests.Unit.UserManagement.Services;
 
