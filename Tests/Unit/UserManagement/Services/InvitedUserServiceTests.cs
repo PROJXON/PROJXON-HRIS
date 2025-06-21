@@ -151,4 +151,20 @@ public class InvitedUserServiceTests
         // Assert
         _repositoryMock.Verify(r => r.DeleteAsync(idToDelete), Times.Once);
     }
+    
+    [Fact]
+    public async Task DeleteInviteAsync_ThrowsEntityNotFoundException_WhenInviteDoesNotExist()
+    {
+        // Arrange
+        const int idToDelete = 42;
+        _repositoryMock.Setup(r => r.DeleteAsync(idToDelete))
+            .ReturnsAsync(false);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
+            () => _service.DeleteInviteAsync(idToDelete));
+    
+        Assert.Equal("No invite exists for this user.", exception.Message);
+        _repositoryMock.Verify(r => r.DeleteAsync(idToDelete), Times.Once);
+    }
 }
