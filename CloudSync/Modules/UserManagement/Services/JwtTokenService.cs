@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using CloudSync.Exceptions.Business;
 using CloudSync.Exceptions.Infrastructure;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +14,9 @@ public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
     
     public string GenerateToken(string email)
     {
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ValidationException("Email passed to JWT token generation cannot be whitespace or null.");
+        
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings["Key"] ?? throw new ConfigurationException("Jwt key not found or missing.")));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         
