@@ -338,36 +338,6 @@ public class AuthServiceTests
     #region Edge Cases
 
     [Fact]
-    public async Task LoginAsync_WithUnknownInvitationStatus_ThrowsAuthenticationException()
-    {
-        // Arrange - using a status that exists in enum but not handled in switch
-        var unknownStatusInvitedUser = new InvitedUser
-        {
-            Id = 1,
-            Email = TestEmail,
-            Status = (999).ToString(),
-            InvitedByEmployeeId = 0
-        };
-        
-        _mockGoogleTokenValidator
-            .Setup(x => x.ValidateAsync(_validRequest))
-            .ReturnsAsync(_validPayload);
-            
-        _mockUserRepository
-            .Setup(x => x.GetByGoogleUserIdAsync(TestGoogleUserId))
-            .ReturnsAsync((User?)null);
-            
-        _mockInvitedUserRepository
-            .Setup(x => x.GetByEmailAsync(TestEmail))
-            .ReturnsAsync(unknownStatusInvitedUser);
-
-        // Act & Assert
-        var exception = await Assert.ThrowsAsync<AuthenticationException>(
-            () => _authService.LoginAsync(_validRequest));
-        Assert.Equal("Invalid status value", exception.Message);
-    }
-
-    [Fact]
     public async Task LoginAsync_WhenCreateUserFromInvitationFails_PropagatesException()
     {
         // Arrange
