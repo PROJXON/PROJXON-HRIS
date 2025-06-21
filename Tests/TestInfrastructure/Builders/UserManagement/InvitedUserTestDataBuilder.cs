@@ -41,7 +41,7 @@ public class InvitedUserTestDataBuilder
             Id = _id,
             Email = _email,
             InvitedByEmployeeId = _invitedByEmployeeId,
-            Status = nameof(_status)
+            Status = _status.ToString()
         };
     }
 }
