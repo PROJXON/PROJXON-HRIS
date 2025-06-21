@@ -141,7 +141,9 @@ public class InvitedUserServiceTests
     public async Task DeleteInviteAsync_CallsRepositoryDelete()
     {
         // Arrange
-        int idToDelete = 42;
+        const int idToDelete = 42;
+        _repositoryMock.Setup(r => r.DeleteAsync(idToDelete))
+            .ReturnsAsync(true);
 
         // Act
         await _service.DeleteInviteAsync(idToDelete);
