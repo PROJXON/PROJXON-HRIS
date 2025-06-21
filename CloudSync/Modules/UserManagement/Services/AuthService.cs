@@ -7,7 +7,6 @@ using Shared.Enums.UserManagement;
 using Shared.Requests.UserManagement;
 using Shared.Responses.UserManagement;
 using CloudSync.Modules.UserManagement.Models;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace CloudSync.Modules.UserManagement.Services;
 
