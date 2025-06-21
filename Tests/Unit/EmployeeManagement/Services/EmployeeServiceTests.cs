@@ -186,20 +186,4 @@ public class EmployeeServiceTests
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => service.CreateAsync(request));
     }
-
-    [Fact]
-    public async Task UpdateAsync_ShouldThrowNotImplementedException()
-    {
-        // Act & Assert
-        await Assert.ThrowsAsync<NotImplementedException>(() => 
-            _employeeService.UpdateAsync(1, new UpdateEmployeeRequest()));
-    }
-
-    [Fact]
-    public async Task DeleteAsync_ShouldThrowNotImplementedException()
-    {
-        // Act & Assert
-        await Assert.ThrowsAsync<NotImplementedException>(() => 
-            _employeeService.DeleteAsync(1));
-    }
 }
