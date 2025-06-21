@@ -346,7 +346,7 @@ public class AuthServiceTests
             Id = 1,
             Email = TestEmail,
             Status = (999).ToString(),
-            InvitedByEmployeeId = 0 // Invalid enum value
+            InvitedByEmployeeId = 0
         };
         
         _mockGoogleTokenValidator
@@ -390,7 +390,7 @@ public class AuthServiceTests
             .ThrowsAsync(dbException);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<AuthenticationException>(
             () => _authService.LoginAsync(_validRequest));
         Assert.Equal("Database error", exception.Message);
     }
