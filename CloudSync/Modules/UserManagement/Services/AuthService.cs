@@ -12,7 +12,7 @@ namespace CloudSync.Modules.UserManagement.Services;
 
 public class AuthService(IInvitedUserRepository invitedUserRepository, IUserRepository userRepository, IGoogleTokenValidator googleTokenValidator, IJwtTokenService jwtTokenService, IMapper mapper) : IAuthService
 {
-        public async Task<GoogleLoginResponse> LoginAsync(GoogleLoginRequest request)
+    public async Task<GoogleLoginResponse> LoginAsync(GoogleLoginRequest request)
     {
         ValidateLoginRequest(request);
         
