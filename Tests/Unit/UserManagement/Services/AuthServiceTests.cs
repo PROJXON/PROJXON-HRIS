@@ -341,7 +341,7 @@ public class AuthServiceTests
     public async Task LoginAsync_WhenCreateUserFromInvitationFails_PropagatesException()
     {
         // Arrange
-        var dbException = new InvalidOperationException("Database error");
+        var expectedMessage = "Database error";
         
         _mockGoogleTokenValidator
             .Setup(x => x.ValidateAsync(_validRequest))
@@ -357,7 +357,7 @@ public class AuthServiceTests
             
         _mockUserRepository
             .Setup(x => x.CreateUserFromInvitationAsync(_invitedUser, TestGoogleUserId))
-            .ThrowsAsync(dbException);
+            .ThrowsAsync(new AuthenticationException(expectedMessage));
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<AuthenticationException>(
