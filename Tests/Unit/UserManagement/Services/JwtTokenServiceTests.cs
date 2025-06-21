@@ -200,10 +200,11 @@ public class JwtTokenServiceTests
     }
 
     [Fact]
-    public void GenerateToken_CalledMultipleTimes_GeneratesDifferentTokens()
+    public async Task GenerateToken_CalledMultipleTimes_GeneratesDifferentTokens()
     {
         // Act
         var token1 = _tokenService.GenerateToken(TestEmail);
+        await Task.Delay(1100);
         var token2 = _tokenService.GenerateToken(TestEmail);
 
         // Assert
