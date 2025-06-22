@@ -191,35 +191,6 @@ public class AuthServiceTests
         Assert.Equal("User has not been invited.", exception.Message);
     }
 
-    // [Fact]
-    // public async Task LoginAsync_WithInvalidInvitationStatus_ThrowsAuthenticationException()
-    // {
-    //     // Arrange
-    //     var invalidStatusInvitedUser = new InvitedUser
-    //     {
-    //         Id = 1,
-    //         Email = TestEmail,
-    //         Status = "InvalidStatus"
-    //     };
-    //     
-    //     _mockGoogleTokenValidator
-    //         .Setup(x => x.ValidateAsync(_validRequest))
-    //         .ReturnsAsync(_validPayload);
-    //         
-    //     _mockUserRepository
-    //         .Setup(x => x.GetByGoogleUserIdAsync(TestGoogleUserId))
-    //         .ReturnsAsync((User?)null);
-    //         
-    //     _mockInvitedUserRepository
-    //         .Setup(x => x.GetByEmailAsync(TestEmail))
-    //         .ReturnsAsync(invalidStatusInvitedUser);
-    //
-    //     // Act & Assert
-    //     var exception = await Assert.ThrowsAsync<AuthenticationException>(
-    //         () => _authService.LoginAsync(_validRequest));
-    //     Assert.Equal("Invalid status value", exception.Message);
-    // }
-
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
