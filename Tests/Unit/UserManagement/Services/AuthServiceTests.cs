@@ -48,7 +48,6 @@ public class AuthServiceTests
             _mockMapper.Object
         );
         
-        // Setup test data
         _validRequest = new GoogleLoginRequest { IdToken = "valid-google-token" };
         
         _validPayload = new GoogleJsonWebSignature.Payload
@@ -71,12 +70,10 @@ public class AuthServiceTests
         };
     }
 
-    #region LoginAsync Tests
+    #region Helper Methods
 
-    [Fact]
-    public async Task LoginAsync_WithExistingUser_ReturnsSuccessfulLogin()
+    private void SetupSuccessfulExistingUserLogin()
     {
-        // Arrange
         _mockGoogleTokenValidator
             .Setup(x => x.ValidateAsync(_validRequest))
             .ReturnsAsync(_validPayload);
@@ -92,24 +89,10 @@ public class AuthServiceTests
         _mockJwtTokenService
             .Setup(x => x.GenerateToken(_existingUser.Email))
             .Returns(TestToken);
-
-        // Act
-        var result = await _authService.LoginAsync(_validRequest);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(TestToken, result.JsonWebToken);
-        Assert.Equal(_userResponse, result.User);
-        
-        _mockUserRepository.Verify(x => x.UpdateLastLoginTimeAsync(_existingUser.Id), Times.Once);
     }
 
-    [Fact]
-    public async Task LoginAsync_WithInvitedUserPendingStatus_CreatesNewUser()
+    private void SetupSuccessfulNewUserLogin(User newUser)
     {
-        // Arrange
-        var newUser = new User { Id = 2, Email = TestEmail, GoogleUserId = TestGoogleUserId };
-        
         _mockGoogleTokenValidator
             .Setup(x => x.ValidateAsync(_validRequest))
             .ReturnsAsync(_validPayload);
@@ -133,6 +116,76 @@ public class AuthServiceTests
         _mockJwtTokenService
             .Setup(x => x.GenerateToken(TestEmail))
             .Returns(TestToken);
+    }
+
+    private void SetupGoogleTokenValidationFailure(Exception exception)
+    {
+        _mockGoogleTokenValidator
+            .Setup(x => x.ValidateAsync(_validRequest))
+            .ThrowsAsync(exception);
+    }
+
+    private void SetupInvitedUserWithStatus(InvitedUserStatus status)
+    {
+        var invitedUserWithStatus = new InvitedUserTestDataBuilder()
+            .WithStatus(status)
+            .Build();
+
+        _mockGoogleTokenValidator
+            .Setup(x => x.ValidateAsync(_validRequest))
+            .ReturnsAsync(_validPayload);
+            
+        _mockUserRepository
+            .Setup(x => x.GetByGoogleUserIdAsync(TestGoogleUserId))
+            .ReturnsAsync((User?)null);
+            
+        _mockInvitedUserRepository
+            .Setup(x => x.GetByEmailAsync(TestEmail))
+            .ReturnsAsync(invitedUserWithStatus);
+    }
+
+    private void SetupNoInvitedUser()
+    {
+        _mockGoogleTokenValidator
+            .Setup(x => x.ValidateAsync(_validRequest))
+            .ReturnsAsync(_validPayload);
+            
+        _mockUserRepository
+            .Setup(x => x.GetByGoogleUserIdAsync(TestGoogleUserId))
+            .ReturnsAsync((User?)null);
+            
+        _mockInvitedUserRepository
+            .Setup(x => x.GetByEmailAsync(TestEmail))
+            .ReturnsAsync((InvitedUser?)null);
+    }
+
+    #endregion
+
+    #region LoginAsync Tests
+
+    [Fact]
+    public async Task LoginAsync_WithExistingUser_ReturnsSuccessfulLogin()
+    {
+        // Arrange
+        SetupSuccessfulExistingUserLogin();
+
+        // Act
+        var result = await _authService.LoginAsync(_validRequest);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(TestToken, result.JsonWebToken);
+        Assert.Equal(_userResponse, result.User);
+        
+        _mockUserRepository.Verify(x => x.UpdateLastLoginTimeAsync(_existingUser.Id), Times.Once);
+    }
+
+    [Fact]
+    public async Task LoginAsync_WithInvitedUserPendingStatus_CreatesNewUser()
+    {
+        // Arrange
+        var newUser = new User { Id = 2, Email = TestEmail, GoogleUserId = TestGoogleUserId };
+        SetupSuccessfulNewUserLogin(newUser);
 
         // Act
         var result = await _authService.LoginAsync(_validRequest);
@@ -147,21 +200,7 @@ public class AuthServiceTests
     public async Task LoginAsync_WithInvitedUserAcceptedStatus_ThrowsDuplicateEntityException()
     {
         // Arrange
-        var acceptedInvitedUser = new InvitedUserTestDataBuilder()
-            .WithStatus(InvitedUserStatus.Accepted)
-            .Build();
-        
-        _mockGoogleTokenValidator
-            .Setup(x => x.ValidateAsync(_validRequest))
-            .ReturnsAsync(_validPayload);
-            
-        _mockUserRepository
-            .Setup(x => x.GetByGoogleUserIdAsync(TestGoogleUserId))
-            .ReturnsAsync((User?)null);
-            
-        _mockInvitedUserRepository
-            .Setup(x => x.GetByEmailAsync(TestEmail))
-            .ReturnsAsync(acceptedInvitedUser);
+        SetupInvitedUserWithStatus(InvitedUserStatus.Accepted);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<DuplicateEntityException>(
@@ -173,17 +212,7 @@ public class AuthServiceTests
     public async Task LoginAsync_WithNonInvitedUser_ThrowsEntityNotFoundException()
     {
         // Arrange
-        _mockGoogleTokenValidator
-            .Setup(x => x.ValidateAsync(_validRequest))
-            .ReturnsAsync(_validPayload);
-            
-        _mockUserRepository
-            .Setup(x => x.GetByGoogleUserIdAsync(TestGoogleUserId))
-            .ReturnsAsync((User?)null);
-            
-        _mockInvitedUserRepository
-            .Setup(x => x.GetByEmailAsync(TestEmail))
-            .ReturnsAsync((InvitedUser?)null);
+        SetupNoInvitedUser();
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<EntityNotFoundException>(
@@ -211,9 +240,7 @@ public class AuthServiceTests
     {
         // Arrange
         var authException = new AuthenticationException("Invalid Google token");
-        _mockGoogleTokenValidator
-            .Setup(x => x.ValidateAsync(_validRequest))
-            .ThrowsAsync(authException);
+        SetupGoogleTokenValidationFailure(authException);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<AuthenticationException>(
@@ -221,15 +248,12 @@ public class AuthServiceTests
         Assert.Equal("Invalid Google token", exception.Message);
     }
 
-    #endregion
-
-    #region Edge Cases
-
     [Fact]
     public async Task LoginAsync_WhenCreateUserFromInvitationFails_PropagatesException()
     {
         // Arrange
         var expectedMessage = "Database error";
+        var newUser = new User { Id = 2, Email = TestEmail, GoogleUserId = TestGoogleUserId };
         
         _mockGoogleTokenValidator
             .Setup(x => x.ValidateAsync(_validRequest))
