@@ -7,9 +7,7 @@ public enum ErrorCategory
     Authorization,
     Validation,
     Network,
-    Service,
-    UserInput,
     Configuration,
-    Data,
-    Business
+    Storage,
+    Security
 }
