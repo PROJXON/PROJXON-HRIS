@@ -23,7 +23,6 @@ public abstract class ClientExceptionBase : Exception
         bool shouldReport = true,
         bool isRetryable = false,
         IEnumerable<string>? suggestedActions = null,
-        string? correlationId = null,
         Dictionary<string, object>? context = null,
         Exception? innerException = null
     ) : base(message, innerException)
