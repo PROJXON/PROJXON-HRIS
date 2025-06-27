@@ -10,7 +10,7 @@ public class AuthorizationException(
     string? errorDescription = null,
     string? errorUri = null,
     Exception? innerException = null)
-    : ClientExceptionBase(message, userMessage, ErrorSeverity.Warning, ErrorCategory.Authentication, 
+    : ClientExceptionBase(message, userMessage, ErrorSeverity.Warning, ErrorCategory.Authorization, 
         shouldReport: true, isRetryable: false, 
         suggestedActions: ["Try signing in again", "Check your internet connection"], innerException)
 {
