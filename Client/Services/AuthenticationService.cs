@@ -336,4 +336,47 @@ public class AuthenticationService : IAuthenticationService
             listener?.Stop();
         }
     }
+    
+    private async Task SendCallbackResponseAsync(HttpListenerContext context)
+    {
+        const string html = """
+
+                            <!DOCTYPE html>
+                            <html>
+                            <head>
+                                <title>Authentication Complete</title>
+                                <style>
+                                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                                    .success { color: #4CAF50; }
+                                    .container { max-width: 400px; margin: 0 auto; }
+                                </style>
+                            </head>
+                            <body>
+                                <div class='container'>
+                                    <h2 class='success'>✓ Authentication Successful</h2>
+                                    <p>You can now close this window and return to the application.</p>
+                                </div>
+                                <script>
+                                    // Auto-close after 3 seconds
+                                    setTimeout(function() { window.close(); }, 3000);
+                                </script>
+                            </body>
+                            </html>
+                            """;
+
+        try
+        {
+            var buffer = Encoding.UTF8.GetBytes(html);
+            context.Response.ContentType = "text/html";
+            context.Response.ContentLength64 = buffer.Length;
+            context.Response.StatusCode = 200;
+            
+            await context.Response.OutputStream.WriteAsync(buffer);
+            context.Response.Close();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to send callback response");
+        }
+    }
 }
