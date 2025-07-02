@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -43,13 +44,10 @@ public partial class App : Application
         var services = new ServiceCollection();
         
         var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production"}.json", optional: true)
             .AddEnvironmentVariables()
-            .AddInMemoryCollection(new Dictionary<string, string?>
-            {
-                ["ApiBaseUrl"] = "https://your-api-url.com",
-                ["AppName"] = "Projxon HRIS",
-                ["Auth:ClientId"] = "410853943336-vbrf7gr0cfbj8ruu54nrjjq4nk6qpjkn.apps.googleusercontent.com"
-            })
             .Build();
 
         services.AddSingleton<IConfiguration>(configuration);
