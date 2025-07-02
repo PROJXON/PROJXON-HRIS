@@ -17,7 +17,7 @@ namespace Client;
 
 public partial class App : Application
 {
-    public static IServiceProvider ServiceProvider { get; private set;}
+    private static IServiceProvider? ServiceProvider { get; set;}
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
