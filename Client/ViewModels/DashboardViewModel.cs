@@ -1,6 +1,8 @@
-﻿namespace Client.ViewModels;
+﻿using Client.Services;
 
-public partial class DashboardViewModel : ViewModelBase
+namespace Client.ViewModels;
+
+public partial class DashboardViewModel(INavigationService navigationService) : ViewModelBase
 {
     
 }
