@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -8,6 +9,7 @@ using Avalonia.Markup.Xaml;
 using Client.Services;
 using Client.ViewModels;
 using Client.Views;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -39,6 +41,18 @@ public partial class App : Application
     private void ConfigureServices()
     {
         var services = new ServiceCollection();
+        
+        var configuration = new ConfigurationBuilder()
+            .AddEnvironmentVariables()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["ApiBaseUrl"] = "https://your-api-url.com",
+                ["AppName"] = "Projxon HRIS",
+                ["Auth:ClientId"] = "410853943336-vbrf7gr0cfbj8ruu54nrjjq4nk6qpjkn.apps.googleusercontent.com"
+            })
+            .Build();
+
+        services.AddSingleton<IConfiguration>(configuration);
 
         services.AddLogging();
 
@@ -71,6 +85,14 @@ public partial class App : Application
             {
                 var logger = provider.GetRequiredService<ILogger<WindowsCredentialStorage>>();
                 return new WindowsCredentialStorage(logger, applicationName);
+            });
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            services.AddSingleton<ISecureTokenStorage>(provider =>
+            {
+                var logger = provider.GetRequiredService<ILogger<LinuxSecretServiceStorage>>();
+                return new LinuxSecretServiceStorage(logger, applicationName);
             });
         }
     }
