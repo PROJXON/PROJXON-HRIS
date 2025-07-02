@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -7,15 +8,12 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Controls.Converters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Client.Utils.Classes;
-using Client.Utils.Enums;
 using Client.Utils.Exceptions.ApplicationState;
 using Client.Utils.Exceptions.Auth;
 using Client.Utils.Exceptions.Network;
-using Client.Utils.Interfaces;
 
 namespace Client.Services;
 
@@ -274,7 +272,7 @@ public class AuthenticationService : IAuthenticationService
             var contextTask = listener.GetContextAsync();
             var context = await contextTask.WaitAsync(cancellationToken);
 
-            await sendCallbackResponseAsync(context);
+            await SendCallbackResponseAsync(context);
 
             var query = context.Request.Url?.Query;
             if (string.IsNullOrEmpty(query))
@@ -378,5 +376,278 @@ public class AuthenticationService : IAuthenticationService
         {
             _logger.LogWarning(ex, "Failed to send callback response");
         }
+    }
+
+    private async Task<TokenResponse> ExchangeCodeForTokensAsync(string code, string codeVerifier)
+    {
+        try
+        {
+            const string tokenEndpoint = "https://oauth2.googleapis.com/token";
+            var parameters = new Dictionary<string, string>
+            {
+                ["client_id"] = _clientId,
+                ["code"] = code,
+                ["grant_type"] = "authorization_code",
+                ["redirect_uri"] = _redirectUri,
+                ["code_verifier"] = codeVerifier
+            };
+
+            var content = new FormUrlEncodedContent(parameters);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await _httpClient.PostAsync(tokenEndpoint, content);
+            }
+            catch (HttpRequestException e)
+            {
+                throw new NetworkException(
+                    $"Network error during token exchange: {e.Message}",
+                    endpoint: tokenEndpoint,
+                    innerException: e);
+            }
+            catch (TaskCanceledException e)
+            {
+                throw new NetworkException(
+                    "Token exchange request timed out",
+                    endpoint: tokenEndpoint,
+                    timeout: _httpClient.Timeout,
+                    innerException: e);
+            }
+
+            using (response)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new AuthorizationException(
+                        $"Token exchange failed with status {response.StatusCode}",
+                        "Failed to complete sign-in. PLease try again.",
+                        error: response.StatusCode.ToString(),
+                        errorDescription: json);
+                }
+
+                try
+                {
+                    var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(json, new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+                    });
+
+                    if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
+                    {
+                        throw new AuthorizationException(
+                            "Invalid taken response received from OAuth provider.",
+                            "Sign-in failed due to invalid response. Please try again.");
+                    }
+
+                    return tokenResponse;
+                }
+                catch (JsonException e)
+                {
+                    throw new AuthorizationException(
+                        $"Failed to parse token response: {e.Message}",
+                        "Sign-in failed due to invalid response format.Please try again.",
+                        innerException: e);
+                }
+            }
+        }
+        catch (Exception e) when (e is NetworkException or AuthorizationException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            throw new AuthorizationException(
+                $"Unexpected error during token exchange: {e.Message}",
+                "An unexpected error occurred during sign-in. Please try again.",
+                innerException: e);
+        }
+    }
+
+    private async Task<bool> RefreshTokenAsync()
+    {
+        if (string.IsNullOrEmpty(_refreshToken))
+            return false;
+
+        try
+        {
+            const string tokenEndpoint = "https://oauth2.googleapis.com/token";
+            var parameters = new Dictionary<string, string>
+            {
+                ["client_id"] = _clientId,
+                ["grant_type"] = "refresh_token",
+                ["refresh_token"] = _refreshToken
+            };
+
+            var content = new FormUrlEncodedContent(parameters);
+            using var response = await _httpClient.PostAsync(tokenEndpoint, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Token refresh failed: {StatusCode} - {Response}", response.StatusCode, errorContent);
+                return false;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(json, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+            });
+
+            if (tokenResponse == null)
+                return false;
+            
+            await StoreTokensAsync(tokenResponse);
+            SetupTokenRefresh();
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error refreshing token.");
+            return false;
+        }
+    }
+
+    private async Task RevokeTokenAsync(string token)
+    {
+        try
+        {
+            var revokeEndpoint = $"https://oauth2.googleapis.com/revoke?token={token}";
+            using var response = await _httpClient.PostAsync(revokeEndpoint, null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogWarning("Token revocation returned: {StatusCode}", response.StatusCode);
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error revoking token.");
+        }
+    }
+
+    private async Task StoreTokensAsync(TokenResponse tokenResponse)
+    {
+        _accessToken = tokenResponse.AccessToken;
+
+        if (!string.IsNullOrEmpty(tokenResponse.RefreshToken))
+        {
+            _refreshToken = tokenResponse.RefreshToken;
+            await _tokenStorage.StoreTokenAsync("google_refresh_token", _refreshToken);
+        }
+        
+        _tokenExpiry = DateTime.UtcNow.AddSeconds((double)tokenResponse.ExpiresIn);
+
+        await _tokenStorage.StoreTokenAsync("google_access_token", _accessToken);
+        await _tokenStorage.StoreTokenAsync("google_token_expiry", _tokenExpiry.ToString("0"));
+    }
+
+    private async Task LoadStoredTokensAsync()
+    {
+        try
+        {
+            _accessToken = await _tokenStorage.GetTokenAsync("google_access_token");
+            _refreshToken = await _tokenStorage.GetTokenAsync("google_refresh_token");
+
+            var expiryString = await _tokenStorage.GetTokenAsync("google_token_expiry");
+            if (DateTime.TryParse(expiryString, out var expiry))
+            {
+                _tokenExpiry = expiry;
+            }
+
+            if (IsAuthenticated)
+            {
+                SetupTokenRefresh();
+                AuthenticationChanged?.Invoke(this, new AuthenticationChangedEventArgs(true));
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error loading stored tokens.");
+        }
+    }
+
+    private void SetupTokenRefresh()
+    {
+        _refreshTimer?.Dispose();
+
+        var refreshTime = _tokenExpiry.AddMinutes(-5);
+        var delay = refreshTime - DateTime.UtcNow;
+
+        if (delay > TimeSpan.Zero)
+        {
+            _refreshTimer = new Timer(async _ => await RefreshTokenAsync(), null, delay, Timeout.InfiniteTimeSpan);
+        }
+    }
+    
+    private static string GeneratedCodeVerifier()
+    {
+        var bytes = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(bytes);
+        return Convert.ToBase64String(bytes)
+            .TrimEnd('=')
+            .Replace('+', '-')
+            .Replace('/', '_');
+    }
+
+    private static string GenerateCodeChallenge(string codeVerifier)
+    {
+        using var sha256 = SHA256.Create();
+        var challengeBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier));
+        return Convert.ToBase64String(challengeBytes)
+            .TrimEnd('=')
+            .Replace('+', '-')
+            .Replace('/', '_');
+    }
+
+    private static string GenerateSecureState()
+    {
+        var bytes = new byte[16];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(bytes);
+        return Convert.ToBase64String(bytes).Replace('+', '-').Replace('/', '_').TrimEnd('=');
+    }
+
+    private string BuildAuthorizationUrl(string codeChallenge, string state)
+    {
+        var scopes = Uri.EscapeDataString("openid email profile");
+        return $"https://accounts.google.com/o/oauth2/v2/auth?" +
+               $"client_id={Uri.EscapeDataString(_clientId)}&" +
+               $"redirect_uri={Uri.EscapeDataString(_redirectUri)}&" +
+               $"response_type=code&" +
+               $"scope={scopes}&" +
+               $"code_challenge={codeChallenge}&" +
+               $"code_challenge_method=S256&" +
+               $"state={state}&" +
+               $"access_type=offline&" +
+               $"prompt=consent";
+    }
+
+    private static int FindAvailablePort()
+    {
+        using var socket = new System.Net.Sockets.TcpListener(IPAddress.Loopback, 0);
+        socket.Start();
+        var port = ((IPEndPoint)socket.LocalEndpoint).Port;
+        socket.Stop();
+        return port;
+    }
+
+    public void Dispose()
+    {
+        _refreshTimer?.Dispose();
+        _authSemaphore?.Dispose();
+    }
+
+    private class TokenResponse
+    {
+        public string AccessToken { get; set; } = string.Empty;
+        public string? RefreshToken { get; set; }
+        public int ExpiresIn { get; set; }
+        public string TokenType { get; set; } = string.Empty;
+        public string? Scope { get; set; }
     }
 }
