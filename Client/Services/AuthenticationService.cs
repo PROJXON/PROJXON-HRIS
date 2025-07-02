@@ -549,10 +549,10 @@ public class AuthenticationService : IAuthenticationService
     {
         try
         {
-            _accessToken = await _tokenStorage.GetTokenAsync("google_access_token");
-            _refreshToken = await _tokenStorage.GetTokenAsync("google_refresh_token");
+            _accessToken = await _tokenStorage.RetrieveTokenAsync("google_access_token");
+            _refreshToken = await _tokenStorage.RetrieveTokenAsync("google_refresh_token");
 
-            var expiryString = await _tokenStorage.GetTokenAsync("google_token_expiry");
+            var expiryString = await _tokenStorage.RetrieveTokenAsync("google_token_expiry");
             if (DateTime.TryParse(expiryString, out var expiry))
             {
                 _tokenExpiry = expiry;
