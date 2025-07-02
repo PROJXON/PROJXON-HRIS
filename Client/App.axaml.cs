@@ -3,11 +3,13 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Avalonia.Markup.Xaml;
 using Client.Services;
 using Client.ViewModels;
 using Client.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Client;
 
@@ -38,6 +40,10 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
+        services.AddLogging();
+
+        RegisterSecureStorage(services);
+
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IAuthenticationService, AuthenticationService>();
 
@@ -53,6 +59,20 @@ public partial class App : Application
 
         var serviceProvider = services.BuildServiceProvider();
         ServiceProvider = serviceProvider;
+    }
+
+    private static void RegisterSecureStorage(IServiceCollection services)
+    {
+        const string applicationName = "Projxon HRIS";
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            services.AddSingleton<ISecureTokenStorage>(provider =>
+            {
+                var logger = provider.GetRequiredService<ILogger<WindowsCredentialStorage>>();
+                return new WindowsCredentialStorage(logger, applicationName);
+            });
+        }
     }
 
     private void DisableAvaloniaDataAnnotationValidation()
