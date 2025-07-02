@@ -8,16 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Client.Services;
 
-public class WindowsCredentialStorage : ISecureTokenStorage
+public class WindowsCredentialStorage(ILogger<WindowsCredentialStorage> logger, string applicationName)
+    : ISecureTokenStorage
 {
-    private readonly ILogger<WindowsCredentialStorage> _logger;
-    private readonly string _applicationName;
-
-    public WindowsCredentialStorage(ILogger<WindowsCredentialStorage> logger, string applicationName)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _applicationName = applicationName ?? throw new ArgumentNullException(nameof(applicationName));
-    }
+    private readonly ILogger<WindowsCredentialStorage> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly string _applicationName = applicationName ?? throw new ArgumentNullException(nameof(applicationName));
 
     public async Task StoreTokenAsync(string key, string token)
     {
