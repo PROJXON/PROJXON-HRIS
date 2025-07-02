@@ -539,7 +539,7 @@ public class AuthenticationService : IAuthenticationService
             await _tokenStorage.StoreTokenAsync("google_refresh_token", _refreshToken);
         }
         
-        _tokenExpiry = DateTime.UtcNow.AddSeconds((double)tokenResponse.ExpiresIn);
+        _tokenExpiry = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn);
 
         await _tokenStorage.StoreTokenAsync("google_access_token", _accessToken);
         await _tokenStorage.StoreTokenAsync("google_token_expiry", _tokenExpiry.ToString("0"));
