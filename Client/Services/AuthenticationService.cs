@@ -46,12 +46,12 @@ public class AuthenticationService : IAuthenticationService
 
         try
         {
-            _clientId = configuration["Auth:ClientId"]
+            _clientId = _configuration["Auth:ClientId"]
                         ?? throw new ConfigurationException("Google 0Auth ClientId in not found in application configuration.",
                             "Authentication service is not properly configured. Please contact support.",
                             "Auth:ClientId");
             
-            _redirectUri = configuration["Authentication:Google:RedirectUri"] 
+            _redirectUri = _configuration["Auth:Google:RedirectUri"] 
                            ?? "http://localhost:8080/callback";
         }
         catch (Exception e) when (e is not ConfigurationException)
@@ -243,14 +243,14 @@ public class AuthenticationService : IAuthenticationService
 
         try
         {
-            var port = FindAvailablePort();
-            var callbackUrl = $"http://localhost:{port}/callback";
-
-            listener = new HttpListener();
-            listener.Prefixes.Add($"http://localhost:{port}/");
-            listener.Start();
-
-            authUrl = authUrl.Replace(_redirectUri, callbackUrl);
+            // var port = FindAvailablePort();
+            // var callbackUrl = $"http://localhost:{port}/callback";
+            //
+            // listener = new HttpListener();
+            // listener.Prefixes.Add($"http://localhost:{port}/");
+            // listener.Start();
+            //
+            // authUrl = authUrl.Replace(_redirectUri, callbackUrl);
 
             try
             {
