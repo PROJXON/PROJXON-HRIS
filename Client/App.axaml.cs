@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Avalonia.Markup.Xaml;
 using Client.Services;
+using Client.Utils.Classes;
 using Client.ViewModels;
 using Client.Views;
 using Microsoft.Extensions.Configuration;
@@ -21,26 +22,34 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-        ConfigureServices();
     }
 
     public override void OnFrameworkInitializationCompleted()
     {
+        DisableAvaloniaDataAnnotationValidation();
+        ConfigureServices();
+        
+        var vm = ServiceProvider?.GetRequiredService<MainWindowViewModel>();
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
-            DisableAvaloniaDataAnnotationValidation();
-            var mainWindow = ServiceProvider?.GetRequiredService<MainWindow>();
+            
+            var mainWindow = new MainWindow
+            {
+                DataContext = vm
+            };
+            
             desktop.MainWindow = mainWindow;
         }
 
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void ConfigureServices()
+    private static void ConfigureServices()
     {
-        var services = new ServiceCollection();
+        var collection = new ServiceCollection();
         
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -48,27 +57,12 @@ public partial class App : Application
             .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production"}.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
+        
+        collection.AddCommonServices(configuration);
 
-        services.AddSingleton<IConfiguration>(configuration);
+        RegisterSecureStorage(collection);
 
-        services.AddLogging();
-
-        RegisterSecureStorage(services);
-
-        services.AddSingleton<INavigationService, NavigationService>();
-        services.AddSingleton<IAuthenticationService, AuthenticationService>();
-
-        services.AddHttpClient();
-
-        services.AddTransient<MainWindowViewModel>();
-        services.AddTransient<LoginViewModel>();
-        services.AddTransient<DashboardViewModel>();
-
-        services.AddTransient<MainWindow>();
-        services.AddTransient<LoginView>();
-        services.AddTransient<DashboardView>();
-
-        var serviceProvider = services.BuildServiceProvider();
+        var serviceProvider = collection.BuildServiceProvider();
         ServiceProvider = serviceProvider;
     }
 
@@ -94,7 +88,7 @@ public partial class App : Application
         }
     }
 
-    private void DisableAvaloniaDataAnnotationValidation()
+    private static void DisableAvaloniaDataAnnotationValidation()
     {
         // Get an array of plugins to remove
         var dataValidationPluginsToRemove =
