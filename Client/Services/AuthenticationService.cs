@@ -243,14 +243,15 @@ public class AuthenticationService : IAuthenticationService
 
         try
         {
-            // var port = FindAvailablePort();
-            // var callbackUrl = $"http://localhost:{port}/callback";
-            //
-            // listener = new HttpListener();
-            // listener.Prefixes.Add($"http://localhost:{port}/");
-            // listener.Start();
-            //
-            // authUrl = authUrl.Replace(_redirectUri, callbackUrl);
+            var port = FindAvailablePort();
+            var callbackUrl = $"http://localhost:{port}/callback";
+            
+            listener = new HttpListener();
+            listener.Prefixes.Add($"http://localhost/{port}/");
+            listener.Start();
+            _logger.LogDebug("Listening for OAuth redirect on: {CallbackUrl}", callbackUrl);
+            
+            authUrl = authUrl.Replace(_redirectUri, callbackUrl);
 
             try
             {
@@ -329,10 +330,10 @@ public class AuthenticationService : IAuthenticationService
                 "An error occurred during sign-in. Please try again.",
                 innerException: e);
         }
-        finally
-        {
-            listener?.Stop();
-        }
+        // finally
+        // {
+        //     listener?.Stop();
+        // }
     }
     
     private async Task SendCallbackResponseAsync(HttpListenerContext context)
@@ -370,7 +371,7 @@ public class AuthenticationService : IAuthenticationService
             context.Response.StatusCode = 200;
             
             await context.Response.OutputStream.WriteAsync(buffer);
-            context.Response.Close();
+            // context.Response.Close();
         }
         catch (Exception ex)
         {
