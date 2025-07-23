@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Client.Services;
+using Client.Utils.Enums;
+using Client.Utils.Exceptions.Auth;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -18,7 +20,7 @@ public partial class LoginViewModel(IAuthenticationService authService)
 
         try
         {
-            await authService.LoginAsync();
+            var success = await authService.LoginAsync();
         }
         finally
         {
