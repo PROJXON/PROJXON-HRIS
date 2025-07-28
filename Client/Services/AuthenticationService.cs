@@ -47,7 +47,7 @@ public class AuthenticationService : IAuthenticationService
         try
         {
             _clientId = _configuration["Auth:ClientId"]
-                        ?? throw new ConfigurationException("Google 0Auth ClientId in not found in application configuration.",
+                        ?? throw new ConfigurationException("Google 0Auth ClientId not found in application configuration.",
                             "Authentication service is not properly configured. Please contact support.",
                             "Auth:ClientId");
             
