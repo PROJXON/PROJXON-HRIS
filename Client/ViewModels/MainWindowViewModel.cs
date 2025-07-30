@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Client.Services;
 using Client.Utils.Classes;
@@ -60,14 +61,14 @@ public partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void NavigateToDashboardCommand()
+    private void NavigateToDashboard()
     {
         _navigationService.NavigateTo(ViewModelType.Dashboard);
     }
 
     [RelayCommand]
-    private void Logout()
+    private async Task Logout()
     {
-        _authService.LogoutAsync();
+        await _authService.LogoutAsync();
     }
 }
