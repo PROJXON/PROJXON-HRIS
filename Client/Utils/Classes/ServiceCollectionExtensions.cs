@@ -20,12 +20,10 @@ public static class ServiceCollectionExtensions
 
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<LoginViewModel>();
-        collection.AddTransient<WebViewLoginWindowViewModel>();
         collection.AddTransient<DashboardViewModel>();
 
         collection.AddTransient<MainWindow>();
         collection.AddTransient<LoginView>();
-        collection.AddTransient<WebViewLoginWindow>();
         collection.AddTransient<DashboardView>();
     }
 }

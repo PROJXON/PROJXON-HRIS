@@ -30,7 +30,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void InitializeView()
     {
-        IsAuthenticated = _authService.IsAuthenticated;
+        IsAuthenticated = true; // TODO set this to _isAuthenticated when implementing login view
 
         if (IsAuthenticated)
         {
