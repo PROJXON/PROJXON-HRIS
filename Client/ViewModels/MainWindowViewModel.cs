@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Client.Services;
@@ -69,6 +70,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task Logout()
     {
-        await _authService.LogoutAsync();
+        Console.WriteLine("Logging out disabled until authentication is implemented.");
+        // Uncomment the line below when authentication is implemented
+        // await _authService.LogoutAsync();
     }
 }
