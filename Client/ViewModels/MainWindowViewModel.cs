@@ -50,6 +50,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             ViewModelType.Login => new LoginViewModel(_authService),
             ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
+            ViewModelType.EmployeesList => new EmployeesListViewModel(_navigationService),
             _ => CurrentViewModel
         };
     }
@@ -67,6 +68,12 @@ public partial class MainWindowViewModel : ViewModelBase
         _navigationService.NavigateTo(ViewModelType.Dashboard);
     }
 
+    [RelayCommand]
+    private void NavigateToEmployeesList()
+    {
+        _navigationService.NavigateTo(ViewModelType.EmployeesList);
+    }
+    
     [RelayCommand]
     private async Task Logout()
     {
