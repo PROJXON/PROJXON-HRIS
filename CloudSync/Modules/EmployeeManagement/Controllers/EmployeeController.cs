@@ -31,13 +31,6 @@ public class EmployeeController(IEmployeeService employeeService) : ControllerBa
                         return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<EmployeeResponse>> CreateEmployee([FromBody] CreateEmployeeRequest request)
-        {
-                        var response = await employeeService.CreateAsync(request);
-                        return Ok(response);
-        }
-
         [HttpPut("{id:int}")]
         public async Task<ActionResult> PutEmployee(int id, [FromBody] UpdateEmployeeRequest request)
         {
