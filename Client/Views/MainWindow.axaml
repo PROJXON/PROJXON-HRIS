@@ -30,6 +30,8 @@
             <StackPanel Orientation="Horizontal">
                 <Button Content="Dashboard"
                         Command="{Binding NavigateToDashboardCommand}" />
+                <Button Content="Employees"
+                        Command="{Binding NavigateToEmployeesListCommand}" />
                 <Button Content="Logout"
                         Command="{Binding LogoutCommand}" 
                         HorizontalAlignment="Right"/>
