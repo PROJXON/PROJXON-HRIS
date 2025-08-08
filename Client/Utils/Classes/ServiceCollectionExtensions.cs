@@ -21,9 +21,11 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<DashboardViewModel>();
+        collection.AddTransient<EmployeesListViewModel>();
 
         collection.AddTransient<MainWindow>();
         collection.AddTransient<LoginView>();
         collection.AddTransient<DashboardView>();
+        collection.AddTransient<EmployeesListView>();
     }
 }
