@@ -42,4 +42,8 @@
       <Folder Include="Modules\CandidateManagement\Services\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="appsettings.Development.json" />
+    </ItemGroup>
+
 </Project>
