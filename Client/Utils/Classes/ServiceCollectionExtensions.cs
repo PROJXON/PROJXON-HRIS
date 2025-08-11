@@ -27,6 +27,8 @@ public static class ServiceCollectionExtensions
             client.DefaultRequestHeaders.Add("User-Agent", "HRIS-App/1.0");
         });
 
+        collection.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<DashboardViewModel>();
