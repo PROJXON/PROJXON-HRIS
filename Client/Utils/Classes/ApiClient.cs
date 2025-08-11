@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -40,9 +41,22 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
         return await GetAllAsync<T>(endpoint, cancellationToken);
     }
 
-    public async Task<ApiResponse<object?>> PostAsync<T>(string endpoint, object data, CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<T>> PostAsync<T>(string endpoint, object data, CancellationToken cancellationToken = default)
     {
-        throw new System.NotImplementedException();
+        try
+        {
+            logger.LogDebug("POST request to {Endpoint}", endpoint);
+
+            var json = JsonSerializer.Serialize(data, _jsonOptions);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(endpoint, content, cancellationToken);
+            return await ProcessResponse<T>(response, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            return HandleException<T>(e);
+        }
     }
 
     public async Task<ApiResponse<object?>> PutAsync<T>(string endpoint, int id, object data, CancellationToken cancellationToken = default)
