@@ -9,7 +9,5 @@ namespace Client.Models.EmployeeManagement;
 
 public interface IEmployeeRepository : IRepository<EmployeeResponse>
 {
-    Task<Result<IEnumerable<EmployeeResponse>>> GetByDepartmentAsync(int departmentId, CancellationToken cancellationToken = default);
-    Task<Result<IEnumerable<EmployeeResponse>>> GetActiveEmployeesAsync(CancellationToken cancellationToken = default);
-    Task<Result<IEnumerable<EmployeeResponse>>> SearchEmployeesAsync(string searchTerm, CancellationToken cancellationToken = default);
+
 }
