@@ -591,7 +591,6 @@ namespace CloudSync.Migrations
                         .HasColumnName("description");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)")
                         .HasColumnName("name");
@@ -888,7 +887,6 @@ namespace CloudSync.Migrations
                                 .HasColumnName("basic_info_ethnicity");
 
                             b1.Property<string>("FirstName")
-                                .IsRequired()
                                 .HasMaxLength(40)
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_first_name");
@@ -993,7 +991,6 @@ namespace CloudSync.Migrations
                                         .HasColumnName("id");
 
                                     b2.Property<string>("AddressLine1")
-                                        .IsRequired()
                                         .HasMaxLength(80)
                                         .HasColumnType("character varying(80)")
                                         .HasColumnName("contact_info_address_address_line1");
@@ -1004,25 +1001,21 @@ namespace CloudSync.Migrations
                                         .HasColumnName("contact_info_address_address_line2");
 
                                     b2.Property<string>("City")
-                                        .IsRequired()
                                         .HasMaxLength(50)
                                         .HasColumnType("character varying(50)")
                                         .HasColumnName("contact_info_address_city");
 
                                     b2.Property<string>("Country")
-                                        .IsRequired()
                                         .HasMaxLength(50)
                                         .HasColumnType("character varying(50)")
                                         .HasColumnName("contact_info_address_country");
 
                                     b2.Property<string>("PostalCode")
-                                        .IsRequired()
                                         .HasMaxLength(15)
                                         .HasColumnType("character varying(15)")
                                         .HasColumnName("contact_info_address_postal_code");
 
                                     b2.Property<string>("StateOrProvince")
-                                        .IsRequired()
                                         .HasMaxLength(50)
                                         .HasColumnType("character varying(50)")
                                         .HasColumnName("contact_info_address_state_or_province");
