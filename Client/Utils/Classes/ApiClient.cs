@@ -73,13 +73,35 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
         }
         catch (Exception e)
         {
-            HandleException<T>(e);
+            return HandleException<T>(e);
         }
     }
 
-    public async Task<ApiResponse<object?>> DeleteAsync<T>(string endpoint, CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<object?>> DeleteAsync<T>(string endpoint, int id, CancellationToken cancellationToken = default)
     {
-        throw new System.NotImplementedException();
+        try
+        {
+            logger.LogDebug("DELETE request to {Endpoint}/{Id}", endpoint, id);
+
+            var response = await httpClient.DeleteAsync($"{endpoint}/{id}", cancellationToken);
+
+            return new ApiResponse<object?>
+            {
+                IsSuccess = response.IsSuccessStatusCode,
+                StatusCode = (int)response.StatusCode,
+                Data = null,
+                ErrorMessage = response.IsSuccessStatusCode ? string.Empty : $"HTTP {response.StatusCode}"
+            };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse<object?>
+            {
+                IsSuccess = false,
+                ErrorMessage = e.Message,
+                StatusCode = 0
+            };
+        }
     }
     
     
