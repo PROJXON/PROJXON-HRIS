@@ -27,14 +27,17 @@ public abstract class BaseRepository<TEntity>(IApiClient apiClient, ILogger logg
     public async Task<Result<TEntity>> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         var response = await ApiClient.GetByIdAsync<TEntity>(EntityEndpoint, id, cancellationToken);
-        return response.IsSuccess && response.Data != null
+        return response is { IsSuccess: true, Data: not null }
             ? Result<TEntity>.Success(response.Data)
             : Result<TEntity>.Failure(response.ErrorMessage);
     }
 
     public async Task<Result<TEntity>> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        throw new System.NotImplementedException();
+        var response = await ApiClient.PostAsync<TEntity>(EntityEndpoint, entity, cancellationToken);
+        return response is { IsSuccess: true, Data: not null }
+            ? Result<TEntity>.Success(response.Data)
+            : Result<TEntity>.Failure(response.ErrorMessage);
     }
 
     public async Task<Result<TEntity>> UpdateAsync(int id, TEntity entity, CancellationToken cancellationToken = default)
