@@ -4,5 +4,6 @@ public enum ViewModelType
 {
     Login,
     Dashboard,
-    EmployeesList
+    EmployeesList,
+    EmployeeDetails
 }
