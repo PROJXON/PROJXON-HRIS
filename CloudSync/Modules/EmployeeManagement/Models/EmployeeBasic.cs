@@ -5,7 +5,6 @@ namespace CloudSync.Modules.EmployeeManagement.Models;
 
 public class EmployeeBasic
 {
-    [Required]
     [StringLength(40)]
     public string? FirstName { get; set; }
     
