@@ -24,7 +24,7 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
     {
         try
         {
-            logger.LogDebug("GET request to {Endpoint}", endpoint);
+            logger.LogDebug("GET request to {Endpoint}", httpClient.BaseAddress + endpoint);
             
             var response = await httpClient.GetAsync(endpoint, cancellationToken);
             return await ProcessResponse<T>(response, cancellationToken);
@@ -104,8 +104,6 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
         }
     }
     
-    
-
     private ApiResponse<T> HandleException<T>(Exception e)
     {
         logger.LogError(e, "API request failed with exception.");
