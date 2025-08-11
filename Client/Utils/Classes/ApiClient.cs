@@ -23,9 +23,9 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
     {
         try
         {
-            _logger.LogDebug("GET request to {Endpoint}", endpoint);
+            logger.LogDebug("GET request to {Endpoint}", endpoint);
             
-            var response = await _httpClient.GetAsync(endpoint, cancellationToken);
+            var response = await httpClient.GetAsync(endpoint, cancellationToken);
             return await ProcessResponse<T>(response, cancellationToken);
         }
         catch (Exception e)
@@ -36,7 +36,8 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
 
     public async Task<ApiResponse<T>> GetByIdAsync<T>(string endpoint, int id, CancellationToken cancellationToken = default)
     {
-        throw new System.NotImplementedException();
+        var fullEndpoint = $"{endpoint}/{id}";
+        return await GetAllAsync<T>(endpoint, cancellationToken);
     }
 
     public async Task<ApiResponse<object?>> PostAsync<T>(string endpoint, object data, CancellationToken cancellationToken = default)
@@ -58,7 +59,7 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
 
     private ApiResponse<T> HandleException<T>(Exception e)
     {
-        _logger.LogError(e, "API request failed with exception.");
+        logger.LogError(e, "API request failed with exception.");
 
         var errorMessage = e switch
         {
@@ -107,7 +108,7 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
             }
             catch (JsonException e)
             {
-                _logger.LogError(e, "Failed to deserialize response from {StatusCode}.", response.StatusCode);
+                logger.LogError(e, "Failed to deserialize response from {StatusCode}.", response.StatusCode);
                 apiResponse.IsSuccess = false;
                 apiResponse.ErrorMessage = "Invalid response format.";
             }
@@ -115,7 +116,7 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
         else
         {
             apiResponse.ErrorMessage = $"HTTP {response.StatusCode}: {content}";
-            _logger.LogWarning("API request failed with status {StatusCode}: {Content}", response.StatusCode, content);
+            logger.LogWarning("API request failed with status {StatusCode}: {Content}", response.StatusCode, content);
         }
 
         return apiResponse;
