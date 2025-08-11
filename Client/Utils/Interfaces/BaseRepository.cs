@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client.Utils.Classes;
@@ -15,9 +16,12 @@ public abstract class BaseRepository<TEntity, TKey>(IApiClient apiClient, ILogge
     protected abstract string EntityEndpoint { get; }
 
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync<T>()
+    public async Task<Result<IEnumerable<TEntity>>> GetAllAsync<T>(CancellationToken cancellationToken = default)
     {
-        throw new System.NotImplementedException();
+        var response = await _apiClient.GetAllAsync<IEnumerable<TEntity>>(EntityEndpoint, cancellationToken);
+        return response.IsSuccess
+            ? Result<IEnumerable<TEntity>>.Success(response.Data ?? [])
+            : Result<IEnumerable<TEntity>>.Failure(response.ErrorMessage);
     }
 
     public async Task<Result<TEntity>> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
