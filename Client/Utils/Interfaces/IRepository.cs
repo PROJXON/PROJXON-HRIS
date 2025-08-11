@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Client.Utils.Interfaces;
 
-public interface IRepository
+public interface IRepository<TEntity, TKey> where TEntity : class
 {
-    Task<IEnumerable<T>> GetAllAsync<T>();
+    Task<IEnumerable<TEntity>> GetAllAsync<T>();
 }
