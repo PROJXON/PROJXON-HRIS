@@ -42,7 +42,10 @@ public abstract class BaseRepository<TEntity>(IApiClient apiClient, ILogger logg
 
     public async Task<Result<TEntity>> UpdateAsync(int id, TEntity entity, CancellationToken cancellationToken = default)
     {
-        throw new System.NotImplementedException();
+        var response = await ApiClient.PutAsync<TEntity>(EntityEndpoint, id!, entity, cancellationToken);
+        return response is { IsSuccess: true, Data: not null }
+            ? Result<TEntity>.Success(response.Data)
+            : Result<TEntity>.Failure(response.ErrorMessage);
     }
 
     public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
