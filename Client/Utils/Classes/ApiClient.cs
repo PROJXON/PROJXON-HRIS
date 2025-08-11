@@ -11,22 +11,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Client.Utils.Classes;
 
-public class ApiClient : IApiClient
+public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiClient
 {
-    private readonly HttpClient _httpClient;
-    private readonly ILogger<ApiClient> _logger;
-    private readonly JsonSerializerOptions _jsonOptions;
-
-    public ApiClient(HttpClient httpClient, ILogger<ApiClient> logger)
+    private readonly JsonSerializerOptions _jsonOptions = new()
     {
-        _httpClient = httpClient;
-        _logger = logger;
-        _jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-    }
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
 
     public async Task<ApiResponse<T>> GetAllAsync<T>(string endpoint, CancellationToken cancellationToken = default)
     {
