@@ -7,7 +7,7 @@ namespace Client.Utils.Interfaces;
 
 public interface IRepository<TEntity, TKey> where TEntity : class
 {
-    Task<IEnumerable<TEntity>> GetAllAsync<T>();
+    Task<Result<IEnumerable<TEntity>>> GetAllAsync<T>();
     Task<Result<TEntity>> GetByIdAsync(TKey id, CancellationToken cancellationToken = default);
     Task<Result<TEntity>> CreateAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task<Result<TEntity>> UpdateAsync(TKey id, TEntity entity, CancellationToken cancellationToken = default);
