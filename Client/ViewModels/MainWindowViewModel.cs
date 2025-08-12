@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Client.Models.EmployeeManagement;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Client.Services;
@@ -12,6 +13,7 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
     private readonly IAuthenticationService _authService;
+    private readonly IEmployeeRepository _employeeRepository;
 
     [ObservableProperty]
     private ViewModelBase? _currentViewModel;
@@ -19,10 +21,11 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isAuthenticated;
 
-    public MainWindowViewModel(INavigationService navigationService, IAuthenticationService authService)
+    public MainWindowViewModel(INavigationService navigationService, IAuthenticationService authService, IEmployeeRepository employeeRepository)
     {
         _navigationService = navigationService;
         _authService = authService;
+        _employeeRepository = employeeRepository;
 
         _navigationService.NavigationRequested += OnNavigationRequested;
         _authService.AuthenticationChanged += OnIsAuthenticatedChanged;
@@ -50,7 +53,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             ViewModelType.Login => new LoginViewModel(_authService),
             ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
-            ViewModelType.EmployeesList => new EmployeesListViewModel(_navigationService),
+            ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
             _ => CurrentViewModel
         };
     }
