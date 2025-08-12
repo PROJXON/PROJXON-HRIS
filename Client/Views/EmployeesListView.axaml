@@ -2,7 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Client.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Client.Views.EmployeesListView">
-    Test
+             x:Class="Client.Views.EmployeesListView"
+             x:DataType="vm:EmployeesListViewModel">
+    <DataGrid ItemsSource="{Binding Employees}" AutoGenerateColumns="False" Margin="10">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+            <DataGridTemplateColumn Header="First Name" Width="*">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding BasicInfo.FirstName}"
+                                Command="{Binding OpenEmployeeDetailsPage, RelativeSource={RelativeSource AncestorType=vm:EmployeesListViewModel}}"
+                                CommandParameter="{Binding Id}"
+                                Classes="hyperLink" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
 </UserControl>

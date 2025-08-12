@@ -38,7 +38,6 @@ public partial class EmployeesListViewModel(
                     Employees.Clear();
                     foreach (var employee in result.Value)
                     {
-                        Console.WriteLine(employee);
                         Employees.Add(employee);
                     }
                 });
