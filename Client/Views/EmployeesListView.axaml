@@ -18,6 +18,7 @@
             <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
             <DataGridTextColumn Header="First Name" Binding="{Binding BasicInfo.FirstName}" />
             <DataGridTextColumn Header="Last Name" Binding="{Binding BasicInfo.LastName}" />
+            <DataGridTextColumn Header="Department" Binding="{Binding PositionDetails.PositionName}"/>
             <DataGridTemplateColumn>
                 <DataTemplate x:DataType="responses:EmployeeResponse">
                     <Button Background="Transparent" BorderThickness="0" Cursor="Hand" Foreground="Blue" Padding="0"
@@ -27,7 +28,6 @@
                     </Button>
                 </DataTemplate>
             </DataGridTemplateColumn>
-            <DataGridTextColumn Header="Department" Binding="{Binding PositionDetails.PositionName}"/>
         </DataGrid.Columns>
     </DataGrid>
 </UserControl>
