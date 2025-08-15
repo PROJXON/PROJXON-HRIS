@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using Client.Models.EmployeeManagement;
@@ -33,13 +34,10 @@ public partial class EmployeesListViewModel(
             var result = await employeeRepository.GetAllAsync<EmployeeResponse>();
             if (result.IsSuccess)
             {
+                var employees = result.Value?.ToList() ?? [];
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    Employees.Clear();
-                    foreach (var employee in result.Value)
-                    {
-                        Employees.Add(employee);
-                    }
+                    Employees = new ObservableCollection<EmployeeResponse>(employees);
                 });
             }
             else
