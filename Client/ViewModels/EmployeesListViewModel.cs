@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using Client.Models.EmployeeManagement;
 using Client.Services;
 using Client.Utils.Enums;
+using Client.Utils.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Shared.EmployeeManagement.Responses;
@@ -15,7 +16,7 @@ namespace Client.ViewModels;
 public partial class EmployeesListViewModel(
     IEmployeeRepository employeeRepository,
     INavigationService navigationService)
-    : ViewModelBase
+    : ViewModelBase, INavigationAware
 {
     [ObservableProperty]
     private ObservableCollection<EmployeeResponse> _employees = [];
@@ -25,8 +26,19 @@ public partial class EmployeesListViewModel(
     
     [ObservableProperty]
     private string _errorMessage = string.Empty;
+    
+    public async Task OnNavigatedToAsync()
+    {
+        if (IsLoading) return;
+        await LoadEmployeesCommand.ExecuteAsync(null);
+    }
 
-    [RelayCommand]
+    public Task OnNavigatedFromAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand(AllowConcurrentExecutions = false)]
     private async Task LoadEmployeesAsync()
     {
         await ExecuteWithLoading(async () =>
