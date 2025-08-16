@@ -62,7 +62,7 @@ public partial class EmployeesListViewModel(
     [RelayCommand]
     private void OpenEmployeeDetailsPage(int employeeId)
     {
-        navigationService.NavigateTo(ViewModelType.EmployeeDetails);
+        navigationService.NavigateTo(ViewModelType.EmployeeDetails, employeeId);
     }
 
     private async Task ExecuteWithLoading(Func<Task> operation)
