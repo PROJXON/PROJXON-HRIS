@@ -16,7 +16,7 @@ namespace Client.ViewModels;
 public partial class EmployeesListViewModel(
     IEmployeeRepository employeeRepository,
     INavigationService navigationService)
-    : ViewModelBase, INavigationAware
+    : ViewModelBase
 {
     [ObservableProperty]
     private ObservableCollection<EmployeeResponse> _employees = [];
@@ -27,15 +27,10 @@ public partial class EmployeesListViewModel(
     [ObservableProperty]
     private string _errorMessage = string.Empty;
     
-    public async Task OnNavigatedToAsync()
+    public async override Task OnNavigatedToAsync()
     {
         if (IsLoading) return;
         await LoadEmployeesCommand.ExecuteAsync(null);
-    }
-
-    public Task OnNavigatedFromAsync()
-    {
-        return Task.CompletedTask;
     }
 
     [RelayCommand(AllowConcurrentExecutions = false)]
