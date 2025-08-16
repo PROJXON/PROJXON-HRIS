@@ -23,9 +23,7 @@ public class NavigationService : INavigationService
             }
         }
     }
-
-    public void NavigateTo(ViewModelType viewModel, int id)
-    {
+    
     public async Task NavigateTo(ViewModelType viewModel, int id)
     {
         if (NavigationRequested is not null)
