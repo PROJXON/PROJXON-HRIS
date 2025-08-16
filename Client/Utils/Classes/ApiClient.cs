@@ -38,7 +38,18 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
     public async Task<ApiResponse<T>> GetByIdAsync<T>(string endpoint, int id, CancellationToken cancellationToken = default)
     {
         var fullEndpoint = $"{endpoint}/{id}";
-        return await GetAllAsync<T>(endpoint, cancellationToken);
+        try
+        {
+            var fullEndpoint = $"{endpoint}/{id}";
+            logger.LogDebug("GET request to {Endpoint}", httpClient.BaseAddress + fullEndpoint);
+
+            var response = await httpClient.GetAsync(fullEndpoint, cancellationToken);
+            return await ProcessResponse<T>(response, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            return HandleException<T>(e);
+        }
     }
 
     public async Task<ApiResponse<T>> PostAsync<T>(string endpoint, object data, CancellationToken cancellationToken = default)
