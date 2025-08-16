@@ -50,7 +50,7 @@ public abstract class BaseRepository<TEntity>(IApiClient apiClient, ILogger logg
 
     public async Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var response = await ApiClient.DeleteAsync<TEntity>(EntityEndpoint, id!, cancellationToken);
+        var response = await ApiClient.DeleteAsync<TEntity>(EntityEndpoint, id, cancellationToken);
         return response.IsSuccess 
             ? Result.Success()
             : Result.Failure(response.ErrorMessage);
