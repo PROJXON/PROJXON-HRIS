@@ -38,7 +38,6 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
         var fullEndpoint = $"{endpoint}/{id}";
         try
         {
-            var fullEndpoint = $"{endpoint}/{id}";
             logger.LogDebug("GET request to {Endpoint}", httpClient.BaseAddress + fullEndpoint);
 
             var response = await httpClient.GetAsync(fullEndpoint, cancellationToken);
