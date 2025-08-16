@@ -4,7 +4,8 @@ namespace Client.Utils.Interfaces;
 
 public interface INavigationAware
 {
-    Task OnNavigatedTo(NavigationReason reason);
+    Task OnNavigatedToAsync() => Task.CompletedTask;
+    Task OnNavigatedFromAsync() => Task.CompletedTask;
 }
 
 public enum NavigationReason
