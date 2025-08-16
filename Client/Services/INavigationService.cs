@@ -10,4 +10,5 @@ public interface INavigationService
 {
     event Func<object?, NavigationEventArgs, Task>? NavigationRequested;
     Task NavigateTo(ViewModelType viewModelType);
+    Task NavigateTo(ViewModelType viewModelType, int id);
 }
