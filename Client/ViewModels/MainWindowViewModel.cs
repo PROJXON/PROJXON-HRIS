@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Client.Services;
 using Client.Utils.Classes;
 using Client.Utils.Enums;
+using Client.Utils.Interfaces;
 
 namespace Client.ViewModels;
 
@@ -47,15 +48,27 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    private void OnNavigationRequested(object? sender, NavigationEventArgs e)
+    private async Task OnNavigationRequested(object? sender, NavigationEventArgs e)
     {
-        CurrentViewModel = e.ViewModelType switch
-        {
-            ViewModelType.Login => new LoginViewModel(_authService),
-            ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
-            ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
-            _ => CurrentViewModel
-        };
+            var newVm = e.ViewModelType switch
+            {
+                ViewModelType.Login => new LoginViewModel(_authService),
+                ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
+                ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
+                _ => CurrentViewModel
+            };
+
+            if (newVm is null)
+                return;
+
+            if (CurrentViewModel is INavigationAware oldAwareVm)
+                await oldAwareVm.OnNavigatedFromAsync();
+
+            CurrentViewModel = newVm;
+
+            if (newVm is INavigationAware newAwareVm)
+                await newAwareVm.OnNavigatedToAsync();
+
     }
 
     private void OnIsAuthenticatedChanged(object? sender, AuthenticationChangedEventArgs e)
