@@ -10,7 +10,7 @@ using Client.Utils.Interfaces;
 
 namespace Client.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel : ObservableObject
 {
     private readonly INavigationService _navigationService;
     private readonly IAuthenticationService _authService;
@@ -68,7 +68,6 @@ public partial class MainWindowViewModel : ViewModelBase
 
             if (newVm is INavigationAware newAwareVm)
                 await newAwareVm.OnNavigatedToAsync();
-
     }
 
     private void OnIsAuthenticatedChanged(object? sender, AuthenticationChangedEventArgs e)
