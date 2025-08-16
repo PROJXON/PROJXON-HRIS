@@ -26,6 +26,17 @@ public class NavigationService : INavigationService
 
     public void NavigateTo(ViewModelType viewModel, int id)
     {
-        
+    public async Task NavigateTo(ViewModelType viewModel, int id)
+    {
+        if (NavigationRequested is not null)
+        {
+            var handlers = NavigationRequested.GetInvocationList()
+                .Cast<Func<object?, NavigationEventArgs, Task>>();
+
+            foreach (var handler in handlers)
+            {
+                await handler(this, new NavigationEventArgs(viewModel, id));
+            }
+        }
     }
 }
