@@ -30,6 +30,8 @@
             <StackPanel Orientation="Horizontal">
                 <Button Content="Dashboard"
                         Command="{Binding NavigateToDashboardCommand}" />
+                <Button Content="Employees"
+                        Command="{Binding NavigateToEmployeesListCommand}" />
                 <Button Content="Logout"
                         Command="{Binding LogoutCommand}" 
                         HorizontalAlignment="Right"/>
@@ -41,6 +43,9 @@
             <ContentControl.DataTemplates>
                 <DataTemplate DataType="{x:Type vm:LoginViewModel}">
                     <views:LoginView />
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:EmployeesListViewModel}">
+                    <views:EmployeesListView />
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
                     <views:DashboardView />

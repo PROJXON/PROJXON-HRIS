@@ -9,22 +9,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Models\" />
         <AvaloniaResource Include="Assets\**" />
         <Folder Include="Utils\Exceptions\UserOperations\" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.2.1" />
+        <PackageReference Include="Avalonia" Version="11.3.4" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.4" />
         <PackageReference Include="Avalonia.Controls.WebView" Version="11.3.5" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.2.1" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.1" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.1" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.4" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.4" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.4" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.2.1">
-            <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-            <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
-        </PackageReference>
+        <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.0.4" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
         <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
@@ -39,5 +36,9 @@
 
     <ItemGroup>
         <AvaloniaUILicenseKey Include="avln_off_key:v1:AQAAAIAAAAAfiwgAAAAAAAADY2RAAGZzAwsQfSz4gDiIZgSJJeZVsgJp2cSyxJz8vMxE3cTk5NSc1KLEklTdnMykosSizNRicUeorJ5zfl5JUX5OsZ5vakpmoiSmeHhqUlhmark43LyCxCKggbrJ+XnF+TmpnKXFiempVsUp2QD8sADsmgAAAAABAAA+HPAQILqv7xmi8fkILHRPW2hMp1/WwD/sRwd0GK4xmjQU8py2fMW/efuUUFkFj6Q/h9sm0/kloUQHAWiYFuxNVZNbXdnigEKKNGDHDHZJnfIhGL/fz5eqPIQdwLd2aF7lRGQeBzbPvI1AyFK6tskHmwEqMdwO5lzmSykdG2vaRmipHEZFimHDnJP2XC2w7/5Zg0vXfDIq6Of56ZYYiKQo9goOzgOnXvjl540LNCOGyb2FzSQOWkg0fyBsw7tYiRO68IIaDN5QOBzH45tM6eW6R9vvjyZaFD1hAwmDxZB2XISF5Ed4xTvEjje+kBgqqFNxWo9MDtV0aeyTiJy9uzPn:AQAAAIQAAAAfiwgAAAAAAAADY2RAAGZzAwsQfSz4gDiIZgSJJeZVsgJp2cSyxJz8vMxE3cTk5NSc1KLEklTdnMykosSizNRicUeorJ5zfl5JUX5OsZ5vakpmoiSmeHhqUlhmark43LyCxCKggbrJ+XnF+TmpvKXFiempVkWleSWZuakA+Lt3cJ4AAAAAAQAAFILFWk1uqqwvM8BUQCPYAT9CYKDlx8gK9N9LnAlkmU9w7RiNVRYzPOwzDTwqlZKPZoaFlJOyZ2ha1lRCblfP9yKSzJ/NniJTHJXWcUmpfcg0UT/KAS0Ufmvgh+Orinz6np9K6/kucvvsX1KnC95ahgnoixi8gOKBqLwhIt3tjk//Pi59XJc/Wex3FexpHd7zLUpO9V/wMmrFARadaMSMYn4PMJaz9Ky2RIAqi2H7UzZVi4c2u+BFsFxZ+4cR3MeMJ+SFJPG4EsFX7OMM2X0iQr7dFaW3BI1RFHc6l206JYnLmLCf8iaINs+WSyNfFuMgexG8nb/8jiTX7MhP+w0nzA==" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Styles\Styles.axaml" />
     </ItemGroup>
 </Project>

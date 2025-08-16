@@ -36,13 +36,13 @@ public class AuthenticationService : IAuthenticationService
     public event EventHandler<AuthenticationChangedEventArgs>? AuthenticationChanged;
     public bool IsAuthenticated => !string.IsNullOrEmpty(_accessToken) && DateTime.UtcNow < _tokenExpiry;
 
-    public AuthenticationService(HttpClient httpClient, ILogger<AuthenticationService> logger,
+    public AuthenticationService(IHttpClientFactory httpClientFactory, ILogger<AuthenticationService> logger,
         ISecureTokenStorage tokenStorage, IConfiguration configuration)
     {
-        _httpClient = httpClient;
         _logger = logger;
         _tokenStorage = tokenStorage;
         _configuration = configuration;
+        _httpClient = httpClientFactory.CreateClient("OAuth");
 
         try
         {

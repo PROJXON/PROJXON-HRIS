@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:Client.ViewModels"
+             xmlns:responses="clr-namespace:Shared.EmployeeManagement.Responses;assembly=Shared"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Client.Views.EmployeesListView"
+             x:DataType="viewModels:EmployeesListViewModel"
+             x:Name="Root">
+    <Design.DataContext>
+        <viewModels:EmployeesListViewModel/>
+    </Design.DataContext>
+
+    <DataGrid Margin="20" ItemsSource="{Binding Employees}" AutoGenerateColumns="False" IsReadOnly="True"
+              GridLinesVisibility="All" BorderThickness="1" BorderBrush="Gray" CanUserSortColumns="True" CanUserReorderColumns="True" CanUserResizeColumns="True">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
+            <DataGridTextColumn Header="First Name" Binding="{Binding BasicInfo.FirstName}" />
+            <DataGridTextColumn Header="Last Name" Binding="{Binding BasicInfo.LastName}" />
+            <DataGridTextColumn Header="Department" Binding="{Binding PositionDetails.PositionName}"/>
+            <DataGridTemplateColumn>
+                <DataTemplate x:DataType="responses:EmployeeResponse">
+                    <Button Background="Transparent" BorderThickness="0" Cursor="Hand" Foreground="Blue" Padding="0"
+                            Command="{Binding #Root.((viewModels:EmployeesListViewModel)DataContext).OpenEmployeeDetailsPageCommand, FallbackValue={x:Null}}"
+                            CommandParameter="{Binding Id}">
+                        <TextBlock Text="View Details" TextDecorations="Underline" />
+                    </Button>
+                </DataTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>
