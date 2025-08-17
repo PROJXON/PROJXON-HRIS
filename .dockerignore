@@ -1,0 +1,41 @@
+﻿# Git
+**/.git
+**/.gitignore
+
+# Development Files
+**/.vs
+**/.vscode
+**/.idea
+
+# Build Outputs
+**/bin
+**/obj
+**/TestResults
+
+# Docker
+**/.dockerignore
+**/docker-compose*
+**/Dockerfile*
+
+# Tests
+Tests/
+**/*.Tests.*
+
+# Client App
+/Client
+
+# Temporary Files
+**/tmp
+**/temp
+**/.tmp
+
+# Misc Files
+LICENSE
+**/*.md
+**/.project
+**/.settings
+**/.toolstarget
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/azds.yaml
