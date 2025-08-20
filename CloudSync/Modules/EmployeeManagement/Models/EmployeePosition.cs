@@ -37,6 +37,10 @@ public class EmployeePosition
     public DateTime? OnboardingDate { get; set; }
     
     public DateTime? OffboardingDate { get; set; }
+
+    public DateTime? HireDate { get; set; }
+    
+    public DateTime? ExitDate { get; set; }
     
     [StringLength(30)]
     public string? EmploymentStatus { get; set; }
