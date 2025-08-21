@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using Avalonia.Markup.Xaml;
 using Client.Services;
 using Client.Utils.Classes;
+using Client.Utils.Exceptions.ApplicationState;
 using Client.ViewModels;
 using Client.Views;
 using Microsoft.Extensions.Configuration;
@@ -49,16 +50,19 @@ public partial class App : Application
 
     private static void ConfigureServices()
     {
+        
         var collection = new ServiceCollection();
         
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production"}.json", optional: true)
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development"}.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
         
-        collection.AddCommonServices(configuration);
+        collection.AddCommonServices(configuration,
+            configuration["CloudSyncUrl"] ?? throw new ConfigurationException(
+                "CloudSyncUrl not found in applicaton configuration.",
+                "Networking is not properly configured. Please contact support.", "CloudSyncUrl"));
 
         RegisterSecureStorage(collection);
 

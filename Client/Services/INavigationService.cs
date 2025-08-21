@@ -1,12 +1,14 @@
 ﻿using Client.Utils.Enums;
 
 using System;
+using System.Threading.Tasks;
 using Client.Utils.Classes;
 
 namespace Client.Services;
 
 public interface INavigationService
 {
-    event EventHandler<NavigationEventArgs>? NavigationRequested;
-    void NavigateTo(ViewModelType viewModelType);
+    event Func<object?, NavigationEventArgs, Task>? NavigationRequested;
+    Task NavigateTo(ViewModelType viewModelType);
+    Task NavigateTo(ViewModelType viewModelType, int id);
 }

@@ -1,4 +1,7 @@
-﻿using Client.Services;
+﻿using System;
+using Client.Models.EmployeeManagement;
+using Client.Services;
+using Client.Utils.Interfaces;
 using Client.ViewModels;
 using Client.Views;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +11,7 @@ namespace Client.Utils.Classes;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddCommonServices(this IServiceCollection collection, IConfigurationRoot configuration)
+    public static void AddCommonServices(this IServiceCollection collection, IConfigurationRoot configuration, string baseUrl)
     {
         collection.AddSingleton<IConfiguration>(configuration);
         collection.AddSingleton<INavigationService, NavigationService>();
@@ -16,14 +19,24 @@ public static class ServiceCollectionExtensions
 
         collection.AddLogging();
         
-        collection.AddHttpClient();
+        collection.AddHttpClient("OAuth");
+        collection.AddHttpClient<IApiClient, ApiClient>("Api", client =>
+        {
+            client.BaseAddress = new Uri(baseUrl);
+            client.Timeout = TimeSpan.FromSeconds(30);
+            client.DefaultRequestHeaders.Add("User-Agent", "HRIS-App/1.0");
+        });
+
+        collection.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<DashboardViewModel>();
+        collection.AddTransient<EmployeesListViewModel>();
 
         collection.AddTransient<MainWindow>();
         collection.AddTransient<LoginView>();
         collection.AddTransient<DashboardView>();
+        collection.AddTransient<EmployeesListView>();
     }
 }
