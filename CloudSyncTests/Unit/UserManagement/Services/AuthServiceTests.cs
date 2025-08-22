@@ -161,7 +161,7 @@ public class AuthServiceTests
 
     #endregion
 
-    #region LoginAsync Tests
+    #region LoginAsync CloudSyncTests
 
     [Fact]
     public async Task LoginAsync_WithExistingUser_ReturnsSuccessfulLogin()
