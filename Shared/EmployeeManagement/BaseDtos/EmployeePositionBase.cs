@@ -13,6 +13,8 @@ public class EmployeePositionBase
     public ManagerOrCoachSummary? Coach { get; set; }
     public DateTime? OnboardingDate { get; set; }
     public DateTime? OffboardingDate { get; set; }
+    public DateTime? HireDate { get; set; }
+    public DateTime? ExitDate { get; set; }
     public string? EmploymentStatus { get; set; }
     public string? EmploymentType { get; set; }
     public string? RecruitingSource { get; set; }
