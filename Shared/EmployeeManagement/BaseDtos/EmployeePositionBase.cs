@@ -18,4 +18,8 @@ public class EmployeePositionBase
     public string? EmploymentStatus { get; set; }
     public string? EmploymentType { get; set; }
     public string? RecruitingSource { get; set; }
+    public bool? RehireEligible { get; set; }
+    public DateTime? ProbationPeriod { get; set; }
+    public DateTime? ConfirmationDate { get; set; }
+    public string? TerminationReason { get; set; }
 }
