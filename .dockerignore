@@ -1,41 +1,32 @@
-﻿# Git
+# Include any files or directories that you don't want to be copied to your
+# container here (e.g., local build artifacts, temporary files, etc.).
+#
+# For more help, visit the .dockerignore file reference guide at
+# https://docs.docker.com/go/build-context-dockerignore/
+
+**/.DS_Store
+**/.classpath
+**/.dockerignore
+**/.env
 **/.git
 **/.gitignore
-
-# Development Files
-**/.vs
-**/.vscode
-**/.idea
-
-# Build Outputs
-**/bin
-**/obj
-**/TestResults
-
-# Docker
-**/.dockerignore
-**/docker-compose*
-**/Dockerfile*
-
-# Tests
-Tests/
-**/*.Tests.*
-
-# Client App
-/Client
-
-# Temporary Files
-**/tmp
-**/temp
-**/.tmp
-
-# Misc Files
-LICENSE
-**/*.md
 **/.project
 **/.settings
 **/.toolstarget
+**/.vs
+**/.vscode
 **/*.*proj.user
 **/*.dbmdl
 **/*.jfm
-**/azds.yaml
+**/bin
+**/charts
+**/docker-compose*
+**/compose.y*ml
+**/Dockerfile*
+**/node_modules
+**/npm-debug.log
+**/obj
+**/secrets.dev.yaml
+**/values.dev.yaml
+LICENSE
+README.md
