@@ -8,6 +8,8 @@ COPY ["CloudSync/CloudSync.csproj", "CloudSync/"]
 COPY ["Shared/Shared.csproj", "Shared/"]
 RUN dotnet restore "CloudSync/CloudSync.csproj"
 RUN dotnet restore "Shared/Shared.csproj"
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
 COPY ["CloudSync/", "CloudSync/"]
 COPY ["Shared/", "Shared/"]
 WORKDIR "/src/CloudSync"
