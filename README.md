@@ -1,8 +1,16 @@
 # Solution Overview
 
+## Tech Stack
+## Target Audience
 
-# Additional Requirement
-## Necessary Files That Should *not* be Committed to Git
+# Architecture
+
+# Prerequisites
+
+# Setup
+## Cloning the Repo
+## Environment Variable and Config Files
+These files are not saved to source control. Get missing information from existing team members
 - A `.env` file in the root of the solution that contains a DB_PASSWORD environment variable to be used by Docker
 - A file named `appsettings.Development.json` in the Client project directory with the following content:
   - `{
@@ -33,3 +41,15 @@
     "ExpiresInMinutes": 10080
   }
 }`
+
+# Running the Project
+
+# Testing
+
+# Deployment & CI/CD
+
+# Troubleshooting
+
+# Contributing Guidelines
+
+
