@@ -12,6 +12,29 @@ with a server and database hosted on AWS. The HRIS manages employee records and 
 - **Other Services/Tools**: Docker, Google OAuth, Xunit
 
 # Architecture
+This HRIS is organized into what .NET calls a solution. A solution is similar to what other languages call a workspace.
+A solution allows for multiple .NET projects to be organized and developed alongside each other. The solution keeps
+track of which projects fall under its umbrella and helps with their organization.
+
+This solution consists of two main projects, Client and CloudSync. Alongside these, there is a Shared project which
+contains classes and contracts that both Client and CloudSync use. Additionally, there are two test projects, one for
+Client and one for CloudSync. Below are brief descriptions of the Client, CloudSync, and Shared projects, their structures,
+and their role within the overall solution.
+
+## Client
+The client project contains the code for the Avalonia desktop frontend application. We're using Avalonia along with
+Community Toolkit MVVM. MVVM stands for Model-View-ViewModel, and is a design pattern that separates concerns into 
+different layers. 
+
+In MVVM, the View layer  contains XML that defines the appearance of various components, the ViewModel
+layer is responsible for event handling from the view, and the ViewModel calls the model layer for data fetching
+and API calls to the backend server. More information about this design pattern can be found 
+[here](https://docs.avaloniaui.net/docs/concepts/the-mvvm-pattern/). Note that the "Avalonia UI and MVVM" page that
+comes after the linked page mentions ReactiveUI, but we are using Community Toolkit instead of Reactive UI.
+## CloudSync
+
+
+## Shared
 
 # Prerequisites
 - Language/runtime: [.NET SDK 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) 
