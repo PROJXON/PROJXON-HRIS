@@ -11,10 +11,8 @@ with a server and database hosted on AWS. The HRIS manages employee records and 
 - **Cloud Services**: AWS Elastic Beanstalk, AWS RDS, AWS S3
 - **Other Services/Tools**: Google OAuth, Xunit
 
----
 # Architecture
 
----
 # Prerequisites
 
 # Setup
@@ -52,19 +50,14 @@ These files are not saved to source control. Get missing information from existi
   }
 }`
 
----
 # Running the Project
 
----
 # Testing
 
----
 # Deployment & CI/CD
 
----
 # Troubleshooting
 
----
 # Contributing Guidelines
 
 
