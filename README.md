@@ -1,5 +1,7 @@
 # Solution Overview
-
+This is a Human Resources Information System (HRIS) originally built for internal usage by Momentum Intership Program
+employees and the Human Resources department. The HRIS consists of a desktop application that allows users to interact
+with a server and database hosted on AWS. The HRIS manages employee records and job candidates, and syncs data to the cloud.
 ## Tech Stack
 ## Target Audience
 
