@@ -60,11 +60,24 @@ These files are not saved to source control. Get missing information from existi
 - **Backend**: `docker compose up`
 
 # Testing
+- `dotnet test`
+
+# Common Tasks
+- Adding dependencies: `dotnet add package <package-name>` in the corresponding project directory
 
 # Deployment & CI/CD
 
 # Troubleshooting
 
 # Contributing Guidelines
+We utilize feature branching. Feature branching involves creating a branch for each task that a developer works on. The
+developer makes changes in that branch, separate from the main branch, and then creates a pull request. A pull request
+is essentially a request for code changes to be merged into the main branch. Pull requests are reviewed by another team
+member before they can be merged. More information can be found [here](https://www.optimizely.com/optimization-glossary/feature-branch/)
+and online. Ask the senior app developer if this is unclear.
+- **Branch Naming**: Feature branches should follow the naming convention `<first-name-last-name>/<short-description-of-branch's-purpose>`.
+- Make sure that the application still runs in feature branch before creating a pull request.
+- Create a pull request to the `main` branch, and request a reviewer (this will most likely be the senior app dev). This may change if a `dev` branch is added in the future.
+- Reviewer may request that you make changes by commenting within the pull request. Make those changes, then request another review.
 
 
