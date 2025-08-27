@@ -9,11 +9,13 @@ with a server and database hosted on AWS. The HRIS manages employee records and 
 - **Database**: PostgreSQL with Entity Framework Core
 - **DevOps**: GitHub Actions
 - **Cloud Services**: AWS Elastic Beanstalk, AWS RDS, AWS S3
-- **Other Services/Tools**: Google OAuth, Xunit
+- **Other Services/Tools**: Docker, Google OAuth, Xunit
 
 # Architecture
 
 # Prerequisites
+- Language/runtime: [.NET SDK 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) 
+- Tools: [Docker Desktop](https://www.docker.com/products/docker-desktop/), [Git](https://git-scm.com/downloads)
 
 # Setup
 ## Cloning the Repo
