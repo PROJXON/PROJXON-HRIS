@@ -19,6 +19,9 @@ with a server and database hosted on AWS. The HRIS manages employee records and 
 
 # Setup
 ## Cloning the Repo
+1. Run `git clone git@github.com:PROJXON/PROJXON-HRIS.git`
+2. `cd PROJXON-HRIS`
+3. Add environment variables and config files from the next section. Be sure to fill in fields that are missing data.
 ## Environment Variable and Config Files
 These files are not saved to source control. Get missing information from existing team members
 - A `.env` file in the root of the solution that contains a DB_PASSWORD environment variable to be used by Docker
