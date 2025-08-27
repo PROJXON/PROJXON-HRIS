@@ -56,6 +56,8 @@ These files are not saved to source control. Get missing information from existi
 }`
 
 # Running the Project
+- **Frontend**: Run `dotnet watch run` in the Client directory
+- **Backend**: `docker compose up`
 
 # Testing
 
