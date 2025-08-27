@@ -2,11 +2,19 @@
 This is a Human Resources Information System (HRIS) originally built for internal usage by Momentum Intership Program
 employees and the Human Resources department. The HRIS consists of a desktop application that allows users to interact
 with a server and database hosted on AWS. The HRIS manages employee records and job candidates, and syncs data to the cloud.
-## Tech Stack
-## Target Audience
 
+## Tech Stack
+- **Frontend**: Avalonia with WebView, Community Toolkit MVVM, Refit
+- **Backend**: ASP.NET Core, AutoMapper, 
+- **Database**: PostgreSQL with Entity Framework Core
+- **DevOps**: GitHub Actions
+- **Cloud Services**: AWS Elastic Beanstalk, AWS RDS, AWS S3
+- **Other Services/Tools**: Google OAuth, Xunit
+
+---
 # Architecture
 
+---
 # Prerequisites
 
 # Setup
@@ -44,14 +52,19 @@ These files are not saved to source control. Get missing information from existi
   }
 }`
 
+---
 # Running the Project
 
+---
 # Testing
 
+---
 # Deployment & CI/CD
 
+---
 # Troubleshooting
 
+---
 # Contributing Guidelines
 
 
