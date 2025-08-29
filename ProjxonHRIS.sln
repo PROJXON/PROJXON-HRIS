@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudSync", "CloudSync\Clou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{7083B94B-0E1C-48F0-B52A-BEAA91F46DF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{BBEDE513-5957-4CD8-8A1D-5C6960DFDDBE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudSyncTests", "CloudSyncTests\CloudSyncTests.csproj", "{BBEDE513-5957-4CD8-8A1D-5C6960DFDDBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

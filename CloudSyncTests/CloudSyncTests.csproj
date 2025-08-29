@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsPackable>false</IsPackable>
+        <RootNamespace>Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -21,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Client\Client.csproj" />
       <ProjectReference Include="..\CloudSync\CloudSync.csproj" />
     </ItemGroup>
 
