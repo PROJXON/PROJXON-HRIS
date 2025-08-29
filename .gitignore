@@ -3,11 +3,17 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
-**/appsettings.Development.json
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# Environment Variables/Config
+.env
+**/appsettings.Development.json
+**/appsettings.Production.json
+
 # JetBrains Rider / .idea folder
 .idea/
 

@@ -1,0 +1,31 @@
+services:
+  cloudsync:
+    image: cloudsync:v0.1.0
+    build:
+      context: .
+      target: final
+    ports:
+      - 8080:8080
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - ConnectionStrings__PostgresConnection=Host=db;Port=5432;Database=POSTGRES_DB;Username=postgres;Password=${DB_PASSWORD}
+  db:
+    image: postgres:15
+    restart: always
+    user: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=hrisdb
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    expose:
+      - 5432
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  db-data:

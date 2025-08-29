@@ -94,16 +94,20 @@ app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseSerilogRequestLogging();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
