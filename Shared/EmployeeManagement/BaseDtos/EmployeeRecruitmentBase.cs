@@ -16,5 +16,5 @@ public class EmployeeRecruitmentBase
     public string? TalentPipelineStage { get; set; }
     public string? HireTime { get; set; }
     public string? HireCost { get; set; }
-    public bool? InternationalParticipation { get; set; }
+    public string? InternationalParticipation { get; set; }
  }
