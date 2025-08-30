@@ -7,6 +7,7 @@ public class UpdateEmployeeRequest
     public EmployeeContactInfoRequest? ContactInfo { get; set; }
 
     public EmployeePositionRequest? PositionDetails { get; set; }
+    public EmployeeRecruitmentRequest? Recruitment { get; set; }
     public EmployeeDocumentsRequest? Documents { get; set; }
     public EmployeeLegalRequest? Legal { get; set; }
     public EmployeeEducationRequest? Education { get; set; }

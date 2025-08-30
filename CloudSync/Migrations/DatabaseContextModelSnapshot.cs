@@ -514,6 +514,14 @@ namespace CloudSync.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("onboarding_date");
 
+                    b.Property<DateTime?>("HireDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("hire_date");
+
+                    b.Property<DateTime?>("TerminationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("termination_date");
+
                     b.Property<string>("PositionName")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
@@ -544,6 +552,78 @@ namespace CloudSync.Migrations
                         .HasDatabaseName("ix_employee_positions_sub_department_id");
 
                     b.ToTable("employee_positions", (string)null);
+                });
+
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeRecruitment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<int?>("ManagerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("manager_id");
+
+                    b.Property<string>("RecruitingSource")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("recruiting_source");
+
+                    b.Property<string>("InterviewFeedback")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("interview_feedback");
+
+                    b.Property<string>("ApplicantStatus")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("applicant_status");
+
+                    b.Property<string>("ContractLength")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("contract_length");
+
+                    b.Property<string>("OfferDetails")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("offer_details");
+
+                    b.Property<string>("BackgroundCheckStatus")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("background_check_status");
+
+                    b.Property<string>("TalentPipelineStage")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("talent_pipeline_stage");
+
+                    b.Property<string>("HireTime")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("hire_time");
+
+                    b.Property<string>("HireCost")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("hire_cost");
+
+                    b.Property<bool>("InternationalParticipation")
+                        .HasColumnType("boolean")
+                        .HasColumnName("international_participation");
+
+                    b.HasKey("Id")
+                        .HasName("pk_employee_recruitments");
+
+                    b.HasIndex("ManagerId")
+                        .HasDatabaseName("ix_employee_recruitments_manager_id");
+
+                    b.HasIndex("SubDepartmentId")
+                        .HasDatabaseName("ix_employee_positions_sub_department_id");
+
+                    b.ToTable("employee_recruitments", (string)null);
                 });
 
             modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeTraining", b =>
@@ -911,11 +991,6 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_nationality");
 
-                            b1.Property<string>("NickName")
-                                .HasMaxLength(40)
-                                .HasColumnType("character varying(40)")
-                                .HasColumnName("basic_info_nick_name");
-
                             b1.Property<string>("PreferredName")
                                 .HasMaxLength(40)
                                 .HasColumnType("character varying(40)")
@@ -1119,6 +1194,25 @@ namespace CloudSync.Migrations
                     b.Navigation("Manager");
 
                     b.Navigation("SubDepartment");
+                });
+
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeRecruitment", b =>
+                {
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                        .WithOne("Recruitment")
+                        .HasForeignKey("CloudSync.Modules.EmployeeManagement.Models.EmployeeRecruitment", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_employee_recruitments_employees_id");
+
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .HasConstraintName("fk_employee_recruitments_employees_manager_id");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.EmployeeTraining", b =>

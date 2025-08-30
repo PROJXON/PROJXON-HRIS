@@ -12,6 +12,7 @@ public class Employee
     public EmployeeContactInfo ContactInfo { get; set; } = new();
 
     public EmployeePosition? PositionDetails { get; set; }
+    public EmployeeRecruitment? Recruitment { get; set; }
     public EmployeeDocuments? Documents { get; set; }
     public EmployeeLegal? Legal { get; set; }
     public EmployeeEducation? Education { get; set; }

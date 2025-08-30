@@ -17,6 +17,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
                 .Include(e => e.PositionDetails)
+                .Include(e => e.Recruitment)
                 .Include(e => e.Training)
                 .ToListAsync();
         }
@@ -35,6 +36,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
                 .Include(e => e.PositionDetails)
+                .Include(e => e.Recruitment)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
@@ -58,6 +60,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
                 .Include(e => e.PositionDetails)
+                .Include(e => e.Recruitment)
                 .Include(e => e.Training)
                 .Where(e => e.PositionDetails != null && e.PositionDetails.DepartmentId == departmentId)
                 .ToListAsync();
@@ -97,6 +100,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
                 .Include(e => e.PositionDetails)
+                .Include(e => e.Recruitment)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (existingEmployee == null)
@@ -109,6 +113,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
             existingEmployee.Education = employee.Education;
             existingEmployee.Legal = employee.Legal;
             existingEmployee.PositionDetails = employee.PositionDetails;
+            existingEmployee.Recruitment = employee.Recruitment;
             existingEmployee.Training = employee.Training;
 
             await context.SaveChangesAsync();
@@ -128,6 +133,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
                 .Include(e => e.PositionDetails)
+                .Include(e => e.Recruitment)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (employee == null)

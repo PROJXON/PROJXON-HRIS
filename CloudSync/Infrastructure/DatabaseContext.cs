@@ -20,6 +20,7 @@ public class DatabaseContext : DbContext
     public virtual DbSet<Permission> Permissions { get; set; }
     public virtual DbSet<Employee> Employees { get; set; }
     public DbSet<EmployeePosition> EmployeePositions { get; set; }
+    public DbSet<EmployeeRecruitment> EmployeeRecruitments { get; set; }
     public DbSet<EmployeeDocuments> EmployeeDocuments { get; set; }
     public DbSet<EmployeeLegal> EmployeeLegals { get; set; }
     public DbSet<EmployeeEducation> EmployeeEducations { get; set; }
@@ -67,6 +68,11 @@ public class DatabaseContext : DbContext
             .HasForeignKey<EmployeePosition>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Employee>()
+            .HasOne(e => e.Recruitment)
+            .WithOne(d => d.Employee)
+            .HasForeignKey<EmployeeRecruitment>(e => e.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Employee>()
             .HasOne(e => e.Documents)
             .WithOne(d => d.Employee)
             .HasForeignKey<EmployeeDocuments>(e => e.Id)
@@ -91,6 +97,7 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<EmployeeEducation>().HasKey(u => u.Id);
         modelBuilder.Entity<EmployeeLegal>().HasKey(u => u.Id);
         modelBuilder.Entity<EmployeePosition>().HasKey(u => u.Id);
+        modelBuilder.Entity<EmployeeRecruitment>().HasKey(u => u.Id);
         modelBuilder.Entity<EmployeeTraining>().HasKey(u => u.Id);
         
         modelBuilder.Entity<Department>()

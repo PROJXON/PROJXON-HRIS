@@ -7,6 +7,7 @@ public class EmployeeResponse
     public required EmployeeContactInfoResponse ContactInfo { get; set; }
 
     public EmployeePositionResponse? PositionDetails { get; set; }
+    public EmployeeRecruitmentResponse? Recruitment { get; set; }
     public EmployeeDocumentsResponse? Documents { get; set; }
     public EmployeeLegalResponse? Legal { get; set; }
     public EmployeeEducationResponse? Education { get; set; }
