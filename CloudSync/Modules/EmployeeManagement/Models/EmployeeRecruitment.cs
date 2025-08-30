@@ -39,6 +39,7 @@ public class EmployeeRecruitment
 
     [StringLength(20)]
     public string? HireCost { get; set; }
-
-    public bool? InternationalParticipation { get; set; }
+    
+    [StringLength(20)]
+    public string? InternationalParticipation { get; set; }
  }

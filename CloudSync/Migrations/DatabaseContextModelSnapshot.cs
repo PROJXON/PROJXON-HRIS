@@ -610,8 +610,9 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("hire_cost");
 
-                    b.Property<bool>("InternationalParticipation")
-                        .HasColumnType("boolean")
+                    b.Property<string>("InternationalParticipation")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("international_participation");
 
                     b.HasKey("Id")
