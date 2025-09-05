@@ -1,7 +1,9 @@
 # Solution Overview
 This is a Human Resources Information System (HRIS) originally built for internal usage by Momentum Intership Program
 employees and the Human Resources department. The HRIS consists of a desktop application that allows users to interact
-with a server and database hosted on AWS. The HRIS manages employee records and job candidates, and syncs data to the cloud.
+with a server and database hosted on AWS. The HRIS manages employee records and job candidates and syncs that data to the cloud.
+
+
 
 ## Tech Stack
 - **Frontend**: Avalonia with WebView, Community Toolkit MVVM, Refit
@@ -29,8 +31,9 @@ different layers.
 In MVVM, the View layer  contains XML that defines the appearance of various components, the ViewModel
 layer is responsible for event handling from the view, and the ViewModel calls the model layer for data fetching
 and API calls to the backend server. More information about this design pattern can be found 
-[here](https://docs.avaloniaui.net/docs/concepts/the-mvvm-pattern/). Note that the "Avalonia UI and MVVM" page that
-comes after the linked page mentions ReactiveUI, but we are using Community Toolkit instead of Reactive UI.
+[here](https://docs.avaloniaui.net/docs/concepts/the-mvvm-pattern/). Note that the "Avalonia UI and MVVM" page that comes after the linked page mentions ReactiveUI, but we are
+using Community Toolkit instead of ReactiveUI.
+
 ## CloudSync
 
 
@@ -107,5 +110,3 @@ This may change if a `dev` branch is added in the future.
   3. Reviewer may request that you make changes by commenting within the pull request. Make those changes, then request another review.
   4. Upon successful review, the branch can be merged into the `main` branch.
      - Upon merge, the branch will be automatically deleted.
-
-
