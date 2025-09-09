@@ -112,7 +112,8 @@ this is unclear.
 -   When finished making changes to a branch:
     1. Make sure that the application still runs in the feature branch.
     2. Create a pull request to the `main` branch, and request a reviewer (this will most likely be the senior app dev).
-       This may change if a `dev` branch is added in the future. - PRs need to provide a summary of the changes made in bullet points, including files added or removed.
+       - This may change if a `dev` branch is added in the future.
+       - PRs need to provide a summary of the changes made in bullet points, including files added or removed.
     3. Reviewer may request that you make changes by commenting within the pull request. Make those changes, then
        request another review.
     4. Upon successful review, the branch can be merged into the `main` branch.
