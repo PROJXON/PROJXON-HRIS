@@ -54,6 +54,9 @@ instances. Our backend uses ASP.NET Core, EF Core, AutoMapper, and PostgreSQL, a
 </figure>
 
 ## Shared
+The Shared project is the simplest project. It only contains enums and data transfer objects (DTOs) that are used by both the CloudSync and Client projects. The DTOs are there to define contracts for frontend and backend interaction, so both know what will be needed in all requests and responses.
+
+These shared resources are separated into directories based on the module they match in the CloudSync project. Base DTOs are defined that contain fields used in both requests and responses, and the request and response classes are for fields that are only used by one or the other.
 
 # Prerequisites
 
