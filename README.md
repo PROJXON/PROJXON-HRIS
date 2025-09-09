@@ -69,7 +69,8 @@ These shared resources are separated into directories based on the module they m
 
 1. Run `git clone git@github.com:PROJXON/PROJXON-HRIS.git`
 2. `cd PROJXON-HRIS`
-3. Add environment variables and config files from the next section. Be sure to fill in fields that are missing data.
+3. Run `dotnet restore` in both the CloudSync and Client directories.
+4. Add environment variables and config files from the next section. Be sure to fill in fields that are missing data.
 
 ## Environment Variable and Config Files
 
