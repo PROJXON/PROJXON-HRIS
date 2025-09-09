@@ -7,7 +7,7 @@ employees and the Human Resources department. The HRIS consists of a desktop app
 
 -   **Frontend**: Avalonia with WebView, Community Toolkit MVVM, Refit
 -   **Backend**: ASP.NET Core, AutoMapper
--   **Database**: PostgreSQL with Entity Framework Core
+-   **Database**: PostgreSQL with Entity Framework Core (EF Core)
 -   **DevOps**: GitHub Actions
 -   **Cloud Services**: AWS Elastic Beanstalk, AWS RDS, AWS S3
 -   **Other Services/Tools**: Docker, Google OAuth, Xunit
@@ -34,7 +34,24 @@ comes after the linked page mentions ReactiveUI, but we are using Community Tool
 ## CloudSync
 
 The CloudSync project contains the code for the web server that allows for syncing of data between the various client
-instances.
+instances. Our backend uses ASP.NET Core, EF Core, AutoMapper, and PostgreSQL, and should be run as a Docker container as described below. The project contains the following files and directories:
+-   `Program.cs`: The entry point for the application, which instantiates services, middleware, Swagger, and other necessary resources.
+-   `CloudSync.csproj`: The project file. Contains a list of all dependencies and other properties needed to run or publish the project.
+-   **Exceptions**: Contains a base exception class and concrete exception types.
+-   **Infrastructure**: Currently contains the DatabaseContext (DbContext) config file. A DbContext instance represents a session with the database, and is used within repository classes for CRUD operations.
+-   **Middleware**: Contains a class defining how errors/exceptions should be handled.
+-   **Migrations**: This directory holds all migrations that have been created by Entity Framework Core using `dotnet ef migration create <migration-name>`. Migrations are like a version control/history for changes to the database models. Each migration holds a record of the changes made at the time of the migration's creation. Migrations are currently automatically applied in `Program.cs`, although this is only safe for development and will need to be changed once the app goes into production.
+- **Modules**: This directory holds subdirectories for the parts of the application (modules) that can later be split into microservices, if so desired. Modules are split according to the main features of the app: CandidateManagement, EmployeeManagement, and UserManagement. Each module follows the [controller-service-repository](https://procodeguide.com/programming/repository-pattern-in-aspnet-core/#Repository_Unit_of_Work_Pattern) design pattern, and is split into these subdirectories:
+  - Controllers: Defines API endpoints for client interactions.
+  - Services: Manipulate data, including mapping to DB models from DTOs and vice-versa thanks to AutoMapper. Contains all other business logic.
+  - Repositories: Handle database interactions by calling EF Core methods, fetching or sending data to and from PostgreSQL.
+  - Models: Database entity models, which EF Core's DbContext uses to map to database tables and fields.
+
+<figure>
+    <img src="https://procodeguide.com/wp-content/uploads/2021/07/Repository-Pattern-in-ASP.NET-Core-Unit-of-Work-1024x432.png"
+         alt="Controller-Service-Repository illustration">
+    <figcaption>Controller-Service-Repository illustration. Note: The unit of work portion is already handled by EF Core's DbContext feature.</figcaption>
+</figure>
 
 ## Shared
 
