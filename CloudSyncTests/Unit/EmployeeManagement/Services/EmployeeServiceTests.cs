@@ -186,4 +186,77 @@ public class EmployeeServiceTests
         // Act & Assert
         await Assert.ThrowsAsync<Exception>(() => service.CreateAsync(request));
     }
+
+    [Fact]
+    public async Task UpdateAsync_WithValidRequest_CallsRepositoryUpdate()
+    {
+        // Arrange
+        var mockRepo = new Mock<IEmployeeRepository>();
+        var mockMapper = new Mock<IMapper>();
+        var service = new EmployeeService(mockRepo.Object, mockMapper.Object);
+
+        var id = 42;
+        var request = new UpdateEmployeeRequest();
+        var mappedEmployee = new Employee();
+
+        mockMapper.Setup(m => m.Map<Employee>(request))
+            .Returns(mappedEmployee);
+
+        mockRepo.Setup(r => r.UpdateAsync(id, mappedEmployee))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await service.UpdateAsync(id, request);
+
+        // Assert
+        mockMapper.Verify(m => m.Map<Employee>(request), Times.Once);
+        mockRepo.Verify(r => r.UpdateAsync(id, mappedEmployee), Times.Once); 
+    }
+
+    [Fact]
+    public async Task DeleteAsync_WithExistingId_CallsRepositoryDelete()
+    {
+        // Arrange
+        var mockRepo = new Mock<IEmployeeRepository>();
+        var mockMapper = new Mock<IMapper>();
+        var service = new EmployeeService(mockRepo.Object, mockMapper.Object);
+
+        var id = 7;
+
+        mockRepo.Setup(r => r.DeleteAsync(id)).Returns(Task.CompletedTask);
+
+        // Act
+        await service.DeleteAsync(id);
+
+        // Assert
+        mockRepo.Verify(r => r.DeleteAsync(id), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetByDepartmentAsync_WhenEmployeesExist_ReturnsMappedEmployeeList()
+    {
+        // Arrange
+        var now = DateTime.UtcNow;
+        var departmentId = 10;
+
+        var employees = new List<Employee>
+        {
+            new() { Id = 1, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocuments(), Education = new EmployeeEducation(), Legal = new EmployeeLegal(), PositionDetails = new EmployeePosition(), Training = new EmployeeTraining(), UpdateDateTime = now },
+            new() { Id = 2, BasicInfo = new EmployeeBasic(), ContactInfo = new EmployeeContactInfo(), CreateDateTime = now, Documents = new EmployeeDocuments(), Education = new EmployeeEducation(), Legal = new EmployeeLegal(), PositionDetails = new EmployeePosition(), Training = new EmployeeTraining(), UpdateDateTime = now }
+        };
+
+        _mockRepository.Setup(r => r.GetByDepartmentAsync(departmentId))
+            .ReturnsAsync(employees);
+
+        // Act
+        var result = await _employeeService.GetByDepartmentAsync(departmentId);
+
+        // Assert
+        Assert.NotNull(result);
+        var list = result.ToList();
+        Assert.Equal(2, list.Count);
+        Assert.Collection(list,
+            item => Assert.Equal(1, item.Id),
+            item => Assert.Equal(2, item.Id));
+    }
 }
