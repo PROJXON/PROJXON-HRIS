@@ -10,7 +10,8 @@ public class EmployeeResponse
     public EmployeeDocumentsResponse? Documents { get; set; }
     public EmployeeLegalResponse? Legal { get; set; }
     public EmployeeEducationResponse? Education { get; set; }
-    public EmployeeTrainingResponse? Training{ get; set; }
+    public EmployeeTechnicalSpecResponse? TechnicalSpec{ get; set; }
+    public EmployeeTrainingResponse? Training { get; set; }
     public DateTime? CreateDateTime { get; set; }
     public DateTime? UpdateDateTime { get; set; }
 }

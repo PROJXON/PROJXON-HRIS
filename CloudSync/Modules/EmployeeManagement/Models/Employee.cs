@@ -15,6 +15,7 @@ public class Employee
     public EmployeeDocuments? Documents { get; set; }
     public EmployeeLegal? Legal { get; set; }
     public EmployeeEducation? Education { get; set; }
+    public EmployeeTechnicalSpec? TechnicalSpec { get; set; }
     public EmployeeTraining? Training { get; set; }
 
     public DateTime CreateDateTime { get; set; }

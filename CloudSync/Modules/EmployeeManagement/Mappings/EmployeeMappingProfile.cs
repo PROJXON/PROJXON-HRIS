@@ -32,6 +32,9 @@ public class EmployeeMappingProfile : Profile
             .ForMember(dest => dest.Coach, opt => opt.Ignore())
             .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(u => u.Manager != null ? u.Manager.Id : (int?)null))
             .ForMember(dest => dest.CoachId, opt => opt.MapFrom(u => u.Coach != null ? u.Coach.Id : (int?)null));
+        CreateMap<EmployeeTechnicalSpecRequest, EmployeeTechnicalSpec>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Employee, opt => opt.Ignore());
         CreateMap<EmployeeTrainingRequest, EmployeeTraining>()
             .ForMember(dest => dest.Employee, opt => opt.Ignore());
 
@@ -44,6 +47,7 @@ public class EmployeeMappingProfile : Profile
         CreateMap<EmployeeEducation, EmployeeEducationResponse>();
         CreateMap<EmployeeLegal, EmployeeLegalResponse>();
         CreateMap<EmployeePosition, EmployeePositionResponse>();
+        CreateMap<EmployeeTechnicalSpec, EmployeeTechnicalSpecResponse>();
         CreateMap<EmployeeTraining, EmployeeTrainingResponse>();
 
         CreateMap<Employee, ManagerOrCoachSummary>()
