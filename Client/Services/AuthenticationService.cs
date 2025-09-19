@@ -244,45 +244,26 @@ public class AuthenticationService : IAuthenticationService
         try
         {
             var port = FindAvailablePort();
-            var callbackUrl = $"http://localhost:{port}/callback";
-            
+            var callbackUrl = $"http://127.0.0.1:{port}/callback/";
+
             listener = new HttpListener();
-            listener.Prefixes.Add($"http://localhost/{port}/");
+            listener.Prefixes.Add(callbackUrl); // Must include trailing slash
             listener.Start();
             _logger.LogDebug("Listening for OAuth redirect on: {CallbackUrl}", callbackUrl);
-            
-            authUrl = authUrl.Replace(_redirectUri, callbackUrl);
 
-            try
-            {
-                var psi = new ProcessStartInfo
-                {
-                    FileName = authUrl,
-                    UseShellExecute = true
-                };
-                Process.Start(psi);
-            }
-            catch (Exception e)
-            {
-                throw new AuthorizationException(
-                    "Failed to open browser for authentication.",
-                    "Unable to open your browser for sign-in. Please try again.",
-                    innerException: e);
-            }
+            // Use the runtime callback URL in the authorization request
+            authUrl = authUrl.Replace(_redirectUri, callbackUrl.TrimEnd('/'));
 
-            var contextTask = listener.GetContextAsync();
-            var context = await contextTask.WaitAsync(cancellationToken);
+            // Open default browser
+            var psi = new ProcessStartInfo { FileName = authUrl, UseShellExecute = true };
+            Process.Start(psi);
+
+            // Wait for the callback
+            var context = await listener.GetContextAsync().WaitAsync(cancellationToken);
 
             await SendCallbackResponseAsync(context);
 
-            var query = context.Request.Url?.Query;
-            if (string.IsNullOrEmpty(query))
-            {
-                throw new AuthorizationException(
-                    "No query parameters received in OAuth callback.",
-                    "Invalid response from sign-in provider. Please try again.");
-            }
-
+            var query = context.Request.Url?.Query ?? "";
             var queryParams = System.Web.HttpUtility.ParseQueryString(query);
             var code = queryParams["code"];
             var state = queryParams["state"];
@@ -299,41 +280,29 @@ public class AuthenticationService : IAuthenticationService
             }
 
             if (state != expectedState)
-            {
-                throw new OAuthStateException(
-                    "OAuth state parameter mismatch - possible CSRF attack.",
-                    expectedState,
-                    receivedState: state);
-            }
+                throw new OAuthStateException("OAuth state parameter mismatch - possible CSRF attack.", expectedState, receivedState: state);
 
             if (string.IsNullOrEmpty(code))
-            {
-                throw new AuthenticationException(
-                    "Authorization code not received from OAuth provider.",
-                    "Sign-in was not completed. Please try again.");
-            }
+                throw new AuthenticationException("Authorization code not received from OAuth provider.", "Sign-in was not completed. Please try again.");
 
             return code;
         }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception e) when (e is AuthorizationException or OAuthStateException)
-        {
-            throw;
-        }
+        catch (OperationCanceledException) { throw; }
+        catch (Exception e) when (e is AuthorizationException or OAuthStateException) { throw; }
         catch (Exception e)
         {
-            throw new AuthorizationException(
-                $"Unexpected error during authorization: {e.Message}",
-                "An error occurred during sign-in. Please try again.",
-                innerException: e);
+            throw new AuthorizationException($"Unexpected error during authorization: {e.Message}",
+                "An error occurred during sign-in. Please try again.", innerException: e);
         }
-        // finally
-        // {
-        //     listener?.Stop();
-        // }
+        finally
+        {
+            try
+            {
+                if (listener is { IsListening: true }) listener.Stop();
+                listener?.Close();
+            }
+            catch { /* best effort */ }
+        }
     }
     
     private async Task SendCallbackResponseAsync(HttpListenerContext context)
