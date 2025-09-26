@@ -26,6 +26,7 @@ public class AuthenticationService : IAuthenticationService
 
     private readonly string _clientId;
     private readonly string _redirectUri;
+    private readonly string _clientSecret;
     private readonly SemaphoreSlim _authSemaphore = new(1, 1);
 
     private string? _accessToken;
@@ -50,6 +51,11 @@ public class AuthenticationService : IAuthenticationService
                         ?? throw new ConfigurationException("Google 0Auth ClientId not found in application configuration.",
                             "Authentication service is not properly configured. Please contact support.",
                             "Auth:ClientId");
+            
+            _clientSecret = _configuration["Auth:ClientSecret"]
+                            ?? throw new ConfigurationException("Google OAuth ClientSecret not found in application configuration.",
+                                "Authentication service is not properly configured. Please contact support.",
+                                "Auth:ClientSecret");
             
             _redirectUri = _configuration["Auth:Google:RedirectUri"] 
                            ?? "http://localhost:8080/callback";
@@ -77,76 +83,76 @@ public class AuthenticationService : IAuthenticationService
     }
     
     public async Task<bool> LoginAsync()
+{
+    await _authSemaphore.WaitAsync();
+    try
     {
-        await _authSemaphore.WaitAsync();
+        _logger.LogInformation("Starting Google OAuth login flow.");
+
+        var codeVerifier = GeneratedCodeVerifier();
+        var codeChallenge = GenerateCodeChallenge(codeVerifier);
+        var state = GenerateSecureState();
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
+
+        (string Code, string RedirectUri) result;
         try
         {
-            _logger.LogInformation("Starting Google OAuth login flow.");
-
-            var codeVerifier = GeneratedCodeVerifier();
-            var codeChallenge = GenerateCodeChallenge(codeVerifier);
-            var state = GenerateSecureState();
-
-            var authUrl = BuildAuthorizationUrl(codeChallenge, state);
-
-            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));
-
-            string authCode;
-
-            try
-            {
-                authCode = await GetAuthorizationCodeAsync(authUrl, state, cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                throw new AuthenticationTimeoutException(
-                    "OAuth login process timed out after 2 minutes.",
-                    timeout: TimeSpan.FromMinutes(2));
-            }
-
-            if (string.IsNullOrEmpty(authCode))
-            {
-                throw new AuthorizationException(
-                    "Authorization code not received from OAuth provider.",
-                    "Sign-in was not completed. Please try again.");
-            }
-
-            var tokenResponse = await ExchangeCodeForTokensAsync(authCode, codeVerifier);
-            await StoreTokensAsync(tokenResponse);
-            SetupTokenRefresh();
-
-            _logger.LogInformation("Google OAuth login completed successfully.");
-            AuthenticationChanged?.Invoke(this, new AuthenticationChangedEventArgs(true));
-            return true;
+            // Builds the dynamic loopback redirect, opens the system browser,
+            // waits for the callback, and returns the auth code + the redirect used.
+            result = await GetAuthorizationCodeAsync(codeChallenge, state, cts.Token);
         }
-        catch (AuthenticationTimeoutException)
+        catch (OperationCanceledException)
         {
-            _logger.LogWarning("OAuth login timed out.");
-            throw;
+            throw new AuthenticationTimeoutException(
+                "OAuth login process timed out after 2 minutes.",
+                timeout: TimeSpan.FromMinutes(2));
         }
-        catch (AuthorizationException)
+
+        if (string.IsNullOrEmpty(result.Code))
         {
-            _logger.LogWarning("OAuth authorization failed");
-            throw;
+            throw new AuthorizationException(
+                "Authorization code not received from OAuth provider.",
+                "Sign-in was not completed. Please try again.");
         }
-        catch (TokenStorageException)
-        {
-            _logger.LogError("Failed to store authentication tokens");
-            throw;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Unexpected error during OAuth login.");
-            throw new AuthenticationException(
-                $"Unexpected error during login: {e.Message}",
-                "An unexpected error occurred during sign-in. Please try again.",
-                innerException: e);
-        }
-        finally
-        {
-            _authSemaphore.Release();
-        }
+        
+        var tokenResponse = await ExchangeCodeForTokensAsync(result.Code, codeVerifier, result.RedirectUri);
+
+        await StoreTokensAsync(tokenResponse);
+        SetupTokenRefresh();
+
+        _logger.LogInformation("Google OAuth login completed successfully.");
+        AuthenticationChanged?.Invoke(this, new AuthenticationChangedEventArgs(true));
+        return true;
     }
+    catch (AuthenticationTimeoutException)
+    {
+        _logger.LogWarning("OAuth login timed out.");
+        throw;
+    }
+    catch (AuthorizationException)
+    {
+        _logger.LogWarning("OAuth authorization failed.");
+        throw;
+    }
+    catch (TokenStorageException)
+    {
+        _logger.LogError("Failed to store authentication tokens.");
+        throw;
+    }
+    catch (Exception e)
+    {
+        _logger.LogError(e, "Unexpected error during OAuth login.");
+        throw new AuthenticationException(
+            $"Unexpected error during login: {e.Message}",
+            "An unexpected error occurred during sign-in. Please try again.",
+            innerException: e);
+    }
+    finally
+    {
+        _authSemaphore.Release();
+    }
+}
 
     public async Task LogoutAsync()
     {
@@ -236,34 +242,48 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    private async Task<string> GetAuthorizationCodeAsync(string authUrl, string expectedState,
-        CancellationToken cancellationToken)
+    private async Task<(string Code, string RedirectUri)> GetAuthorizationCodeAsync(
+    string codeChallenge, string expectedState, CancellationToken cancellationToken)
     {
         HttpListener? listener = null;
 
         try
         {
             var port = FindAvailablePort();
-            var callbackUrl = $"http://127.0.0.1:{port}/callback/";
+            var callbackUrl = $"http://127.0.0.1:{port}/";
 
             listener = new HttpListener();
-            listener.Prefixes.Add(callbackUrl); // Must include trailing slash
+            listener.Prefixes.Add(callbackUrl); // HttpListener must include trailing slash
             listener.Start();
             _logger.LogDebug("Listening for OAuth redirect on: {CallbackUrl}", callbackUrl);
 
-            // Use the runtime callback URL in the authorization request
-            authUrl = authUrl.Replace(_redirectUri, callbackUrl.TrimEnd('/'));
+            var authUrl = BuildAuthorizationUrl(codeChallenge, expectedState, callbackUrl.TrimEnd('/'));
 
-            // Open default browser
-            var psi = new ProcessStartInfo { FileName = authUrl, UseShellExecute = true };
-            Process.Start(psi);
+            try
+            {
+                var psi = new ProcessStartInfo { FileName = authUrl, UseShellExecute = true };
+                Process.Start(psi);
+            }
+            catch (Exception e)
+            {
+                throw new AuthorizationException(
+                    "Failed to open browser for authentication.",
+                    "Unable to open your browser for sign-in. Please try again.",
+                    innerException: e);
+            }
 
-            // Wait for the callback
             var context = await listener.GetContextAsync().WaitAsync(cancellationToken);
 
             await SendCallbackResponseAsync(context);
 
-            var query = context.Request.Url?.Query ?? "";
+            var query = context.Request.Url?.Query;
+            if (string.IsNullOrEmpty(query))
+            {
+                throw new AuthorizationException(
+                    "No query parameters received in OAuth callback.",
+                    "Invalid response from sign-in provider. Please try again.");
+            }
+
             var queryParams = System.Web.HttpUtility.ParseQueryString(query);
             var code = queryParams["code"];
             var state = queryParams["state"];
@@ -280,19 +300,21 @@ public class AuthenticationService : IAuthenticationService
             }
 
             if (state != expectedState)
-                throw new OAuthStateException("OAuth state parameter mismatch - possible CSRF attack.", expectedState, receivedState: state);
+            {
+                throw new OAuthStateException(
+                    "OAuth state parameter mismatch - possible CSRF attack.",
+                    expectedState,
+                    receivedState: state);
+            }
 
             if (string.IsNullOrEmpty(code))
-                throw new AuthenticationException("Authorization code not received from OAuth provider.", "Sign-in was not completed. Please try again.");
+            {
+                throw new AuthenticationException(
+                    "Authorization code not received from OAuth provider.",
+                    "Sign-in was not completed. Please try again.");
+            }
 
-            return code;
-        }
-        catch (OperationCanceledException) { throw; }
-        catch (Exception e) when (e is AuthorizationException or OAuthStateException) { throw; }
-        catch (Exception e)
-        {
-            throw new AuthorizationException($"Unexpected error during authorization: {e.Message}",
-                "An error occurred during sign-in. Please try again.", innerException: e);
+            return (code, callbackUrl.TrimEnd('/'));
         }
         finally
         {
@@ -301,7 +323,7 @@ public class AuthenticationService : IAuthenticationService
                 if (listener is { IsListening: true }) listener.Stop();
                 listener?.Close();
             }
-            catch { /* best effort */ }
+            catch { }
         }
     }
     
@@ -340,7 +362,8 @@ public class AuthenticationService : IAuthenticationService
             context.Response.StatusCode = 200;
             
             await context.Response.OutputStream.WriteAsync(buffer);
-            // context.Response.Close();
+            context.Response.OutputStream.Close();
+            context.Response.Close();
         }
         catch (Exception ex)
         {
@@ -348,94 +371,75 @@ public class AuthenticationService : IAuthenticationService
         }
     }
 
-    private async Task<TokenResponse> ExchangeCodeForTokensAsync(string code, string codeVerifier)
+    private async Task<TokenResponse> ExchangeCodeForTokensAsync(string code, string codeVerifier, string redirectUri)
+{
+    const string tokenEndpoint = "https://oauth2.googleapis.com/token";
+    var parameters = new Dictionary<string, string>
     {
-        try
+        ["client_id"] = _clientId,
+        ["client_secret"] = _clientSecret,
+        ["code"] = code,
+        ["grant_type"] = "authorization_code",
+        ["redirect_uri"] = redirectUri,         
+        ["code_verifier"] = codeVerifier
+    };
+
+    using var content = new FormUrlEncodedContent(parameters);
+    
+    _logger.LogInformation("Token request parameters: {Parameters}", JsonSerializer.Serialize(parameters));
+
+    HttpResponseMessage? response = null;
+    string responseBody = "";
+    try
+    {
+        response = await _httpClient.PostAsync(tokenEndpoint, content);
+        responseBody = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
         {
-            const string tokenEndpoint = "https://oauth2.googleapis.com/token";
-            var parameters = new Dictionary<string, string>
-            {
-                ["client_id"] = _clientId,
-                ["code"] = code,
-                ["grant_type"] = "authorization_code",
-                ["redirect_uri"] = _redirectUri,
-                ["code_verifier"] = codeVerifier
-            };
+//            Console.Error.WriteLine($"[Google Token Error] {response.StatusCode}: {responseBody}");
+//            _logger.LogError("Google token exchange failed: {Status} - {Body}", response.StatusCode, responseBody);
 
-            var content = new FormUrlEncodedContent(parameters);
-
-            HttpResponseMessage response;
-            try
-            {
-                response = await _httpClient.PostAsync(tokenEndpoint, content);
-            }
-            catch (HttpRequestException e)
-            {
-                throw new NetworkException(
-                    $"Network error during token exchange: {e.Message}",
-                    endpoint: tokenEndpoint,
-                    innerException: e);
-            }
-            catch (TaskCanceledException e)
-            {
-                throw new NetworkException(
-                    "Token exchange request timed out",
-                    endpoint: tokenEndpoint,
-                    timeout: _httpClient.Timeout,
-                    innerException: e);
-            }
-
-            using (response)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new AuthorizationException(
-                        $"Token exchange failed with status {response.StatusCode}",
-                        "Failed to complete sign-in. PLease try again.",
-                        error: response.StatusCode.ToString(),
-                        errorDescription: json);
-                }
-
-                try
-                {
-                    var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(json, new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
-                    });
-
-                    if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
-                    {
-                        throw new AuthorizationException(
-                            "Invalid taken response received from OAuth provider.",
-                            "Sign-in failed due to invalid response. Please try again.");
-                    }
-
-                    return tokenResponse;
-                }
-                catch (JsonException e)
-                {
-                    throw new AuthorizationException(
-                        $"Failed to parse token response: {e.Message}",
-                        "Sign-in failed due to invalid response format.Please try again.",
-                        innerException: e);
-                }
-            }
-        }
-        catch (Exception e) when (e is NetworkException or AuthorizationException)
-        {
-            throw;
-        }
-        catch (Exception e)
-        {
             throw new AuthorizationException(
-                $"Unexpected error during token exchange: {e.Message}",
-                "An unexpected error occurred during sign-in. Please try again.",
-                innerException: e);
+                $"Token exchange failed with status {response.StatusCode}: {responseBody}",
+                "Failed to complete sign-in. Please try again.",
+                error: response.StatusCode.ToString(),
+                errorDescription: responseBody);
         }
-    }
 
+        // Success path: parse token JSON (access_token, refresh_token?, expires_in, id_token?)
+        using var doc = JsonDocument.Parse(responseBody);
+        var root = doc.RootElement;
+
+        var token = new TokenResponse
+        {
+            AccessToken = root.GetProperty("access_token").GetString(),
+            RefreshToken = root.TryGetProperty("refresh_token", out var rt) ? rt.GetString() : null,
+            ExpiresIn = root.TryGetProperty("expires_in", out var ei) ? ei.GetInt32() : 0,
+            TokenType = root.TryGetProperty("token_type", out var tt) ? tt.GetString() : null,
+        };
+
+        if (string.IsNullOrEmpty(token.AccessToken))
+            throw new AuthorizationException("Token exchange returned no access_token.", "Please try again.");
+
+        return token;
+    }
+    catch (AuthorizationException) { throw; }
+    catch (Exception ex)
+    {
+//        Console.Error.WriteLine($"[Token Exchange Exception] {ex.GetType().Name}: {ex.Message}\nBody: {responseBody}");
+//        _logger.LogError(ex, "Unexpected error during token exchange. Body: {Body}", responseBody);
+
+        throw new AuthorizationException(
+            $"Unexpected error during token exchange: {ex.Message}",
+            "An error occurred during sign-in. Please try again.",
+            innerException: ex);
+    }
+    finally
+    {
+        response?.Dispose();
+    }
+}
     private async Task<bool> RefreshTokenAsync()
     {
         if (string.IsNullOrEmpty(_refreshToken))
@@ -447,6 +451,7 @@ public class AuthenticationService : IAuthenticationService
             var parameters = new Dictionary<string, string>
             {
                 ["client_id"] = _clientId,
+                ["client_secret"] = _clientSecret,
                 ["grant_type"] = "refresh_token",
                 ["refresh_token"] = _refreshToken
             };
@@ -512,8 +517,7 @@ public class AuthenticationService : IAuthenticationService
         _tokenExpiry = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn);
 
         await _tokenStorage.StoreTokenAsync("google_access_token", _accessToken);
-        await _tokenStorage.StoreTokenAsync("google_token_expiry", _tokenExpiry.ToString("0"));
-    }
+        await _tokenStorage.StoreTokenAsync("google_token_expiry", _tokenExpiry.ToString("o"));    }
 
     private async Task LoadStoredTokensAsync()
     {
@@ -582,12 +586,12 @@ public class AuthenticationService : IAuthenticationService
         return Convert.ToBase64String(bytes).Replace('+', '-').Replace('/', '_').TrimEnd('=');
     }
 
-    private string BuildAuthorizationUrl(string codeChallenge, string state)
+    private string BuildAuthorizationUrl(string codeChallenge, string state, string redirectUri)
     {
         var scopes = Uri.EscapeDataString("openid email profile");
         return $"https://accounts.google.com/o/oauth2/v2/auth?" +
                $"client_id={Uri.EscapeDataString(_clientId)}&" +
-               $"redirect_uri={Uri.EscapeDataString(_redirectUri)}&" +
+               $"redirect_uri={Uri.EscapeDataString(redirectUri)}&" +
                $"response_type=code&" +
                $"scope={scopes}&" +
                $"code_challenge={codeChallenge}&" +
