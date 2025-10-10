@@ -15,16 +15,35 @@ public class AuthService(IInvitedUserRepository invitedUserRepository, IUserRepo
     public async Task<GoogleLoginResponse> LoginAsync(GoogleLoginRequest request)
     {
         ValidateLoginRequest(request);
-        
+    
         var payload = await googleTokenValidator.ValidateAsync(request);
-        
+    
         var existingUser = await userRepository.GetByGoogleUserIdAsync(payload.Subject);
         if (existingUser != null)
         {
             return await LoginExistingUserAsync(existingUser);
         }
         
-        return await HandleInvitedUserLoginAsync(payload);
+        //Temporarily authenticate user without invitation
+        var dummyInvitee = new InvitedUser
+        {
+            InvitedByEmployeeId = 1,
+            Email = payload.Email,
+            Status = "Pending",
+            CreateDateTime = DateTime.UtcNow
+        };
+    
+        var newUser = await userRepository.CreateUserFromInvitationAsync(dummyInvitee, payload.Subject);
+    
+        return new GoogleLoginResponse
+        {
+            JsonWebToken = jwtTokenService.GenerateToken(payload.Email),
+            ExpiresIn = 3600,
+            User = mapper.Map<UserResponse>(newUser)
+        };
+        
+        //Uncomment when ready to implement
+        // return await HandleInvitedUserLoginAsync(payload);
     }
     
     private static void ValidateLoginRequest(GoogleLoginRequest request)
@@ -42,6 +61,7 @@ public class AuthService(IInvitedUserRepository invitedUserRepository, IUserRepo
         return new GoogleLoginResponse
         {
             JsonWebToken = jwtTokenService.GenerateToken(existingUser.Email),
+            ExpiresIn = 3600,
             User = existingUserResponse
         };
     }
@@ -89,10 +109,11 @@ public class AuthService(IInvitedUserRepository invitedUserRepository, IUserRepo
     private async Task<GoogleLoginResponse> CreateUserFromInvitationAsync(InvitedUser invitee, GoogleJsonWebSignature.Payload payload)
     {
         var newUser = await userRepository.CreateUserFromInvitationAsync(invitee, payload.Subject);
-        
+    
         return new GoogleLoginResponse
         {
             JsonWebToken = jwtTokenService.GenerateToken(payload.Email),
+            ExpiresIn = 3600,
             User = mapper.Map<UserResponse>(newUser)
         };
     }
