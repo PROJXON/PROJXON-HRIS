@@ -2,11 +2,11 @@
 
 public class EmployeeContactInfoBase
 {
-    public string? Phone { get; set; }
-    public string? InternationalPhone { get; set; }
-    public string? InternationalPhoneType { get; set; }
-    public string? ProjxonEmail { get; set; }
     public string? PersonalEmail { get; set; }
+    public string? PhoneNumber { get; set; }
+    public string? InternationalPhoneNumber { get; set; }
+    public string? InternationalPhoneType { get; set; }
     public string? EmergencyContactName { get; set; }
-    public string? EmergencyContactPhone { get; set; }
+    public string? EmergencyContactPhoneNumber { get; set; }
+    public string? ProjxonEmail { get; set; }
 }
