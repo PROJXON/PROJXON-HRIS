@@ -36,7 +36,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void InitializeView()
     {
-        IsAuthenticated = true; // TODO set this to _isAuthenticated when implementing login view
+        IsAuthenticated = _authService.IsAuthenticated;
 
         if (IsAuthenticated)
         {
@@ -92,8 +92,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private async Task Logout()
     {
-        Console.WriteLine("Logging out disabled until authentication is implemented.");
+        // Console.WriteLine("Logging out disabled until authentication is implemented.");
         // Uncomment the line below when authentication is implemented
-        // await _authService.LogoutAsync();
+        await _authService.LogoutAsync();
     }
 }

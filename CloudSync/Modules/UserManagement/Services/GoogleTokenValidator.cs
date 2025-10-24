@@ -5,7 +5,7 @@ using Shared.Requests.UserManagement;
 
 namespace CloudSync.Modules.UserManagement.Services;
 
-public class GoogleTokenValidator(IConfiguration configuration) : IGoogleTokenValidator
+public class GoogleTokenValidator(IConfiguration configuration, ILogger<GoogleTokenValidator> logger) : IGoogleTokenValidator
 {
     private readonly IConfigurationSection _jwtSettings = configuration.GetSection("JWT");
     
@@ -17,20 +17,35 @@ public class GoogleTokenValidator(IConfiguration configuration) : IGoogleTokenVa
     {
         try
         {
+            var audience = _jwtSettings["Audience"];
+            logger.LogInformation("Validating Google ID token with audience: {Audience}", audience);
+            
             var settings = new GoogleJsonWebSignature.ValidationSettings
             {
-                Audience = [_jwtSettings["Audience"]]
+                Audience = [audience],
+                IssuedAtClockTolerance = TimeSpan.FromMinutes(5),
+                ExpirationTimeClockTolerance = TimeSpan.FromMinutes(5)
             };
 
-            return await GoogleJsonWebSignature.ValidateAsync(request.IdToken, settings);
+            var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken, settings);
+            
+            logger.LogInformation("Token validated successfully for user: {Email}", payload.Email);
+            return payload;
         }
         catch (InvalidJwtException e) when (e.Message.Contains("expired"))
         {
+            logger.LogWarning("Google ID token has expired: {Message}", e.Message);
             throw new AuthenticationException("Google ID token has expired.");
         }
-        catch (InvalidJwtException)
+        catch (InvalidJwtException e)
         {
-            throw new AuthenticationException("Invalid Google id token");
+            logger.LogError(e, "Invalid Google ID token. Error: {Message}", e.Message);
+            throw new AuthenticationException($"Invalid Google id token: {e.Message}");
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Unexpected error validating Google token");
+            throw new AuthenticationException($"Token validation failed: {e.Message}");
         }
     }
 }
