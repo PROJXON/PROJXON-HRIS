@@ -59,7 +59,8 @@ public class DatabaseContext : DbContext
         modelBuilder.Entity<Employee>().OwnsOne(e => e.BasicInfo);
         modelBuilder.Entity<Employee>().OwnsOne(e => e.ContactInfo, contactInfo =>
         {
-            contactInfo.OwnsOne(ci => ci.Address);
+            contactInfo.OwnsOne(ci => ci.PermanentAddress);
+            contactInfo.OwnsOne(ci => ci.MailingAddress);
         });
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.PositionDetails)
