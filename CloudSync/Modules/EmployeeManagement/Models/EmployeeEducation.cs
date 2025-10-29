@@ -13,6 +13,18 @@ public class EmployeeEducation
     [StringLength(20)]
     public string? EducationLevel { get; set; }
 
+    [StringLength(100)]
+    public string? UndergraduateSchool { get; set; }
+
+    [StringLength(100)]
+    public string? UndergraduateDegree { get; set; }
+
+    [StringLength(100)]
+    public string? GraduateSchool { get; set; }
+
+    [StringLength(100)]
+    public string? GraduateDegree { get; set; }
+
     [Column(TypeName = "jsonb")]
     public List<string>? UniversitiesAttended { get; set; }
 
