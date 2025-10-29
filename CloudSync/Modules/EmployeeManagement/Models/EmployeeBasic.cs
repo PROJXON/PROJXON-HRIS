@@ -16,4 +16,5 @@ public class EmployeeBasic
     [StringLength(40)] public string? Race { get; set; }
     [StringLength(40)] public string? Ethnicity { get; set; }
     [StringLength(40)] public string? PreferredPronouns { get; set; }
+    public DateTime? TimeZone { get; set; }
 }

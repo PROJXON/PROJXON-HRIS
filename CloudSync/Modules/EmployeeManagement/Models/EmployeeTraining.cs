@@ -7,17 +7,17 @@ public class EmployeeTraining
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    
     public Employee? Employee { get; set; }
+
+    [StringLength(100)] public string? Goals { get; set; }
+    [StringLength(40)] public string? DevelopmentPlan { get; set; }
+
 
     [Column(TypeName = "jsonb")]
     public List<string>? CanvasCertificates { get; set; }
     
     [Column(TypeName = "jsonb")]
     public List<string>? CanvasCoursesCompleted { get; set; }
-
-    [StringLength(40)]
-    public string? DevelopmentPlan { get; set; }
 
     public int? TrainingHoursLogged { get; set; }
 
