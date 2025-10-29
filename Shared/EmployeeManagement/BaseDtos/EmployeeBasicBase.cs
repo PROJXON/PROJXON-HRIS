@@ -13,4 +13,5 @@ public class EmployeeBasicBase
     public string? Race { get; set; }
     public string? Ethnicity { get; set; }
     public string? PreferredPronouns { get; set; }
+    public DateTime? TimeZone { get; set; }
 }
