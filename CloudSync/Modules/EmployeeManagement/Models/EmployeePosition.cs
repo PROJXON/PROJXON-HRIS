@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Shared.EmployeeManagement.Enums;
 
 namespace CloudSync.Modules.EmployeeManagement.Models;
 
@@ -12,8 +13,8 @@ public class EmployeePosition
     [EmailAddress][StringLength(60)] public string? ProjxonEmail { get; set; }
     public DateTime? OnboardingDate { get; set; }
     public DateTime? OffboardingDate { get; set; }
-    [StringLength(30)] public string? EmploymentStatus { get; set; }
-    [StringLength(30)] public string? EmploymentType { get; set; }
+    public EmployeeStatus? EmploymentStatus { get; set; }
+    public EmploymentType? EmploymentType { get; set; }
     [StringLength(30)] public string? EmployeeLifeCycleStage { get; set; }
     [StringLength(50)] public string? PositionName { get; set; }
 
