@@ -1,3 +1,4 @@
+using Shared.EmployeeManagement.Enums;
 using Shared.EmployeeManagement.Responses;
 
 namespace Shared.EmployeeManagement.BaseDtos;
@@ -8,8 +9,8 @@ public class EmployeePositionBase
     public string? ProjxonEmail { get; set; }
     public DateTime? OnboardingDate { get; set; }
     public DateTime? OffboardingDate { get; set; }
-    public string? EmploymentStatus { get; set; }
-    public string? EmploymentType { get; set; }
+    public EmployeeStatus? EmploymentStatus { get; set; }
+    public EmploymentType? EmploymentType { get; set; }
     public string? EmployeeLifeCycleStage { get; set; }
     public string? PositionName { get; set; }
     public int? ManagerId { get; set; }
