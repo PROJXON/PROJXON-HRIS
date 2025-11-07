@@ -4,5 +4,6 @@ namespace Shared.EmployeeManagement.Requests;
 
 public class EmployeeContactInfoRequest : EmployeeContactInfoBase
 {
-    public AddressRequest? Address { get; set; }
+    public AddressRequest? PermanentAddress { get; set; }
+    public AddressRequest? MailingAddress { get; set; }
 }
