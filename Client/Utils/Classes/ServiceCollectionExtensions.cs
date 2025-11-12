@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<IConfiguration>(configuration);
         collection.AddSingleton<INavigationService, NavigationService>();
         collection.AddSingleton<IAuthenticationService, AuthenticationService>();
-
+        collection.AddSingleton<IUserPreferencesService, UserPreferencesService>();
         collection.AddLogging();
         
         collection.AddHttpClient("OAuth");
@@ -26,17 +26,23 @@ public static class ServiceCollectionExtensions
             client.Timeout = TimeSpan.FromSeconds(30);
             client.DefaultRequestHeaders.Add("User-Agent", "HRIS-App/1.0");
         });
-
+        
         collection.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
+        
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<DashboardViewModel>();
         collection.AddTransient<EmployeesListViewModel>();
-
+        
+        collection.AddTransient<PortalSelectionViewModel>();
+        collection.AddTransient<HRDashboardViewModel>();
+        collection.AddTransient<InternDashboardViewModel>();
+        
         collection.AddTransient<MainWindow>();
         collection.AddTransient<LoginView>();
         collection.AddTransient<DashboardView>();
         collection.AddTransient<EmployeesListView>();
+        
+        collection.AddTransient<PortalSelectionView>();
     }
 }
