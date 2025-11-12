@@ -15,6 +15,7 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly INavigationService _navigationService;
     private readonly IAuthenticationService _authService;
     private readonly IEmployeeRepository _employeeRepository;
+    private readonly IUserPreferencesService _userPreferencesService;
 
     [ObservableProperty]
     private ViewModelBase? _currentViewModel;
@@ -22,11 +23,16 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _isAuthenticated;
 
-    public MainWindowViewModel(INavigationService navigationService, IAuthenticationService authService, IEmployeeRepository employeeRepository)
+    public MainWindowViewModel(
+        INavigationService navigationService, 
+        IAuthenticationService authService, 
+        IEmployeeRepository employeeRepository,
+        IUserPreferencesService userPreferencesService)
     {
         _navigationService = navigationService;
         _authService = authService;
         _employeeRepository = employeeRepository;
+        _userPreferencesService = userPreferencesService;
 
         _navigationService.NavigationRequested += OnNavigationRequested;
         _authService.AuthenticationChanged += OnIsAuthenticatedChanged;
@@ -40,7 +46,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (IsAuthenticated)
         {
-            CurrentViewModel = new DashboardViewModel(_navigationService);
+            // Show portal selection after login
+            CurrentViewModel = new PortalSelectionViewModel(_navigationService, _userPreferencesService);
         }
         else
         {
@@ -50,50 +57,64 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async Task OnNavigationRequested(object? sender, NavigationEventArgs e)
     {
-            var newVm = e.ViewModelType switch
-            {
-                ViewModelType.Login => new LoginViewModel(_authService),
-                ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
-                ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
-                _ => CurrentViewModel
-            };
+        var newVm = e.ViewModelType switch
+        {
+            ViewModelType.Login => new LoginViewModel(_authService),
+            ViewModelType.PortalSelection => new PortalSelectionViewModel(_navigationService, _userPreferencesService),
+            ViewModelType.HRDashboard => new DashboardViewModel(_navigationService), // TODO: Create HRDashboardViewModel
+            ViewModelType.InternDashboard => new DashboardViewModel(_navigationService), // TODO: Create InternDashboardViewModel
+            ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
+            ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
+            _ => CurrentViewModel
+        };
 
-            if (newVm is null)
-                return;
+        if (newVm is null)
+        {
+            return;
+        }
 
-            if (CurrentViewModel is INavigationAware oldAwareVm)
-                await oldAwareVm.OnNavigatedFromAsync();
+        // Call lifecycle methods
+        if (CurrentViewModel is not null)
+        {
+            await CurrentViewModel.OnNavigatedFromAsync();
+        }
 
-            CurrentViewModel = newVm;
-
-            if (newVm is INavigationAware newAwareVm)
-                await newAwareVm.OnNavigatedToAsync();
+        CurrentViewModel = newVm;
+        await CurrentViewModel.OnNavigatedToAsync();
     }
 
-    private void OnIsAuthenticatedChanged(object? sender, AuthenticationChangedEventArgs e)
+    private async void OnIsAuthenticatedChanged(object? sender, AuthenticationChangedEventArgs e)
     {
         IsAuthenticated = e.IsAuthenticated;
 
-        _navigationService.NavigateTo(e.IsAuthenticated ? ViewModelType.Dashboard : ViewModelType.Login);
+        if (IsAuthenticated)
+        {
+            // Navigate to portal selection when authenticated
+            await _navigationService.NavigateTo(ViewModelType.PortalSelection);
+        }
+        else
+        {
+            // Clear portal preference on logout
+            await _userPreferencesService.ClearPortalPreferenceAsync();
+            await _navigationService.NavigateTo(ViewModelType.Login);
+        }
     }
 
     [RelayCommand]
-    private void NavigateToDashboard()
+    private async Task NavigateToDashboard()
     {
-        _navigationService.NavigateTo(ViewModelType.Dashboard);
+        await _navigationService.NavigateTo(ViewModelType.Dashboard);
     }
 
     [RelayCommand]
-    private void NavigateToEmployeesList()
+    private async Task NavigateToEmployeesList()
     {
-        _navigationService.NavigateTo(ViewModelType.EmployeesList);
+        await _navigationService.NavigateTo(ViewModelType.EmployeesList);
     }
-    
+
     [RelayCommand]
     private async Task Logout()
     {
-        // Console.WriteLine("Logging out disabled until authentication is implemented.");
-        // Uncomment the line below when authentication is implemented
         await _authService.LogoutAsync();
     }
 }
