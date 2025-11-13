@@ -5,6 +5,7 @@ using CloudSync.Infrastructure;
 using CloudSync.Modules.EmployeeManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CloudSync.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20251029103253_UpdatedEmployeePositionFields")]
+    partial class UpdatedEmployeePositionFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -396,9 +399,9 @@ namespace CloudSync.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("degrees_earned");
 
-                    b.Property<int?>("EducationLevel")
+                    b.Property<string>("EducationLevel")
                         .HasMaxLength(20)
-                        .HasColumnType("integer")
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("education_level");
 
                     b.Property<string>("GraduateDegree")
@@ -512,12 +515,14 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("employee_life_cycle_stage");
 
-                    b.Property<int?>("EmploymentStatus")
-                        .HasColumnType("integer")
+                    b.Property<string>("EmploymentStatus")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
                         .HasColumnName("employment_status");
 
-                    b.Property<int?>("EmploymentType")
-                        .HasColumnType("integer")
+                    b.Property<string>("EmploymentType")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
                         .HasColumnName("employment_type");
 
                     b.Property<DateTime?>("ExitDate")
@@ -610,11 +615,6 @@ namespace CloudSync.Migrations
                     b.Property<List<string>>("Evaluation")
                         .HasColumnType("jsonb")
                         .HasColumnName("evaluation");
-
-                    b.Property<string>("Goals")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("goals");
 
                     b.Property<bool?>("LeadershipParticipation")
                         .HasColumnType("boolean")
@@ -949,8 +949,9 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_first_name");
 
-                            b1.Property<int?>("Gender")
-                                .HasColumnType("integer")
+                            b1.Property<string>("Gender")
+                                .HasMaxLength(40)
+                                .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_gender");
 
                             b1.Property<string>("LastName")
@@ -958,8 +959,9 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_last_name");
 
-                            b1.Property<int?>("MaritalStatus")
-                                .HasColumnType("integer")
+                            b1.Property<string>("MaritalStatus")
+                                .HasMaxLength(20)
+                                .HasColumnType("character varying(20)")
                                 .HasColumnName("basic_info_marital_status");
 
                             b1.Property<string>("NamePronunciation")
@@ -986,10 +988,6 @@ namespace CloudSync.Migrations
                                 .HasMaxLength(40)
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_race");
-
-                            b1.Property<DateTime?>("TimeZone")
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("basic_info_time_zone");
 
                             b1.HasKey("EmployeeId");
 

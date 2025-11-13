@@ -5,6 +5,7 @@ using CloudSync.Infrastructure;
 using CloudSync.Modules.EmployeeManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CloudSync.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20251024080133_UpdatedEmployeeBasicFields")]
+    partial class UpdatedEmployeeBasicFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -396,30 +399,10 @@ namespace CloudSync.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("degrees_earned");
 
-                    b.Property<int?>("EducationLevel")
+                    b.Property<string>("EducationLevel")
                         .HasMaxLength(20)
-                        .HasColumnType("integer")
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("education_level");
-
-                    b.Property<string>("GraduateDegree")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("graduate_degree");
-
-                    b.Property<string>("GraduateSchool")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("graduate_school");
-
-                    b.Property<string>("UndergraduateDegree")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("undergraduate_degree");
-
-                    b.Property<string>("UndergraduateSchool")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("undergraduate_school");
 
                     b.Property<List<string>>("UniversitiesAttended")
                         .HasColumnType("jsonb")
@@ -507,17 +490,14 @@ namespace CloudSync.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("department_id");
 
-                    b.Property<string>("EmployeeLifeCycleStage")
+                    b.Property<string>("EmploymentStatus")
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)")
-                        .HasColumnName("employee_life_cycle_stage");
-
-                    b.Property<int?>("EmploymentStatus")
-                        .HasColumnType("integer")
                         .HasColumnName("employment_status");
 
-                    b.Property<int?>("EmploymentType")
-                        .HasColumnType("integer")
+                    b.Property<string>("EmploymentType")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
                         .HasColumnName("employment_type");
 
                     b.Property<DateTime?>("ExitDate")
@@ -549,16 +529,6 @@ namespace CloudSync.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("position_name");
-
-                    b.Property<string>("PreviousEmployers")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("previous_employers");
-
-                    b.Property<string>("ProjxonEmail")
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)")
-                        .HasColumnName("projxon_email");
 
                     b.Property<string>("RecruitingSource")
                         .HasMaxLength(30)
@@ -610,11 +580,6 @@ namespace CloudSync.Migrations
                     b.Property<List<string>>("Evaluation")
                         .HasColumnType("jsonb")
                         .HasColumnName("evaluation");
-
-                    b.Property<string>("Goals")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("goals");
 
                     b.Property<bool?>("LeadershipParticipation")
                         .HasColumnType("boolean")
@@ -949,8 +914,9 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_first_name");
 
-                            b1.Property<int?>("Gender")
-                                .HasColumnType("integer")
+                            b1.Property<string>("Gender")
+                                .HasMaxLength(40)
+                                .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_gender");
 
                             b1.Property<string>("LastName")
@@ -958,8 +924,9 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_last_name");
 
-                            b1.Property<int?>("MaritalStatus")
-                                .HasColumnType("integer")
+                            b1.Property<string>("MaritalStatus")
+                                .HasMaxLength(20)
+                                .HasColumnType("character varying(20)")
                                 .HasColumnName("basic_info_marital_status");
 
                             b1.Property<string>("NamePronunciation")
@@ -987,10 +954,6 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_race");
 
-                            b1.Property<DateTime?>("TimeZone")
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("basic_info_time_zone");
-
                             b1.HasKey("EmployeeId");
 
                             b1.ToTable("employees");
@@ -1011,15 +974,15 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("contact_info_emergency_contact_name");
 
-                            b1.Property<string>("EmergencyContactPhoneNumber")
+                            b1.Property<string>("EmergencyContactPhone")
                                 .HasMaxLength(15)
                                 .HasColumnType("character varying(15)")
-                                .HasColumnName("contact_info_emergency_contact_phone_number");
+                                .HasColumnName("contact_info_emergency_contact_phone");
 
-                            b1.Property<string>("InternationalPhoneNumber")
+                            b1.Property<string>("InternationalPhone")
                                 .HasMaxLength(30)
                                 .HasColumnType("character varying(30)")
-                                .HasColumnName("contact_info_international_phone_number");
+                                .HasColumnName("contact_info_international_phone");
 
                             b1.Property<string>("InternationalPhoneType")
                                 .HasMaxLength(30)
@@ -1031,10 +994,10 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(60)")
                                 .HasColumnName("contact_info_personal_email");
 
-                            b1.Property<string>("PhoneNumber")
+                            b1.Property<string>("Phone")
                                 .HasMaxLength(20)
                                 .HasColumnType("character varying(20)")
-                                .HasColumnName("contact_info_phone_number");
+                                .HasColumnName("contact_info_phone");
 
                             b1.Property<string>("ProjxonEmail")
                                 .HasMaxLength(60)
@@ -1049,7 +1012,7 @@ namespace CloudSync.Migrations
                                 .HasForeignKey("EmployeeId")
                                 .HasConstraintName("fk_employees_employees_id");
 
-                            b1.OwnsOne("CloudSync.Modules.EmployeeManagement.Models.Address", "MailingAddress", b2 =>
+                            b1.OwnsOne("CloudSync.Modules.EmployeeManagement.Models.Address", "Address", b2 =>
                                 {
                                     b2.Property<int>("EmployeeContactInfoEmployeeId")
                                         .HasColumnType("integer")
@@ -1058,37 +1021,37 @@ namespace CloudSync.Migrations
                                     b2.Property<string>("AddressLine1")
                                         .HasMaxLength(80)
                                         .HasColumnType("character varying(80)")
-                                        .HasColumnName("contact_info_mailing_address_address_line1");
+                                        .HasColumnName("contact_info_address_address_line1");
 
                                     b2.Property<string>("AddressLine2")
                                         .HasMaxLength(80)
                                         .HasColumnType("character varying(80)")
-                                        .HasColumnName("contact_info_mailing_address_address_line2");
+                                        .HasColumnName("contact_info_address_address_line2");
 
                                     b2.Property<string>("City")
                                         .HasMaxLength(50)
                                         .HasColumnType("character varying(50)")
-                                        .HasColumnName("contact_info_mailing_address_city");
+                                        .HasColumnName("contact_info_address_city");
 
                                     b2.Property<string>("Country")
                                         .HasMaxLength(50)
                                         .HasColumnType("character varying(50)")
-                                        .HasColumnName("contact_info_mailing_address_country");
+                                        .HasColumnName("contact_info_address_country");
 
                                     b2.Property<string>("PostalCode")
                                         .HasMaxLength(15)
                                         .HasColumnType("character varying(15)")
-                                        .HasColumnName("contact_info_mailing_address_postal_code");
+                                        .HasColumnName("contact_info_address_postal_code");
 
                                     b2.Property<string>("StateOrProvince")
                                         .HasMaxLength(50)
                                         .HasColumnType("character varying(50)")
-                                        .HasColumnName("contact_info_mailing_address_state_or_province");
+                                        .HasColumnName("contact_info_address_state_or_province");
 
                                     b2.Property<string>("TimeZone")
                                         .HasMaxLength(30)
                                         .HasColumnType("character varying(30)")
-                                        .HasColumnName("contact_info_mailing_address_time_zone");
+                                        .HasColumnName("contact_info_address_time_zone");
 
                                     b2.HasKey("EmployeeContactInfoEmployeeId");
 
@@ -1099,60 +1062,7 @@ namespace CloudSync.Migrations
                                         .HasConstraintName("fk_employees_employees_id");
                                 });
 
-                            b1.OwnsOne("CloudSync.Modules.EmployeeManagement.Models.Address", "PermanentAddress", b2 =>
-                                {
-                                    b2.Property<int>("EmployeeContactInfoEmployeeId")
-                                        .HasColumnType("integer")
-                                        .HasColumnName("id");
-
-                                    b2.Property<string>("AddressLine1")
-                                        .HasMaxLength(80)
-                                        .HasColumnType("character varying(80)")
-                                        .HasColumnName("contact_info_permanent_address_address_line1");
-
-                                    b2.Property<string>("AddressLine2")
-                                        .HasMaxLength(80)
-                                        .HasColumnType("character varying(80)")
-                                        .HasColumnName("contact_info_permanent_address_address_line2");
-
-                                    b2.Property<string>("City")
-                                        .HasMaxLength(50)
-                                        .HasColumnType("character varying(50)")
-                                        .HasColumnName("contact_info_permanent_address_city");
-
-                                    b2.Property<string>("Country")
-                                        .HasMaxLength(50)
-                                        .HasColumnType("character varying(50)")
-                                        .HasColumnName("contact_info_permanent_address_country");
-
-                                    b2.Property<string>("PostalCode")
-                                        .HasMaxLength(15)
-                                        .HasColumnType("character varying(15)")
-                                        .HasColumnName("contact_info_permanent_address_postal_code");
-
-                                    b2.Property<string>("StateOrProvince")
-                                        .HasMaxLength(50)
-                                        .HasColumnType("character varying(50)")
-                                        .HasColumnName("contact_info_permanent_address_state_or_province");
-
-                                    b2.Property<string>("TimeZone")
-                                        .HasMaxLength(30)
-                                        .HasColumnType("character varying(30)")
-                                        .HasColumnName("contact_info_permanent_address_time_zone");
-
-                                    b2.HasKey("EmployeeContactInfoEmployeeId");
-
-                                    b2.ToTable("employees");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("EmployeeContactInfoEmployeeId")
-                                        .HasConstraintName("fk_employees_employees_id");
-                                });
-
-                            b1.Navigation("MailingAddress")
-                                .IsRequired();
-
-                            b1.Navigation("PermanentAddress")
+                            b1.Navigation("Address")
                                 .IsRequired();
                         });
 
