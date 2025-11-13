@@ -1,0 +1,199 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Client.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="1024"
+             x:Class="Client.Views.PortalSelectionView"
+             x:DataType="vm:PortalSelectionViewModel">
+    
+    <Design.DataContext>
+        <vm:PortalSelectionViewModel />
+    </Design.DataContext>
+
+    <Grid Background="#F5F5F5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Top"
+                    Margin="0,80,0,0">
+            <TextBlock Text="HR Management System" 
+                       FontSize="36" 
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Foreground="#1A1A1A" />
+            <TextBlock Text="Select your role to continue to your dashboard" 
+                       FontSize="16" 
+                       Foreground="#6B6B6B"
+                       HorizontalAlignment="Center"
+                       Margin="0,16,0,0" />
+        </StackPanel>
+
+        <!-- Portal Cards -->
+        <StackPanel Grid.Row="1" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Spacing="32">
+            
+            <!-- HR Portal Card -->
+            <Border Background="White"
+                    CornerRadius="16"
+                    Padding="48"
+                    Width="350"
+                    Height="300"
+                    BoxShadow="0 2 8 0 #20000000"
+                    BorderThickness="0"
+                    Cursor="Hand">
+                <Border.Styles>
+                    <Style Selector="Border:pointerover">
+                        <Setter Property="BoxShadow" Value="0 4 16 0 #30000000" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                </Border.Styles>
+                
+                <Button Command="{Binding SelectHRPortalCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Padding="0"
+                        Cursor="Hand">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                    </Button.Styles>
+                    
+                    <StackPanel Spacing="24" HorizontalAlignment="Center">
+                        <!-- Icon -->
+                        <Border Background="#000000"
+                                CornerRadius="16"
+                                Width="72"
+                                Height="72"
+                                HorizontalAlignment="Center">
+                            <!-- Users Icon (Lucide) -->
+                            <Viewbox Width="40" Height="40"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Path Stroke="White"
+                                          StrokeThickness="2"
+                                          Data="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                    <Path Stroke="White"
+                                          StrokeThickness="2"
+                                          Data="M16 3.128a4 4 0 0 1 0 7.744" />
+                                    <Path Stroke="White"
+                                          StrokeThickness="2"
+                                          Data="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                    <Ellipse Stroke="White"
+                                             StrokeThickness="2"
+                                             Width="8"
+                                             Height="8"
+                                             Canvas.Left="5"
+                                             Canvas.Top="3" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="HR Portal" 
+                                       FontSize="24" 
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#1A1A1A" />
+                            <TextBlock Text="Manage employees, recruitment, time off, and more" 
+                                       FontSize="14" 
+                                       Foreground="#6B6B6B"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       MaxWidth="250" />
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+            </Border>
+
+            <!-- Intern Portal Card -->
+            <Border Background="White"
+                    CornerRadius="16"
+                    Padding="48"
+                    Width="350"
+                    Height="300"
+                    BoxShadow="0 2 8 0 #20000000"
+                    BorderThickness="0"
+                    Cursor="Hand">
+                <Border.Styles>
+                    <Style Selector="Border:pointerover">
+                        <Setter Property="BoxShadow" Value="0 4 16 0 #30000000" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                </Border.Styles>
+                
+                <Button Command="{Binding SelectInternPortalCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Padding="0"
+                        Cursor="Hand">
+                    <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                    </Button.Styles>
+                    
+                    <StackPanel Spacing="24" HorizontalAlignment="Center">
+                        <!-- Icon -->
+                        <Border Background="#000000"
+                                CornerRadius="16"
+                                Width="72"
+                                Height="72"
+                                HorizontalAlignment="Center">
+                            <!-- Briefcase Icon (Lucide) -->
+                            <Viewbox Width="40" Height="40"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Path Stroke="White"
+                                          StrokeThickness="2"
+                                          Data="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                                    <Rectangle Stroke="White"
+                                               StrokeThickness="2"
+                                               RadiusX="2"
+                                               RadiusY="2"
+                                               Width="20"
+                                               Height="14"
+                                               Canvas.Left="2"
+                                               Canvas.Top="6" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Intern Portal" 
+                                       FontSize="24" 
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#1A1A1A" />
+                            <TextBlock Text="View your profile, attendance, tasks, and time off" 
+                                       FontSize="14" 
+                                       Foreground="#6B6B6B"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       MaxWidth="250" />
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>
