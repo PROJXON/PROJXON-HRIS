@@ -44,5 +44,6 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<EmployeesListView>();
         
         collection.AddTransient<PortalSelectionView>();
+        collection.AddTransient<HRDashboardView>();
     }
 }
