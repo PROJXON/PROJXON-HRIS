@@ -62,7 +62,7 @@ public partial class MainWindowViewModel : ObservableObject
             ViewModelType.Login => new LoginViewModel(_authService),
             ViewModelType.PortalSelection => new PortalSelectionViewModel(_navigationService, _userPreferencesService),
             ViewModelType.HRDashboard => new DashboardViewModel(_navigationService), // TODO: Create HRDashboardViewModel
-            ViewModelType.InternDashboard => new DashboardViewModel(_navigationService), // TODO: Create InternDashboardViewModel
+            ViewModelType.InternDashboard => new InternDashboardViewModel(_navigationService), // TODO: Create InternDashboardViewModel
             ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
             ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
             _ => CurrentViewModel
