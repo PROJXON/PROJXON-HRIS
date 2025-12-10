@@ -489,7 +489,7 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="24">
 
                     <!-- Recent Activity -->
-                    <Border Grid.Column="0"
+                    <Border Grid.Column="1"
                             Background="White"
                             CornerRadius="12"
                             Padding="24"
@@ -521,16 +521,11 @@
                                                             FontSize="14"
                                                             FontWeight="Medium"
                                                             Foreground="#1F2937" />
-                                                    <TextBlock Text="{Binding Subtitle}"
+                                                    <TextBlock Text="{Binding TimeAgo}"
                                                             FontSize="13"
                                                             Foreground="#6B7280" />
                                                 </StackPanel>
 
-                                                <TextBlock Grid.Column="2"
-                                                        Text="{Binding TimeAgo}"
-                                                        FontSize="13"
-                                                        Foreground="#9CA3AF"
-                                                        VerticalAlignment="Center" />
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
@@ -540,7 +535,7 @@
                     </Border>
 
                     <!-- UPCOMING TASKS SECTION -->
-                    <Border Grid.Column="1"
+                    <Border Grid.Column="0"
                             Background="White"
                             CornerRadius="12"
                             Padding="24"

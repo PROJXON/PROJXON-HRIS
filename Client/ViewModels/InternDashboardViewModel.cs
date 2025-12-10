@@ -71,8 +71,8 @@ public partial class InternDashboardViewModel : ViewModelBase
     {
         UpcomingTasks = new ObservableCollection<TaskItem>
         {
-            new TaskItem { Title="Complete Employee Satisfaction Survey", DueDate="October 18, 2025" },
-            new TaskItem { Title="Submit Weekly Report", DueDate="October 20, 2025" }
+            new TaskItem { Title="Complete Employee Satisfaction Survey", DueDate="Due: October 18, 2025" },
+            new TaskItem { Title="Submit Weekly Report", DueDate="Due: October 20, 2025" }
         };
     }
 
