@@ -1,17 +1,12 @@
-<<<<<<< HEAD
-using System.Threading.Tasks;
-using Client.Services;
-using CommunityToolkit.Mvvm.ComponentModel;
-=======
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Client.Services;
 using Client.Utils.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
->>>>>>> origin/main
 
 namespace Client.ViewModels;
+using Client.Models;
 
 /// <summary>
 /// ViewModel for the HR Portal Dashboard
@@ -21,13 +16,6 @@ public partial class HRDashboardViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
 
-<<<<<<< HEAD
-    [ObservableProperty]
-    private string _welcomeMessage = "Welcome to HR Portal";
-
-    [ObservableProperty]
-    private string _portalDescription = "Manage employees, recruitment, time off, and more";
-=======
     #region User Profile Properties
 
     [ObservableProperty]
@@ -67,13 +55,10 @@ public partial class HRDashboardViewModel : ViewModelBase
     private string _selectedMenuItem = "Dashboard";
 
     #endregion
->>>>>>> origin/main
 
     public HRDashboardViewModel(INavigationService navigationService)
     {
         _navigationService = navigationService;
-<<<<<<< HEAD
-=======
         LoadRecentActivities();
     }
 
@@ -106,29 +91,16 @@ public partial class HRDashboardViewModel : ViewModelBase
                 TimeAgo = "2 days ago"
             }
         };
->>>>>>> origin/main
     }
 
     public override async Task OnNavigatedToAsync()
     {
-<<<<<<< HEAD
-        // Initialize HR Dashboard data
-        // TODO: Load HR-specific widgets, statistics, pending approvals, etc.
-=======
         // TODO: Load real data from services
         // await LoadDashboardDataAsync();
->>>>>>> origin/main
         
         await base.OnNavigatedToAsync();
     }
 
-<<<<<<< HEAD
-    // TODO: Add commands for:
-    // - Navigate to employee management
-    // - View pending time-off requests
-    // - Access recruitment pipeline
-    // - View reports and analytics
-=======
     #region Navigation Commands
 
     [RelayCommand]
@@ -174,15 +146,4 @@ public partial class HRDashboardViewModel : ViewModelBase
     }
 
     #endregion
-}
-
-/// <summary>
-/// Model for activity feed items
-/// </summary>
-public class ActivityItem
-{
-    public string Title { get; set; } = string.Empty;
-    public string Subtitle { get; set; } = string.Empty;
-    public string TimeAgo { get; set; } = string.Empty;
->>>>>>> origin/main
 }

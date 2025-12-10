@@ -1,79 +1,149 @@
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Client.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
-<<<<<<< HEAD
 using CommunityToolkit.Mvvm.Input;
 using Client.Utils.Enums;
-=======
->>>>>>> origin/main
 
 namespace Client.ViewModels;
+using Client.Models;
 
 /// <summary>
 /// ViewModel for the Intern Portal Dashboard
 /// Provides access to intern-specific features like profile, attendance, tasks, and time off requests
 /// </summary>
-<<<<<<< HEAD
-public partial class InternDashboardViewModel(INavigationService navigationService) : ViewModelBase
-{
-    private readonly INavigationService _navigationService = navigationService;
-=======
 public partial class InternDashboardViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
->>>>>>> origin/main
+
+    #region User Profile Properties
 
     [ObservableProperty]
-    private string _welcomeMessage = "Welcome to Intern Portal";
+    private string _userName = "John Smith";
 
     [ObservableProperty]
-    private string _portalDescription = "View your profile, attendance, tasks, and time off";
+    private string _userRole = "HR Manager";
 
-<<<<<<< HEAD
-=======
+    #endregion
+
+    #region Dashboard Statistics
+
+    [ObservableProperty]
+    private int _totalEmployees = 48;
+
+    [ObservableProperty]
+    private int _pendingTimeOff = 12;
+
+    [ObservableProperty]
+    private int _activeRecruitments = 5;
+
+    [ObservableProperty]
+    private int _attendancePercentage = 96;
+
+    #endregion
+
+    #region Recent Activity
+
+    [ObservableProperty]
+    private ObservableCollection<ActivityItem> _recentActivities = new();
+
+    #endregion
+
+    #region Selected Menu Item
+
+    [ObservableProperty]
+    private string _selectedMenuItem = "Dashboard";
+
+    #endregion
+
     public InternDashboardViewModel(INavigationService navigationService)
     {
         _navigationService = navigationService;
+        LoadRecentActivities();
     }
 
->>>>>>> origin/main
+    private void LoadRecentActivities()
+    {
+        RecentActivities = new ObservableCollection<ActivityItem>
+        {
+            new ActivityItem
+            {
+                Title = "New time off request",
+                Subtitle = "John Smith",
+                TimeAgo = "2 hours ago"
+            },
+            new ActivityItem
+            {
+                Title = "Employee onboarded",
+                Subtitle = "Sarah Johnson joined Marketing",
+                TimeAgo = "5 hours ago"
+            },
+            new ActivityItem
+            {
+                Title = "Time off approved",
+                Subtitle = "Mike Davis - Vacation",
+                TimeAgo = "Yesterday"
+            },
+            new ActivityItem
+            {
+                Title = "New recruitment posted",
+                Subtitle = "Senior Developer position",
+                TimeAgo = "2 days ago"
+            }
+        };
+    }
+
     public override async Task OnNavigatedToAsync()
     {
-        // Initialize Intern Dashboard data
-        // TODO: Load intern profile, attendance records, assigned tasks, etc.
-<<<<<<< HEAD
-=======
+        // TODO: Load real data from services
+        // await LoadDashboardDataAsync();
         
->>>>>>> origin/main
         await base.OnNavigatedToAsync();
     }
 
-    // TODO: Add commands for:
-    // - View/edit profile
-    // - Check attendance
-    // - View assigned tasks
-    // - Request time off
-    // - View time off history
-<<<<<<< HEAD
+    #region Navigation Commands
+
     [RelayCommand]
-    private async Task GoToMyProfile()
+    private async Task NavigateToDashboard()
     {
-        await _navigationService.NavigateTo(ViewModelType.InternDashboard); // Replace with MyProfile if available
+        SelectedMenuItem = "Dashboard";
+        // Already on dashboard, could refresh data
+        await Task.CompletedTask;
     }
 
     [RelayCommand]
-    private async Task GoToMetrics()
+    private async Task NavigateToProfile()
     {
-        await _navigationService.NavigateTo(ViewModelType.InternDashboard); // Replace with MetricsViewModel
+        SelectedMenuItem = "Profile";
+        // TODO: Navigate to profile view when implemented
+        // await _navigationService.NavigateTo(ViewModelType.Profile);
+        await Task.CompletedTask;
     }
 
     [RelayCommand]
-    private async Task GoToTasks()
+    private async Task NavigateToTimeOff()
     {
-        await _navigationService.NavigateTo(ViewModelType.InternDashboard); // Replace with TasksViewModel
+        SelectedMenuItem = "Time Off Requests";
+        // TODO: Navigate to time off view when implemented
+        // await _navigationService.NavigateTo(ViewModelType.TimeOffRequests);
+        await Task.CompletedTask;
     }
+
+    [RelayCommand]
+    private async Task NavigateToAttendance()
+    {
+        SelectedMenuItem = "Attendance";
+        // TODO: Navigate to attendance view when implemented
+        // await _navigationService.NavigateTo(ViewModelType.Attendance);
+        await Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private async Task NavigateToEmployees()
+    {
+        SelectedMenuItem = "Employees";
+        await _navigationService.NavigateTo(ViewModelType.EmployeesList);
+    }
+
+    #endregion
 }
-
-=======
-}
->>>>>>> origin/main
