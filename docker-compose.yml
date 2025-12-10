@@ -10,7 +10,11 @@ services:
       db:
         condition: service_healthy
     environment:
+<<<<<<< HEAD
       - ConnectionStrings__PostgresConnection=Host=db;Port=5432;Database=${POSTGRES_DB};Username=postgres;Password=${DB_PASSWORD}
+=======
+      - ConnectionStrings__PostgresConnection=Host=db;Port=5432;Database=hrisdb;Username=postgres;Password=${DB_PASSWORD}
+>>>>>>> origin/main
   db:
     image: postgres:15
     restart: always

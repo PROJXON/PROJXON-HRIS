@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Client.Models.EmployeeManagement;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -61,8 +61,13 @@ public partial class MainWindowViewModel : ObservableObject
         {
             ViewModelType.Login => new LoginViewModel(_authService),
             ViewModelType.PortalSelection => new PortalSelectionViewModel(_navigationService, _userPreferencesService),
+<<<<<<< HEAD
             ViewModelType.HRDashboard => new DashboardViewModel(_navigationService), // TODO: Create HRDashboardViewModel
             ViewModelType.InternDashboard => new InternDashboardViewModel(_navigationService), // TODO: Create InternDashboardViewModel
+=======
+            ViewModelType.HRDashboard => new HRDashboardViewModel(_navigationService),
+            ViewModelType.InternDashboard => new InternDashboardViewModel(_navigationService),
+>>>>>>> origin/main
             ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
             ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
             _ => CurrentViewModel
