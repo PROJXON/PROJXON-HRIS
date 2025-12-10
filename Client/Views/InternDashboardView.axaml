@@ -142,54 +142,13 @@
                                           Data="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" />
                                 </Canvas>
                             </Viewbox>
-                            <TextBlock Text="Profile" 
+                            <TextBlock Text=" My Profile" 
                                        VerticalAlignment="Center"
                                        FontSize="15" />
                         </StackPanel>
                     </Button>
 
-                    <!-- Time Off Requests -->
-                    <Button Command="{Binding NavigateToTimeOffCommand}"
-                            Background="Transparent"
-                            Foreground="#374151"
-                            CornerRadius="8"
-                            Padding="16,12"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Left">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#F3F4F6" />
-                            </Style>
-                        </Button.Styles>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Viewbox Width="20" Height="20">
-                                <Canvas Width="24" Height="24">
-                                    <Rectangle Stroke="#374151"
-                                               StrokeThickness="2"
-                                               RadiusX="2"
-                                               RadiusY="2"
-                                               Width="18"
-                                               Height="18"
-                                               Canvas.Left="3"
-                                               Canvas.Top="4" />
-                                    <Path Stroke="#374151"
-                                          StrokeThickness="2"
-                                          Data="M16 2v4" />
-                                    <Path Stroke="#374151"
-                                          StrokeThickness="2"
-                                          Data="M8 2v4" />
-                                    <Path Stroke="#374151"
-                                          StrokeThickness="2"
-                                          Data="M3 10h18" />
-                                </Canvas>
-                            </Viewbox>
-                            <TextBlock Text="Time Off Requests" 
-                                       VerticalAlignment="Center"
-                                       FontSize="15" />
-                        </StackPanel>
-                    </Button>
-
-                    <!-- Attendance -->
+                    <!-- My Attendance -->
                     <Button Command="{Binding NavigateToAttendanceCommand}"
                             Background="Transparent"
                             Foreground="#374151"
@@ -224,14 +183,55 @@
                                           Data="M3 10h18" />
                                 </Canvas>
                             </Viewbox>
-                            <TextBlock Text="Attendance" 
+                            <TextBlock Text="My Attendance" 
                                        VerticalAlignment="Center"
                                        FontSize="15" />
                         </StackPanel>
                     </Button>
 
-                    <!-- Employees -->
-                    <Button Command="{Binding NavigateToEmployeesCommand}"
+                    <!-- Time Off -->
+                    <Button Command="{Binding NavigateToTimeOffCommand}"
+                            Background="Transparent"
+                            Foreground="#374151"
+                            CornerRadius="8"
+                            Padding="16,12"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Rectangle Stroke="#374151"
+                                               StrokeThickness="2"
+                                               RadiusX="2"
+                                               RadiusY="2"
+                                               Width="18"
+                                               Height="18"
+                                               Canvas.Left="3"
+                                               Canvas.Top="4" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M16 2v4" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M8 2v4" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M3 10h18" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock Text="Time Off" 
+                                       VerticalAlignment="Center"
+                                       FontSize="15" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Tasks -->
+                    <Button Command="{Binding NavigateToTasks}"
                             Background="Transparent"
                             Foreground="#374151"
                             CornerRadius="8"
@@ -263,7 +263,7 @@
                                           Data="M22 21v-2a4 4 0 0 0-3-3.87" />
                                 </Canvas>
                             </Viewbox>
-                            <TextBlock Text="Employees" 
+                            <TextBlock Text="Tasks" 
                                        VerticalAlignment="Center"
                                        FontSize="15" />
                         </StackPanel>
@@ -280,11 +280,11 @@
                 
                 <!-- Header -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="HR Dashboard"
+                    <TextBlock Text="Intern Dashboard"
                                FontSize="28"
                                FontWeight="Bold"
                                Foreground="#1F2937" />
-                    <TextBlock Text="Welcome back! Here's what's happening today."
+                    <TextBlock Text="Welcome back! Here's your overview for today."
                                FontSize="16"
                                Foreground="#6B7280" />
                 </StackPanel>
@@ -301,14 +301,14 @@
                         </Style>
                     </Grid.Styles>
                     
-                    <!-- Total Employees -->
+                    <!-- Hours This Week -->
                     <Border Grid.Column="0" Classes="stat-card" Margin="0,0,12,0">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Grid.Column="0" Spacing="4">
-                                <TextBlock Text="Total Employees"
+                                <TextBlock Text="Hours This Week"
                                            FontSize="14"
                                            Foreground="#6B7280" />
-                                <TextBlock Text="{Binding TotalEmployees}"
+                                <TextBlock Text="{Binding HoursThisWeek}"
                                            FontSize="32"
                                            FontWeight="Bold"
                                            Foreground="#1F2937" />
@@ -344,14 +344,14 @@
                         </Grid>
                     </Border>
 
-                    <!-- Pending Time Off -->
+                    <!-- Days Present -->
                     <Border Grid.Column="1" Classes="stat-card" Margin="6,0,6,0">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Grid.Column="0" Spacing="4">
-                                <TextBlock Text="Pending Time Off"
+                                <TextBlock Text="Days Present"
                                            FontSize="14"
                                            Foreground="#6B7280" />
-                                <TextBlock Text="{Binding PendingTimeOff}"
+                                <TextBlock Text="{Binding DaysPresent}"
                                            FontSize="32"
                                            FontWeight="Bold"
                                            Foreground="#1F2937" />
@@ -389,15 +389,15 @@
                         </Grid>
                     </Border>
 
-                    <!-- Active Recruitments -->
+                    <!-- Pending Tasks -->
                     <Border Grid.Column="2" Classes="stat-card" Margin="6,0,6,0">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Grid.Column="0" Spacing="4">
-                                <TextBlock Text="Active Recruitments"
+                                <TextBlock Text="Pending Tasks"
                                            FontSize="14"
                                            Foreground="#6B7280"
                                            TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding ActiveRecruitments}"
+                                <TextBlock Text="{Binding PendingTasks}"
                                            FontSize="32"
                                            FontWeight="Bold"
                                            Foreground="#1F2937" />
@@ -435,15 +435,15 @@
                         </Grid>
                     </Border>
 
-                    <!-- This Month Attendance -->
+                    <!-- Completed Tasks -->
                     <Border Grid.Column="3" Classes="stat-card" Margin="12,0,0,0">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Grid.Column="0" Spacing="4">
-                                <TextBlock Text="This Month Attendance"
+                                <TextBlock Text="Completed Tasks"
                                            FontSize="14"
                                            Foreground="#6B7280"
                                            TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding AttendancePercentage, StringFormat={}{0}%}"
+                                <TextBlock Text="{Binding CompletedTasks}"
                                            FontSize="32"
                                            FontWeight="Bold"
                                            Foreground="#1F2937" />
@@ -485,61 +485,99 @@
                     </Border>
                 </Grid>
 
-                <!-- Recent Activity Section -->
-                <Border Background="White"
-                        CornerRadius="12"
-                        Padding="24"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1">
-                    <StackPanel Spacing="16">
-                        <TextBlock Text="Recent Activity"
-                                   FontSize="18"
-                                   FontWeight="SemiBold"
-                                   Foreground="#1F2937" />
+                <!-- Activity + Tasks Side-by-Side -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="24">
+
+                    <!-- Recent Activity -->
+                    <Border Grid.Column="0"
+                            Background="White"
+                            CornerRadius="12"
+                            Padding="24"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
                         
-                        <!-- Activity Items -->
-                        <ItemsControl ItemsSource="{Binding RecentActivities}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Padding="0,12"
-                                            BorderBrush="#F3F4F6"
-                                            BorderThickness="0,0,0,1">
-                                        <Grid ColumnDefinitions="Auto,*,Auto">
-                                            <!-- Activity Indicator -->
-                                            <Ellipse Grid.Column="0"
-                                                     Width="8"
-                                                     Height="8"
-                                                     Fill="#3B82F6"
-                                                     VerticalAlignment="Center"
-                                                     Margin="0,0,16,0" />
-                                            
-                                            <!-- Activity Content -->
-                                            <StackPanel Grid.Column="1" Spacing="2">
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="Recent Activity"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Foreground="#1F2937" />
+
+                            <ItemsControl ItemsSource="{Binding RecentActivities}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="0,12"
+                                                BorderBrush="#F3F4F6"
+                                                BorderThickness="0,0,0,1">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+
+                                                <Ellipse Grid.Column="0"
+                                                        Width="8" Height="8"
+                                                        Fill="#3B82F6"
+                                                        VerticalAlignment="Center"
+                                                        Margin="0,0,16,0" />
+
+                                                <StackPanel Grid.Column="1" Spacing="2">
+                                                    <TextBlock Text="{Binding Title}"
+                                                            FontSize="14"
+                                                            FontWeight="Medium"
+                                                            Foreground="#1F2937" />
+                                                    <TextBlock Text="{Binding Subtitle}"
+                                                            FontSize="13"
+                                                            Foreground="#6B7280" />
+                                                </StackPanel>
+
+                                                <TextBlock Grid.Column="2"
+                                                        Text="{Binding TimeAgo}"
+                                                        FontSize="13"
+                                                        Foreground="#9CA3AF"
+                                                        VerticalAlignment="Center" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- UPCOMING TASKS SECTION -->
+                    <Border Grid.Column="1"
+                            Background="White"
+                            CornerRadius="12"
+                            Padding="24"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1">
+
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="Upcoming Tasks"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Foreground="#1F2937" />
+
+                            <ItemsControl ItemsSource="{Binding UpcomingTasks}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="0,12"
+                                                BorderBrush="#F3F4F6"
+                                                BorderThickness="0,0,0,1">
+
+                                            <StackPanel Spacing="2">
                                                 <TextBlock Text="{Binding Title}"
-                                                           FontSize="14"
-                                                           FontWeight="Medium"
-                                                           Foreground="#1F2937" />
-                                                <TextBlock Text="{Binding Subtitle}"
-                                                           FontSize="13"
-                                                           Foreground="#6B7280" />
+                                                        FontSize="14"
+                                                        FontWeight="Medium"
+                                                        Foreground="#1F2937" />
+
+                                                <TextBlock Text="{Binding DueDate}"
+                                                        FontSize="13"
+                                                        Foreground="#6B7280" />
                                             </StackPanel>
-                                            
-                                            <!-- Timestamp -->
-                                            <TextBlock Grid.Column="2"
-                                                       Text="{Binding TimeAgo}"
-                                                       FontSize="13"
-                                                       Foreground="#9CA3AF"
-                                                       VerticalAlignment="Center" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </Grid>
             </StackPanel>
         </ScrollViewer>
     </Grid>
 </UserControl>
-
-

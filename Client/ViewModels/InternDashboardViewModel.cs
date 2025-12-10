@@ -19,30 +19,34 @@ public partial class InternDashboardViewModel : ViewModelBase
     #region User Profile Properties
 
     [ObservableProperty]
-    private string _userName = "John Smith";
+    private string _userName = "Intern's Name";
 
     [ObservableProperty]
-    private string _userRole = "HR Manager";
+    private string _userRole = "Intern";
 
     #endregion
 
     #region Dashboard Statistics
 
     [ObservableProperty]
-    private int _totalEmployees = 48;
+    private int _hoursThisWeek = 32;
 
     [ObservableProperty]
-    private int _pendingTimeOff = 12;
+    private int _daysPresent = 12;
 
     [ObservableProperty]
-    private int _activeRecruitments = 5;
+    private int _pendingTasks = 2;
 
     [ObservableProperty]
-    private int _attendancePercentage = 96;
+    private int _completedTasks = 5;
 
     #endregion
 
     #region Recent Activity
+
+    [ObservableProperty]
+    private ObservableCollection<TaskItem> _upcomingTasks = new();
+
 
     [ObservableProperty]
     private ObservableCollection<ActivityItem> _recentActivities = new();
@@ -59,7 +63,17 @@ public partial class InternDashboardViewModel : ViewModelBase
     public InternDashboardViewModel(INavigationService navigationService)
     {
         _navigationService = navigationService;
+        LoadUpcomingTasks();
         LoadRecentActivities();
+    }
+
+    private void LoadUpcomingTasks()
+    {
+        UpcomingTasks = new ObservableCollection<TaskItem>
+        {
+            new TaskItem { Title="Complete Employee Satisfaction Survey", DueDate="October 18, 2025" },
+            new TaskItem { Title="Submit Weekly Report", DueDate="October 20, 2025" }
+        };
     }
 
     private void LoadRecentActivities()
@@ -68,28 +82,19 @@ public partial class InternDashboardViewModel : ViewModelBase
         {
             new ActivityItem
             {
-                Title = "New time off request",
-                Subtitle = "John Smith",
+                Title = "Submitted attendance",
                 TimeAgo = "2 hours ago"
             },
             new ActivityItem
             {
-                Title = "Employee onboarded",
-                Subtitle = "Sarah Johnson joined Marketing",
-                TimeAgo = "5 hours ago"
+                Title = "Completed onboarding survey",
+                TimeAgo = "1 day ago"
             },
             new ActivityItem
             {
-                Title = "Time off approved",
-                Subtitle = "Mike Davis - Vacation",
-                TimeAgo = "Yesterday"
-            },
-            new ActivityItem
-            {
-                Title = "New recruitment posted",
-                Subtitle = "Senior Developer position",
+                Title = "Requested time off",
                 TimeAgo = "2 days ago"
-            }
+            },
         };
     }
 
@@ -114,36 +119,41 @@ public partial class InternDashboardViewModel : ViewModelBase
     [RelayCommand]
     private async Task NavigateToProfile()
     {
-        SelectedMenuItem = "Profile";
+        SelectedMenuItem = "My Profile";
         // TODO: Navigate to profile view when implemented
         // await _navigationService.NavigateTo(ViewModelType.Profile);
         await Task.CompletedTask;
     }
 
     [RelayCommand]
-    private async Task NavigateToTimeOff()
+    private async Task NavigateToAttendance()
     {
-        SelectedMenuItem = "Time Off Requests";
-        // TODO: Navigate to time off view when implemented
+        SelectedMenuItem = "My Attendance";
+        // TODO: Navigate to attendance view when implemented
         // await _navigationService.NavigateTo(ViewModelType.TimeOffRequests);
         await Task.CompletedTask;
     }
 
     [RelayCommand]
-    private async Task NavigateToAttendance()
+    private async Task NavigateToTimeOff()
     {
-        SelectedMenuItem = "Attendance";
-        // TODO: Navigate to attendance view when implemented
+        SelectedMenuItem = "Time Off";
+        // TODO: Navigate to time off view when implemented
         // await _navigationService.NavigateTo(ViewModelType.Attendance);
         await Task.CompletedTask;
     }
 
     [RelayCommand]
-    private async Task NavigateToEmployees()
+    private async Task NavigateToTasks()
     {
-        SelectedMenuItem = "Employees";
-        await _navigationService.NavigateTo(ViewModelType.EmployeesList);
+        SelectedMenuItem = "Tasks";
+        await Task.CompletedTask;
     }
 
     #endregion
+}
+public class TaskItem
+{
+    public string Title { get; set; } = "";
+    public string DueDate { get; set; } = "";
 }
