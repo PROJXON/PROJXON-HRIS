@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Client.Models.EmployeeManagement;
 using Client.Services;
 using Client.Utils.Interfaces;
@@ -29,21 +29,23 @@ public static class ServiceCollectionExtensions
         
         collection.AddScoped<IEmployeeRepository, EmployeeRepository>();
         
+        // ViewModels
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<LoginViewModel>();
         collection.AddTransient<DashboardViewModel>();
         collection.AddTransient<EmployeesListViewModel>();
-        
         collection.AddTransient<PortalSelectionViewModel>();
         collection.AddTransient<HRDashboardViewModel>();
         collection.AddTransient<InternDashboardViewModel>();
+        collection.AddTransient<ProfileViewModel>();
         
+        // Views
         collection.AddTransient<MainWindow>();
         collection.AddTransient<LoginView>();
         collection.AddTransient<DashboardView>();
         collection.AddTransient<EmployeesListView>();
-        
         collection.AddTransient<PortalSelectionView>();
         collection.AddTransient<HRDashboardView>();
+        collection.AddTransient<ProfileView>();
     }
 }

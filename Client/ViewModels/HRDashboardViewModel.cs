@@ -114,9 +114,7 @@ public partial class HRDashboardViewModel : ViewModelBase
     private async Task NavigateToProfile()
     {
         SelectedMenuItem = "Profile";
-        // TODO: Navigate to profile view when implemented
-        // await _navigationService.NavigateTo(ViewModelType.Profile);
-        await Task.CompletedTask;
+        await _navigationService.NavigateTo(ViewModelType.Profile);
     }
 
     [RelayCommand]

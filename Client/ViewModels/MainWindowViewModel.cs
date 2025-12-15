@@ -65,6 +65,7 @@ public partial class MainWindowViewModel : ObservableObject
             ViewModelType.InternDashboard => new InternDashboardViewModel(_navigationService),
             ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
             ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
+            ViewModelType.Profile => new ProfileViewModel(_navigationService),
             _ => CurrentViewModel
         };
 

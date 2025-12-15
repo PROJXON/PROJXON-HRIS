@@ -1,4 +1,4 @@
-﻿namespace Client.Utils.Enums;
+namespace Client.Utils.Enums;
 
 /// <summary>
 /// Defines the types of ViewModels that can be navigated to in the application
@@ -11,5 +11,6 @@ public enum ViewModelType
     InternDashboard,
     Dashboard, // Legacy - can be removed after migration
     EmployeesList,
-    EmployeeDetails
+    EmployeeDetails,
+    Profile
 }
