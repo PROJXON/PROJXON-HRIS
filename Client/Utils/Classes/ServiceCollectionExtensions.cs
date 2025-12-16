@@ -43,6 +43,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<DashboardView>();
         collection.AddTransient<EmployeesListView>();
         collection.AddTransient<InternDashboardView>();
+        collection.AddTransient<HRDashboardView>();
         
         collection.AddTransient<PortalSelectionView>();
     }
