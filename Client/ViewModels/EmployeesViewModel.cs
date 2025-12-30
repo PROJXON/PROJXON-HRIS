@@ -451,6 +451,12 @@ public partial class EmployeesViewModel : ViewModelBase
         await Task.CompletedTask;
     }
 
+    [RelayCommand]
+    private async Task NavigateToRecruitment()
+    {
+        await _navigationService.NavigateTo(ViewModelType.Recruitment);
+    }
+
     #endregion
 }
 

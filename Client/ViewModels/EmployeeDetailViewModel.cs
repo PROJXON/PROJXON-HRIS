@@ -227,6 +227,12 @@ public partial class EmployeeDetailViewModel : ViewModelBase
         await _navigationService.NavigateTo(ViewModelType.Employees);
     }
 
+    [RelayCommand]
+    private async Task NavigateToRecruitment()
+    {
+        await _navigationService.NavigateTo(ViewModelType.Recruitment);
+    }
+
     #endregion
 
     public override async Task OnNavigatedToAsync()

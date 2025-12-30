@@ -14,5 +14,6 @@ public enum ViewModelType
     EmployeeDetails,
     Profile,
     Employees, // New employees list view with cards
-    Attendance // Attendance calendar view
+    Attendance, // Attendance calendar view
+    Recruitment // Recruitment kanban board
 }

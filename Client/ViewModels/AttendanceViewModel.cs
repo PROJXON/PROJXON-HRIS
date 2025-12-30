@@ -438,6 +438,12 @@ public partial class AttendanceViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task NavigateToRecruitment()
+    {
+        await _navigationService.NavigateTo(ViewModelType.Recruitment);
+    }
+
+    [RelayCommand]
     private async Task SwitchToInternPortal()
     {
         await _navigationService.NavigateTo(ViewModelType.InternDashboard);
