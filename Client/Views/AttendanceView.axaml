@@ -1,0 +1,795 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Client.ViewModels"
+             xmlns:converters="using:Client.Utils.Converters"
+             mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
+             x:Class="Client.Views.AttendanceView"
+             x:DataType="vm:AttendanceViewModel"
+             x:Name="Root">
+    
+    <UserControl.Resources>
+        <converters:BoolToTabBackgroundConverter x:Key="TabBackgroundConverter" />
+        <converters:BoolToTabForegroundConverter x:Key="TabForegroundConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+        <converters:InverseBoolConverter x:Key="InverseBool" />
+        <converters:AmPmBackgroundConverter x:Key="AmPmBackground" />
+        <converters:AmPmForegroundConverter x:Key="AmPmForeground" />
+    </UserControl.Resources>
+    
+    <Design.DataContext>
+        <vm:AttendanceViewModel />
+    </Design.DataContext>
+
+    <Grid Background="#F8F9FA">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border Grid.Column="0" 
+                Background="White"
+                BorderBrush="#E5E7EB"
+                BorderThickness="0,0,1,0">
+            <Grid RowDefinitions="Auto,*">
+                
+                <!-- Profile Section -->
+                <StackPanel Grid.Row="0" 
+                            Margin="24,32,24,24"
+                            HorizontalAlignment="Center">
+                    
+                    <!-- Profile Avatar with Edit Icon -->
+                    <Grid Width="96" Height="96" HorizontalAlignment="Center">
+                        <Border CornerRadius="48"
+                                Background="#F3F4F6"
+                                Width="96"
+                                Height="96">
+                            <Viewbox Width="48" Height="48"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Ellipse Stroke="#9CA3AF"
+                                             StrokeThickness="2"
+                                             Width="10"
+                                             Height="10"
+                                             Canvas.Left="7"
+                                             Canvas.Top="2" />
+                                    <Path Stroke="#9CA3AF"
+                                          StrokeThickness="2"
+                                          Data="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        
+                        <!-- Edit Badge -->
+                        <Border Background="#1F2937"
+                                CornerRadius="12"
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="0,0,4,4">
+                            <Viewbox Width="12" Height="12"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center">
+                                <Canvas Width="24" Height="24">
+                                    <Path Stroke="White"
+                                          StrokeThickness="2"
+                                          Data="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <Path Stroke="White"
+                                          StrokeThickness="2"
+                                          Data="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                    </Grid>
+                    
+                    <!-- User Name and Role -->
+                    <TextBlock Text="{Binding UserName}"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="#1F2937"
+                               HorizontalAlignment="Center"
+                               Margin="0,16,0,4" />
+                    <TextBlock Text="{Binding UserRole}"
+                               FontSize="14"
+                               Foreground="#6B7280"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+
+                <!-- Navigation Menu -->
+                <StackPanel Grid.Row="1" 
+                            Margin="16,0,16,24"
+                            Spacing="4">
+                    
+                    <!-- Dashboard -->
+                    <Button Command="{Binding NavigateToDashboardCommand}"
+                            Background="Transparent"
+                            Foreground="#374151"
+                            CornerRadius="8"
+                            Padding="16,12"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M9 22V12h6v10" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock Text="Dashboard" 
+                                       VerticalAlignment="Center"
+                                       FontSize="15" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Profile -->
+                    <Button Command="{Binding NavigateToProfileCommand}"
+                            Background="Transparent"
+                            Foreground="#374151"
+                            CornerRadius="8"
+                            Padding="16,12"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Ellipse Stroke="#374151"
+                                             StrokeThickness="2"
+                                             Width="10"
+                                             Height="10"
+                                             Canvas.Left="7"
+                                             Canvas.Top="2" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock Text="Profile" 
+                                       VerticalAlignment="Center"
+                                       FontSize="15" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Time Off Requests -->
+                    <Button Command="{Binding NavigateToTimeOffCommand}"
+                            Background="Transparent"
+                            Foreground="#374151"
+                            CornerRadius="8"
+                            Padding="16,12"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Rectangle Stroke="#374151"
+                                               StrokeThickness="2"
+                                               RadiusX="2"
+                                               RadiusY="2"
+                                               Width="18"
+                                               Height="18"
+                                               Canvas.Left="3"
+                                               Canvas.Top="4" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M16 2v4" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M8 2v4" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M3 10h18" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock Text="Time Off Requests" 
+                                       VerticalAlignment="Center"
+                                       FontSize="15" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Attendance - Active -->
+                    <Button Command="{Binding NavigateToAttendanceCommand}"
+                            Background="#1F2937"
+                            Foreground="White"
+                            CornerRadius="8"
+                            Padding="16,12"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left">
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Rectangle Stroke="White"
+                                               StrokeThickness="2"
+                                               RadiusX="2"
+                                               RadiusY="2"
+                                               Width="18"
+                                               Height="18"
+                                               Canvas.Left="3"
+                                               Canvas.Top="4" />
+                                    <Path Stroke="White"
+                                          StrokeThickness="2"
+                                          Data="M16 2v4" />
+                                    <Path Stroke="White"
+                                          StrokeThickness="2"
+                                          Data="M8 2v4" />
+                                    <Path Stroke="White"
+                                          StrokeThickness="2"
+                                          Data="M3 10h18" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock Text="Attendance" 
+                                       VerticalAlignment="Center"
+                                       FontSize="15" />
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Employees -->
+                    <Button Command="{Binding NavigateToEmployeesCommand}"
+                            Background="Transparent"
+                            Foreground="#374151"
+                            CornerRadius="8"
+                            Padding="16,12"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Ellipse Stroke="#374151"
+                                             StrokeThickness="2"
+                                             Width="10"
+                                             Height="10"
+                                             Canvas.Left="6"
+                                             Canvas.Top="2" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M4 21v-2a4 4 0 0 1 4-4h4.5" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M16 3.128a4 4 0 0 1 0 7.744" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock Text="Employees" 
+                                       VerticalAlignment="Center"
+                                       FontSize="15" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content - Calendar -->
+        <ScrollViewer Grid.Column="1" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <Grid Margin="40,32,40,32">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <StackPanel Grid.Row="0" Spacing="8" Margin="0,0,0,24">
+                    <TextBlock Text="Attendance"
+                               FontSize="28"
+                               FontWeight="Bold"
+                               Foreground="#1F2937" />
+                    <TextBlock Text="Track your daily attendance and working hours"
+                               FontSize="16"
+                               Foreground="#6B7280" />
+                </StackPanel>
+
+                <!-- Calendar Card -->
+                <Border Grid.Row="2" 
+                        Background="White"
+                        CornerRadius="12"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        Padding="24">
+                    <Grid RowDefinitions="Auto,Auto,Auto">
+                    
+                    <!-- Month Navigation -->
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding MonthYearDisplay}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="#1F2937"
+                                   VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                            <Button Command="{Binding PreviousMonthCommand}"
+                                    Background="White"
+                                    BorderBrush="#E5E7EB"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    Width="36"
+                                    Height="36"
+                                    Padding="0">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="#F3F4F6" />
+                                    </Style>
+                                </Button.Styles>
+                                <TextBlock Text="‹" FontSize="20" Foreground="#374151" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Button>
+                            <Button Command="{Binding NextMonthCommand}"
+                                    Background="White"
+                                    BorderBrush="#E5E7EB"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    Width="36"
+                                    Height="36"
+                                    Padding="0">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                        <Setter Property="Background" Value="#F3F4F6" />
+                                    </Style>
+                                </Button.Styles>
+                                <TextBlock Text="›" FontSize="20" Foreground="#374151" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Day of Week Headers -->
+                    <ItemsControl Grid.Row="1" Margin="0,0,0,8">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="7" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <TextBlock Text="Sun" FontSize="14" FontWeight="Medium" Foreground="#6B7280" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,12" />
+                        <TextBlock Text="Mon" FontSize="14" FontWeight="Medium" Foreground="#6B7280" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,12" />
+                        <TextBlock Text="Tue" FontSize="14" FontWeight="Medium" Foreground="#6B7280" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,12" />
+                        <TextBlock Text="Wed" FontSize="14" FontWeight="Medium" Foreground="#6B7280" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,12" />
+                        <TextBlock Text="Thu" FontSize="14" FontWeight="Medium" Foreground="#6B7280" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,12" />
+                        <TextBlock Text="Fri" FontSize="14" FontWeight="Medium" Foreground="#6B7280" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,12" />
+                        <TextBlock Text="Sat" FontSize="14" FontWeight="Medium" Foreground="#6B7280" 
+                                   HorizontalAlignment="Center" Margin="0,0,0,12" />
+                    </ItemsControl>
+
+                    <!-- Calendar Grid -->
+                    <ItemsControl Grid.Row="2" ItemsSource="{Binding CalendarDays}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="7" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:CalendarDayViewModel}">
+                                <Button Command="{Binding #Root.((vm:AttendanceViewModel)DataContext).SelectDayCommand}"
+                                        CommandParameter="{Binding}"
+                                        IsEnabled="{Binding !IsOnLeave}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="0"
+                                        Margin="2"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Stretch"
+                                        IsVisible="{Binding !IsEmpty}">
+                                    <Button.Styles>
+                                        <!-- Default state -->
+                                        <Style Selector="Button">
+                                            <Setter Property="Cursor" Value="Hand" />
+                                        </Style>
+                                        <!-- Disabled for leave days -->
+                                        <Style Selector="Button:disabled">
+                                            <Setter Property="Cursor" Value="Arrow" />
+                                            <Setter Property="Opacity" Value="1" />
+                                        </Style>
+                                    </Button.Styles>
+                                    <Border x:Name="DayBorder"
+                                            CornerRadius="8"
+                                            BorderThickness="1"
+                                            MinHeight="80"
+                                            Padding="8">
+                                        <Border.Styles>
+                                            <!-- Default state -->
+                                            <Style Selector="Border#DayBorder">
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Setter Property="BorderBrush" Value="#E5E7EB" />
+                                            </Style>
+                                            
+                                            <!-- Has Attendance - Light green -->
+                                            <Style Selector="Button:pointerover Border#DayBorder">
+                                                <Setter Property="Background" Value="#F3F4F6" />
+                                            </Style>
+                                        </Border.Styles>
+                                        
+                                        <!-- Dynamic background based on state -->
+                                        <Border.Background>
+                                            <MultiBinding Converter="{x:Static converters:CalendarDayBackgroundMultiConverter.Instance}">
+                                                <Binding Path="HasAttendance" />
+                                                <Binding Path="IsOnLeave" />
+                                                <Binding Path="IsSelected" />
+                                            </MultiBinding>
+                                        </Border.Background>
+                                        
+                                        <Border.BorderBrush>
+                                            <MultiBinding Converter="{x:Static converters:CalendarDayBorderMultiConverter.Instance}">
+                                                <Binding Path="IsToday" />
+                                                <Binding Path="IsSelected" />
+                                            </MultiBinding>
+                                        </Border.BorderBrush>
+
+                                        <Grid RowDefinitions="Auto,*">
+                                            <!-- Day Number -->
+                                            <TextBlock Grid.Row="0"
+                                                       Text="{Binding DayNumber}"
+                                                       FontSize="14"
+                                                       FontWeight="Medium"
+                                                       HorizontalAlignment="Center">
+                                                <TextBlock.Foreground>
+                                                    <MultiBinding Converter="{x:Static converters:CalendarDayForegroundMultiConverter.Instance}">
+                                                        <Binding Path="HasAttendance" />
+                                                        <Binding Path="IsOnLeave" />
+                                                    </MultiBinding>
+                                                </TextBlock.Foreground>
+                                            </TextBlock>
+                                            
+                                            <!-- Time Display or Leave Text -->
+                                            <StackPanel Grid.Row="1" 
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center">
+                                                <!-- Time display for attendance days -->
+                                                <TextBlock Text="{Binding TimeDisplay}"
+                                                           IsVisible="{Binding HasAttendance}"
+                                                           FontSize="11"
+                                                           Foreground="#059669"
+                                                           TextAlignment="Center"
+                                                           LineHeight="14" />
+                                                
+                                                <!-- Leave text for leave days -->
+                                                <TextBlock Text="{Binding LeaveText}"
+                                                           IsVisible="{Binding IsOnLeave}"
+                                                           FontSize="12"
+                                                           Foreground="#6B7280"
+                                                           TextAlignment="Center" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Border>
+        </Grid>
+        </ScrollViewer>
+
+        <!-- Right Panel - Time Entry -->
+        <Border Grid.Column="2"
+                Background="White"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1,0,0,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Padding="24,32,24,24">
+                <StackPanel Spacing="24">
+                    <!-- Time Entry Header -->
+                    <TextBlock Text="Time Entry"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               Foreground="#1F2937" />
+
+                        <!-- Placeholder when no day selected -->
+                        <TextBlock Text="Click on a date to enter attendance"
+                                   FontSize="14"
+                                   Foreground="#9CA3AF"
+                                   TextWrapping="Wrap"
+                                   IsVisible="{Binding !IsTimeEntryVisible}" />
+
+                        <!-- Time Entry Form -->
+                        <StackPanel Spacing="20" IsVisible="{Binding IsTimeEntryVisible}">
+                            <!-- Date Display -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Date"
+                                           FontSize="14"
+                                           FontWeight="Medium"
+                                           Foreground="#1F2937" />
+                                <Border Background="#F9FAFB"
+                                        CornerRadius="8"
+                                        Padding="16,12">
+                                    <TextBlock Text="{Binding SelectedDateDisplay}"
+                                               FontSize="14"
+                                               Foreground="#6B7280" />
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Start Time -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Start Time"
+                                           FontSize="14"
+                                           FontWeight="Medium"
+                                           Foreground="#1F2937" />
+                                <Button Command="{Binding OpenStartTimePickerCommand}"
+                                        Background="#F9FAFB"
+                                        BorderBrush="#E5E7EB"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="16,12"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="#F3F4F6" />
+                                        </Style>
+                                    </Button.Styles>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding StartTimeText}"
+                                                   FontSize="14"
+                                                   Foreground="#374151" />
+                                        <Viewbox Grid.Column="1" Width="16" Height="16">
+                                            <Canvas Width="24" Height="24">
+                                                <Ellipse Stroke="#9CA3AF"
+                                                         StrokeThickness="2"
+                                                         Width="20"
+                                                         Height="20"
+                                                         Canvas.Left="2"
+                                                         Canvas.Top="2" />
+                                                <Path Stroke="#9CA3AF"
+                                                      StrokeThickness="2"
+                                                      Data="M12 6v6l4 2" />
+                                            </Canvas>
+                                        </Viewbox>
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+
+                            <!-- End Time -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="End Time"
+                                           FontSize="14"
+                                           FontWeight="Medium"
+                                           Foreground="#1F2937" />
+                                <Button Command="{Binding OpenEndTimePickerCommand}"
+                                        Background="#F9FAFB"
+                                        BorderBrush="#E5E7EB"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="16,12"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="#F3F4F6" />
+                                        </Style>
+                                    </Button.Styles>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding EndTimeText}"
+                                                   FontSize="14"
+                                                   Foreground="#374151" />
+                                        <Viewbox Grid.Column="1" Width="16" Height="16">
+                                            <Canvas Width="24" Height="24">
+                                                <Ellipse Stroke="#9CA3AF"
+                                                         StrokeThickness="2"
+                                                         Width="20"
+                                                         Height="20"
+                                                         Canvas.Left="2"
+                                                         Canvas.Top="2" />
+                                                <Path Stroke="#9CA3AF"
+                                                      StrokeThickness="2"
+                                                      Data="M12 6v6l4 2" />
+                                            </Canvas>
+                                        </Viewbox>
+                                    </Grid>
+                                </Button>
+                            </StackPanel>
+
+                            <!-- Time Picker Popup -->
+                            <Border IsVisible="{Binding IsTimePickerOpen}"
+                                    Background="White"
+                                    BorderBrush="#E5E7EB"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="16"
+                                    BoxShadow="0 4 12 0 #20000000">
+                                <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto">
+                                    <!-- Hours -->
+                                    <ScrollViewer Grid.Column="0" 
+                                                  MaxHeight="200"
+                                                  VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding Hours}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Command="{Binding #Root.((vm:AttendanceViewModel)DataContext).SelectHourCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            Background="Transparent"
+                                                            Foreground="#374151"
+                                                            BorderThickness="0"
+                                                            Padding="12,8"
+                                                            HorizontalAlignment="Stretch"
+                                                            HorizontalContentAlignment="Center"
+                                                            CornerRadius="4">
+                                                        <Button.Styles>
+                                                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                                <Setter Property="Background" Value="#F3F4F6" />
+                                                            </Style>
+                                                        </Button.Styles>
+                                                        <TextBlock Text="{Binding StringFormat={}{0:D2}}"
+                                                                   FontSize="14"
+                                                                   Foreground="#374151" />
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+
+                                    <!-- Minutes -->
+                                    <ScrollViewer Grid.Column="1" 
+                                                  MaxHeight="200"
+                                                  VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding Minutes}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Command="{Binding #Root.((vm:AttendanceViewModel)DataContext).SelectMinuteCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            Background="Transparent"
+                                                            Foreground="#374151"
+                                                            BorderThickness="0"
+                                                            Padding="12,8"
+                                                            HorizontalAlignment="Stretch"
+                                                            HorizontalContentAlignment="Center"
+                                                            CornerRadius="4">
+                                                        <Button.Styles>
+                                                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                                <Setter Property="Background" Value="#F3F4F6" />
+                                                            </Style>
+                                                        </Button.Styles>
+                                                        <TextBlock Text="{Binding StringFormat={}{0:D2}}"
+                                                                   FontSize="14"
+                                                                   Foreground="#374151" />
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+
+                                    <!-- AM/PM -->
+                                    <StackPanel Grid.Column="2" Spacing="4">
+                                        <Button Command="{Binding SetAmCommand}"
+                                                Content="AM"
+                                                BorderThickness="0"
+                                                Padding="16,8"
+                                                CornerRadius="4"
+                                                HorizontalAlignment="Stretch"
+                                                Background="{Binding IsAm, Converter={StaticResource AmPmBackground}, ConverterParameter=AM}"
+                                                Foreground="{Binding IsAm, Converter={StaticResource AmPmForeground}, ConverterParameter=AM}" />
+                                        <Button Command="{Binding SetPmCommand}"
+                                                Content="PM"
+                                                BorderThickness="0"
+                                                Padding="16,8"
+                                                CornerRadius="4"
+                                                HorizontalAlignment="Stretch"
+                                                Background="{Binding IsAm, Converter={StaticResource AmPmBackground}, ConverterParameter=PM}"
+                                                Foreground="{Binding IsAm, Converter={StaticResource AmPmForeground}, ConverterParameter=PM}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <!-- Save/Cancel Buttons -->
+                            <Grid ColumnDefinitions="*,*" Margin="0,8,0,0">
+                                <Button Grid.Column="0"
+                                        Command="{Binding SaveTimeEntryCommand}"
+                                        Content="Save"
+                                        Background="#1F2937"
+                                        Foreground="White"
+                                        CornerRadius="8"
+                                        Padding="20,12"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="0,0,6,0" />
+                                <Button Grid.Column="1"
+                                        Command="{Binding CancelTimeEntryCommand}"
+                                        Content="Cancel"
+                                        Background="White"
+                                        Foreground="#374151"
+                                        BorderBrush="#D1D5DB"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="20,12"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="6,0,0,0">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="#F3F4F6" />
+                                        </Style>
+                                    </Button.Styles>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Legend -->
+                        <Border BorderBrush="#E5E7EB"
+                                BorderThickness="0,1,0,0"
+                                Padding="0,20,0,0"
+                                Margin="0,20,0,0">
+                            <StackPanel Spacing="16">
+                                <TextBlock Text="Legend:"
+                                           FontSize="14"
+                                           FontWeight="Medium"
+                                           Foreground="#1F2937" />
+                                
+                                <!-- Has Attendance -->
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <Border Background="#D1FAE5"
+                                            CornerRadius="4"
+                                            Width="20"
+                                            Height="20" />
+                                    <TextBlock Text="Has Attendance"
+                                               FontSize="14"
+                                               Foreground="#374151"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                                
+                                <!-- On Leave -->
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <Border Background="#E5E7EB"
+                                            CornerRadius="4"
+                                            Width="20"
+                                            Height="20" />
+                                    <TextBlock Text="On Leave"
+                                               FontSize="14"
+                                               Foreground="#374151"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                                
+                                <!-- Today -->
+                                <StackPanel Orientation="Horizontal" Spacing="12">
+                                    <Border Background="Transparent"
+                                            BorderBrush="#1F2937"
+                                            BorderThickness="2"
+                                            CornerRadius="4"
+                                            Width="20"
+                                            Height="20" />
+                                    <TextBlock Text="Today"
+                                               FontSize="14"
+                                               Foreground="#374151"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

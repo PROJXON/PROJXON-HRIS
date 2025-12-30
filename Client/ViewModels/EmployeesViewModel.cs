@@ -441,8 +441,7 @@ public partial class EmployeesViewModel : ViewModelBase
     [RelayCommand]
     private async Task NavigateToAttendance()
     {
-        // TODO: Navigate to attendance view when implemented
-        await Task.CompletedTask;
+        await _navigationService.NavigateTo(ViewModelType.Attendance);
     }
 
     [RelayCommand]

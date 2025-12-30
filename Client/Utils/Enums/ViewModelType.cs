@@ -13,5 +13,6 @@ public enum ViewModelType
     EmployeesList, // Legacy - replaced by Employees
     EmployeeDetails,
     Profile,
-    Employees // New employees list view with cards
+    Employees, // New employees list view with cards
+    Attendance // Attendance calendar view
 }

@@ -61,6 +61,11 @@ public partial class HRDashboardViewModel : ViewModelBase
         LoadRecentActivities();
     }
 
+    // Parameterless constructor for design-time support
+    public HRDashboardViewModel() : this(null!)
+    {
+    }
+
     private void LoadRecentActivities()
     {
         RecentActivities = new ObservableCollection<ActivityItem>
@@ -130,9 +135,7 @@ public partial class HRDashboardViewModel : ViewModelBase
     private async Task NavigateToAttendance()
     {
         SelectedMenuItem = "Attendance";
-        // TODO: Navigate to attendance view when implemented
-        // await _navigationService.NavigateTo(ViewModelType.Attendance);
-        await Task.CompletedTask;
+        await _navigationService.NavigateTo(ViewModelType.Attendance);
     }
 
     [RelayCommand]

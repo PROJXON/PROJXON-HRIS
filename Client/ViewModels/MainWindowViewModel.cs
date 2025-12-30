@@ -68,6 +68,7 @@ public partial class MainWindowViewModel : ObservableObject
             ViewModelType.Employees => new EmployeesViewModel(_employeeRepository, _navigationService),
             ViewModelType.EmployeeDetails => CreateEmployeeDetailViewModel(e.EntityId),
             ViewModelType.Profile => new ProfileViewModel(_navigationService),
+            ViewModelType.Attendance => new AttendanceViewModel(_navigationService),
             _ => CurrentViewModel
         };
 

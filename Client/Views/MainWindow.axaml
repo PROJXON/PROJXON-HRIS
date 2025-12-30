@@ -47,6 +47,9 @@
             <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
                 <views:ProfileView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AttendanceViewModel}">
+                <views:AttendanceView />
+            </DataTemplate>
         </ContentControl.DataTemplates>
     </ContentControl>
 
