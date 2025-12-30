@@ -303,7 +303,7 @@ public partial class ProfileViewModel : ViewModelBase
     [RelayCommand]
     private async Task NavigateToEmployees()
     {
-        await _navigationService.NavigateTo(ViewModelType.EmployeesList);
+        await _navigationService.NavigateTo(ViewModelType.Employees);
     }
 
     #endregion

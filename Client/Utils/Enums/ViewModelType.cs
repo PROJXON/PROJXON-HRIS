@@ -10,7 +10,8 @@ public enum ViewModelType
     HRDashboard,
     InternDashboard,
     Dashboard, // Legacy - can be removed after migration
-    EmployeesList,
+    EmployeesList, // Legacy - replaced by Employees
     EmployeeDetails,
-    Profile
+    Profile,
+    Employees // New employees list view with cards
 }

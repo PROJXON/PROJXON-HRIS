@@ -139,7 +139,7 @@ public partial class HRDashboardViewModel : ViewModelBase
     private async Task NavigateToEmployees()
     {
         SelectedMenuItem = "Employees";
-        await _navigationService.NavigateTo(ViewModelType.EmployeesList);
+        await _navigationService.NavigateTo(ViewModelType.Employees);
     }
 
     #endregion

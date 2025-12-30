@@ -44,3 +44,63 @@ public class BoolToTabForegroundConverter : IValueConverter
         throw new NotImplementedException();
     }
 }
+
+/// <summary>
+/// Converts a boolean (isSelected) to the appropriate alphabet filter background color
+/// </summary>
+public class AlphabetFilterBackgroundConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is bool isSelected && isSelected)
+        {
+            return new SolidColorBrush(Color.Parse("#1F2937")); // Dark for selected
+        }
+        return new SolidColorBrush(Color.Parse("#FFFFFF")); // White for unselected
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+/// <summary>
+/// Converts a boolean (isSelected) to the appropriate alphabet filter foreground color
+/// </summary>
+public class AlphabetFilterForegroundConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is bool isSelected && isSelected)
+        {
+            return new SolidColorBrush(Color.Parse("#FFFFFF")); // White for selected
+        }
+        return new SolidColorBrush(Color.Parse("#374151")); // Dark gray for unselected
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+/// <summary>
+/// Converts a boolean (isSelected) to the appropriate alphabet filter border color
+/// </summary>
+public class AlphabetFilterBorderConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is bool isSelected && isSelected)
+        {
+            return new SolidColorBrush(Color.Parse("#1F2937")); // Same as background when selected
+        }
+        return new SolidColorBrush(Color.Parse("#E5E7EB")); // Light gray border for unselected
+    }
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
