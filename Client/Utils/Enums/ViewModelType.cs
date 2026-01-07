@@ -9,6 +9,7 @@ public enum ViewModelType
     PortalSelection,
     HRDashboard,
     InternDashboard,
+    TimeOff,
     Dashboard, // Legacy - can be removed after migration
     EmployeesList,
     EmployeeDetails
