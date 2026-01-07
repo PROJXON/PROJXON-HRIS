@@ -90,21 +90,26 @@
                             Margin="16,0,16,24"
                             Spacing="4">
                     
-                    <!-- Dashboard - Active -->
+                    <!-- Dashboard -->
                     <Button Command="{Binding NavigateToDashboardCommand}"
-                            Background="#1F2937"
-                            Foreground="White"
+                            Background="Transparent"
+                            Foreground="#374151"
                             CornerRadius="8"
                             Padding="16,12"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Viewbox Width="20" Height="20">
                                 <Canvas Width="24" Height="24">
-                                    <Path Stroke="White"
+                                    <Path Stroke="#374151"
                                           StrokeThickness="2"
                                           Data="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                    <Path Stroke="White"
+                                    <Path Stroke="#374151"
                                           StrokeThickness="2"
                                           Data="M9 22V12h6v10" />
                                 </Canvas>
@@ -189,23 +194,18 @@
                         </StackPanel>
                     </Button>
 
-                    <!-- Time Off -->
+                    <!-- Time Off - Active -->
                     <Button Command="{Binding NavigateToTimeOffCommand}"
-                            Background="Transparent"
-                            Foreground="#374151"
+                        Background="#1F2937"
+                            Foreground="White"
                             CornerRadius="8"
                             Padding="16,12"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#F3F4F6" />
-                            </Style>
-                        </Button.Styles>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Viewbox Width="20" Height="20">
                                 <Canvas Width="24" Height="24">
-                                    <Rectangle Stroke="#374151"
+                                    <Rectangle Stroke="White"
                                                StrokeThickness="2"
                                                RadiusX="2"
                                                RadiusY="2"
@@ -213,13 +213,13 @@
                                                Height="18"
                                                Canvas.Left="3"
                                                Canvas.Top="4" />
-                                    <Path Stroke="#374151"
+                                    <Path Stroke="White"
                                           StrokeThickness="2"
                                           Data="M16 2v4" />
-                                    <Path Stroke="#374151"
+                                    <Path Stroke="White"
                                           StrokeThickness="2"
                                           Data="M8 2v4" />
-                                    <Path Stroke="#374151"
+                                    <Path Stroke="White"
                                           StrokeThickness="2"
                                           Data="M3 10h18" />
                                 </Canvas>
@@ -445,7 +445,7 @@
                             BorderThickness="1">
 
                         <StackPanel Spacing="16">
-                            <TextBlock Text="Time Off Requests"
+                            <TextBlock Text="My Requests"
                                     FontSize="18"
                                     FontWeight="SemiBold"
                                     Foreground="#1F2937" />
@@ -461,30 +461,26 @@
                                             BorderBrush="#E5E7EB"
                                             BorderThickness="1">
 
-                                        <StackPanel Spacing="10">
-
+                                        <StackPanel Spacing="6">
                                             <!-- Top Section: Title + Status on same row -->
-                                            <Grid ColumnDefinitions="*,Auto,Auto">
-
+                                            <Grid ColumnDefinitions="Auto,Auto,*">
                                                 <!-- Title -->
                                                 <TextBlock Grid.Column="0"
                                                         Text="{Binding Title}"
-                                                        FontSize="15"
+                                                        FontSize="16"
                                                         FontWeight="SemiBold"
-                                                        Foreground="#1F2937" />
+                                                        Foreground="#1F2937"
+                                                        VerticalAlignment="Center" />
 
-                                                <!-- Status Label -->
-                                                <Border Grid.Column="1"
-                                                        Background="#EEF2FF"
-                                                        Padding="6,2"
-                                                        CornerRadius="6"
-                                                        Margin="8,0,0,0">
-                                                    <TextBlock Text="{Binding Status}"
-                                                            FontSize="13"
-                                                            Foreground="#6366F1" />
-                                                </Border>
+                                                <!-- Status -->
+                                                <TextBlock Grid.Column="1"
+                                                        Text="{Binding Status}"
+                                                        FontSize="15"
+                                                        Foreground="#6B7280"
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Center" />
 
-                                                <!-- Days Off Column -->
+                                                <!-- DAYS OFF (right aligned) -->
                                                 <StackPanel Grid.Column="2"
                                                             HorizontalAlignment="Right"
                                                             Spacing="4">
@@ -492,21 +488,22 @@
                                                             FontSize="13"
                                                             Foreground="#9CA3AF" />
                                                     <TextBlock Text="{Binding TotalDays}"
-                                                            FontSize="13"
+                                                            FontSize="14"
                                                             FontWeight="Bold"
+                                                            HorizontalAlignment="Right"
                                                             Foreground="#1F2937" />
                                                 </StackPanel>
                                             </Grid>
 
                                             <!-- Date -->
                                             <TextBlock Text="{Binding TimeOffDate}"
-                                                    FontSize="12"
+                                                    FontSize="14"
                                                     Foreground="#9CA3AF" />
 
                                             <!-- Divider Line -->
                                             <Border Height="1"
                                                     Background="#E5E7EB"
-                                                    Margin="0,8,0,0"/>
+                                                    Margin="0,4,0,0"/>
 
                                             <!-- PTO Reason -->
                                             <TextBlock Text="{Binding Reason}"
