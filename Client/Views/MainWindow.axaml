@@ -32,6 +32,9 @@
             <DataTemplate DataType="{x:Type vm:InternDashboardViewModel}">
                 <views:InternDashboardView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:TimeOffViewModel}">
+                <views:TimeOffView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:EmployeesListViewModel}">
                 <views:EmployeesListView />
             </DataTemplate>

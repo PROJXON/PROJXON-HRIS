@@ -64,6 +64,7 @@ public partial class MainWindowViewModel : ObservableObject
             ViewModelType.HRDashboard => new HRDashboardViewModel(_navigationService),
             ViewModelType.InternDashboard => new InternDashboardViewModel(_navigationService),
             ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
+            ViewModelType.TimeOff => new TimeOffViewModel(_navigationService),
             ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
             ViewModelType.Employees => new EmployeesViewModel(_employeeRepository, _navigationService),
             ViewModelType.EmployeeDetails => CreateEmployeeDetailViewModel(e.EntityId),

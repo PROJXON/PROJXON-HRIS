@@ -44,6 +44,10 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<RecruitmentViewModel>();
         collection.AddTransient<FormsViewModel>();
         collection.AddTransient<CreateSurveyViewModel>();
+        collection.AddTransient<PortalSelectionViewModel>();
+        collection.AddTransient<HRDashboardViewModel>();
+        collection.AddTransient<InternDashboardViewModel>();
+        collection.AddTransient<TimeOffViewModel>();
         
         // Views
         collection.AddTransient<MainWindow>();
@@ -52,6 +56,10 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<EmployeesListView>();
         collection.AddTransient<EmployeesView>();
         collection.AddTransient<EmployeeDetailView>();
+        collection.AddTransient<InternDashboardView>();
+        collection.AddTransient<HRDashboardView>();
+        collection.AddTransient<TimeOffView>();
+        
         collection.AddTransient<PortalSelectionView>();
         collection.AddTransient<HRDashboardView>();
         collection.AddTransient<InternDashboardView>();
