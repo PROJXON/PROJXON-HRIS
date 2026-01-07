@@ -138,9 +138,7 @@ public partial class InternDashboardViewModel : ViewModelBase
     private async Task NavigateToTimeOff()
     {
         SelectedMenuItem = "Time Off";
-        // TODO: Navigate to time off view when implemented
-        // await _navigationService.NavigateTo(ViewModelType.Attendance);
-        await Task.CompletedTask;
+        await _navigationService.NavigateTo(ViewModelType.TimeOff);
     }
 
     [RelayCommand]
