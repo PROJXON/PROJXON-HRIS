@@ -77,7 +77,7 @@ public partial class TimeOffViewModel : ViewModelBase
                 Status = "Approved",
                 TimeOffDate = "9/14/2025 - 9/15/2025",
                 TotalDays = "1",
-                Reason = "Family Vacation",
+                Reason = "Not Feeling Well",
             },
         };
     }
