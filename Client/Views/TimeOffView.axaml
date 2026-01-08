@@ -279,15 +279,30 @@
             <StackPanel Margin="40,32,40,32" Spacing="32">
                 
                 <!-- Header -->
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Time Off"
-                               FontSize="28"
-                               FontWeight="Bold"
-                               Foreground="#1F2937" />
-                    <TextBlock Text="Request and manage your time off."
-                               FontSize="16"
-                               Foreground="#6B7280" />
-                </StackPanel>
+                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+                    <!-- Left side: Title + Subtitle -->
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Time Off Requests"
+                                FontSize="20"
+                                FontWeight="SemiBold"
+                                Foreground="#1F2937" />
+                        
+                        <TextBlock Text="Manage your time off"
+                                FontSize="13"
+                                Foreground="#6B7280" />
+                    </StackPanel>
+
+                    <!-- Right side: NEW REQUEST button -->
+                    <Button Grid.Column="1"
+                            Content="+ New Request"
+                            Padding="12,6"
+                            Background="#1F2937"
+                            Foreground="White"
+                            CornerRadius="6"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Command="{Binding CreateNewRequestCommand}" />
+                </Grid>
 
                 <!-- Stats Cards -->
                 <Grid ColumnDefinitions="*,*,*">
@@ -313,34 +328,6 @@
                                            FontWeight="Bold"
                                            Foreground="#1F2937" />
                             </StackPanel>
-                            <Border Grid.Column="1"
-                                    Background="#3B82F6"
-                                    CornerRadius="10"
-                                    Width="48"
-                                    Height="48"
-                                    VerticalAlignment="Center">
-                                <Viewbox Width="24" Height="24"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center">
-                                    <Canvas Width="24" Height="24">
-                                        <Ellipse Stroke="White"
-                                                 StrokeThickness="2"
-                                                 Width="10"
-                                                 Height="10"
-                                                 Canvas.Left="6"
-                                                 Canvas.Top="2" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M4 21v-2a4 4 0 0 1 4-4h4.5" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M16 3.128a4 4 0 0 1 0 7.744" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                    </Canvas>
-                                </Viewbox>
-                            </Border>
                         </Grid>
                     </Border>
 
@@ -356,36 +343,6 @@
                                            FontWeight="Bold"
                                            Foreground="#1F2937" />
                             </StackPanel>
-                            <Border Grid.Column="1"
-                                    Background="#F97316"
-                                    CornerRadius="10"
-                                    Width="48"
-                                    Height="48"
-                                    VerticalAlignment="Center">
-                                <Viewbox Width="24" Height="24"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center">
-                                    <Canvas Width="24" Height="24">
-                                        <Rectangle Stroke="White"
-                                                   StrokeThickness="2"
-                                                   RadiusX="2"
-                                                   RadiusY="2"
-                                                   Width="18"
-                                                   Height="18"
-                                                   Canvas.Left="3"
-                                                   Canvas.Top="4" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M16 2v4" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M8 2v4" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M3 10h18" />
-                                    </Canvas>
-                                </Viewbox>
-                            </Border>
                         </Grid>
                     </Border>
 
@@ -402,36 +359,6 @@
                                            FontWeight="Bold"
                                            Foreground="#1F2937" />
                             </StackPanel>
-                            <Border Grid.Column="1"
-                                    Background="#22C55E"
-                                    CornerRadius="10"
-                                    Width="48"
-                                    Height="48"
-                                    VerticalAlignment="Center">
-                                <Viewbox Width="24" Height="24"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center">
-                                    <Canvas Width="24" Height="24">
-                                        <Rectangle Stroke="White"
-                                                   StrokeThickness="2"
-                                                   RadiusX="2"
-                                                   RadiusY="2"
-                                                   Width="14"
-                                                   Height="18"
-                                                   Canvas.Left="5"
-                                                   Canvas.Top="3" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M9 7h6" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M9 11h6" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M9 15h4" />
-                                    </Canvas>
-                                </Viewbox>
-                            </Border>
                         </Grid>
                     </Border>
                 </Grid>
@@ -498,11 +425,19 @@
                                             <!-- Date -->
                                             <TextBlock Text="{Binding TimeOffDate}"
                                                     FontSize="14"
-                                                    Foreground="#9CA3AF" />
+                                                    Foreground="#9CA3AF" 
+                                                    Margin="0,-2,0,0" />
 
                                             <!-- Divider Line -->
                                             <Border Height="1"
                                                     Background="#E5E7EB"
+                                                    Margin="0,4,0,0"/>
+
+                                            <!-- Reason Label -->
+                                            <TextBlock Text="Reason"
+                                                    FontSize="13"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="#6B7280"
                                                     Margin="0,4,0,0"/>
 
                                             <!-- PTO Reason -->
@@ -510,7 +445,7 @@
                                                     FontSize="13"
                                                     Foreground="#4B5563"
                                                     TextWrapping="Wrap"
-                                                    Margin="0,4,0,0"/>
+                                                    Margin="0,2,0,0"/>
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>

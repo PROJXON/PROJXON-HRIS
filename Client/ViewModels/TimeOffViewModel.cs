@@ -90,6 +90,15 @@ public partial class TimeOffViewModel : ViewModelBase
         await base.OnNavigatedToAsync();
     }
 
+    #region Actions
+    [RelayCommand]
+    private async Task CreateNewRequest()
+    {
+        // Later: open popup / navigate to "New Time Off"
+        await Task.CompletedTask;
+    }
+    #endregion
+
     #region Navigation Commands
 
     [RelayCommand]
