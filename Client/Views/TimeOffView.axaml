@@ -301,7 +301,7 @@
                             CornerRadius="6"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Command="{Binding CreateNewRequestCommand}" />
+                            Command="{Binding OpenNewRequestDialogCommand}" />
                 </Grid>
 
                 <!-- Stats Cards -->
