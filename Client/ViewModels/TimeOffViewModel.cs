@@ -52,6 +52,21 @@ public partial class TimeOffViewModel : ViewModelBase
 
     #endregion
 
+    #region New Time Off Request Dialog
+    [ObservableProperty]
+    private bool _isNewRequestDialogOpen;
+
+    [ObservableProperty]
+    private string _newRequestType = "PTO";
+
+    [ObservableProperty]
+    private string _newRequestDateRange = string.Empty;
+
+    [ObservableProperty]
+    private string _newRequestReason = string.Empty;
+    #endregion
+
+
     public TimeOffViewModel(INavigationService navigationService)
     {
         _navigationService = navigationService;
@@ -90,12 +105,42 @@ public partial class TimeOffViewModel : ViewModelBase
         await base.OnNavigatedToAsync();
     }
 
-    #region Actions
+    #region New Request Commands
     [RelayCommand]
-    private async Task CreateNewRequest()
+    private void OpenNewRequestDialog()
     {
-        // Later: open popup / navigate to "New Time Off"
-        await Task.CompletedTask;
+        NewRequestType = "PTO";
+        NewRequestDateRange = string.Empty;
+        NewRequestReason = string.Empty;
+
+        IsNewRequestDialogOpen = true;
+    }
+
+    [RelayCommand]
+    private void CloseNewRequestDialog()
+    {
+        IsNewRequestDialogOpen = false;
+    }
+
+    [RelayCommand]
+    private void SubmitNewRequest()
+    {
+        if (string.IsNullOrWhiteSpace(NewRequestDateRange))
+            return;
+
+        var newRequest = new TimeOffRequest
+        {
+            Title = NewRequestType,
+            TimeOffDate = NewRequestDateRange,
+            Reason = NewRequestReason,
+            Status = "Pending",
+            TotalDays = "1"
+        };
+
+        TimeOffRequests.Add(newRequest);
+        PendingRequests++;
+
+        IsNewRequestDialogOpen = false;
     }
     #endregion
 
