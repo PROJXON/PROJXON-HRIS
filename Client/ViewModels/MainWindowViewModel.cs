@@ -57,7 +57,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async Task OnNavigationRequested(object? sender, NavigationEventArgs e)
     {
-        var newVm = e.ViewModelType switch
+        ViewModelBase? newVm = e.ViewModelType switch
         {
             ViewModelType.Login => new LoginViewModel(_authService),
             ViewModelType.PortalSelection => new PortalSelectionViewModel(_navigationService, _userPreferencesService),
@@ -65,6 +65,13 @@ public partial class MainWindowViewModel : ObservableObject
             ViewModelType.InternDashboard => new InternDashboardViewModel(_navigationService),
             ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
             ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
+            ViewModelType.Employees => new EmployeesViewModel(_employeeRepository, _navigationService),
+            ViewModelType.EmployeeDetails => CreateEmployeeDetailViewModel(e.EntityId),
+            ViewModelType.Profile => new ProfileViewModel(_navigationService),
+            ViewModelType.Attendance => new AttendanceViewModel(_navigationService),
+            ViewModelType.Recruitment => new RecruitmentViewModel(_navigationService),
+            ViewModelType.Forms => new FormsViewModel(_navigationService),
+            ViewModelType.CreateSurvey => new CreateSurveyViewModel(_navigationService),
             _ => CurrentViewModel
         };
 
@@ -81,6 +88,13 @@ public partial class MainWindowViewModel : ObservableObject
 
         CurrentViewModel = newVm;
         await CurrentViewModel.OnNavigatedToAsync();
+    }
+
+    private EmployeeDetailViewModel CreateEmployeeDetailViewModel(int employeeId)
+    {
+        var vm = new EmployeeDetailViewModel(_navigationService, _employeeRepository);
+        vm.SetEmployeeId(employeeId);
+        return vm;
     }
 
     private async void OnIsAuthenticatedChanged(object? sender, AuthenticationChangedEventArgs e)
@@ -109,7 +123,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private async Task NavigateToEmployeesList()
     {
-        await _navigationService.NavigateTo(ViewModelType.EmployeesList);
+        await _navigationService.NavigateTo(ViewModelType.Employees);
     }
 
     [RelayCommand]

@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace Client.Views;
 
-public partial class MainWindow : Window
+public partial class EmployeeDetailView : UserControl
 {
-    public MainWindow()
+    public EmployeeDetailView()
     {
         InitializeComponent();
     }

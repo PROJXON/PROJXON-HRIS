@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace Client.Views;
 
-public partial class MainWindow : Window
+public partial class CreateSurveyView : UserControl
 {
-    public MainWindow()
+    public CreateSurveyView()
     {
         InitializeComponent();
     }

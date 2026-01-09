@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Client.Models;
 using Client.Services;
 using Client.Utils.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -62,6 +63,11 @@ public partial class HRDashboardViewModel : ViewModelBase
         LoadRecentActivities();
     }
 
+    // Parameterless constructor for design-time support
+    public HRDashboardViewModel() : this(null!)
+    {
+    }
+
     private void LoadRecentActivities()
     {
         RecentActivities = new ObservableCollection<ActivityItem>
@@ -115,9 +121,7 @@ public partial class HRDashboardViewModel : ViewModelBase
     private async Task NavigateToProfile()
     {
         SelectedMenuItem = "Profile";
-        // TODO: Navigate to profile view when implemented
-        // await _navigationService.NavigateTo(ViewModelType.Profile);
-        await Task.CompletedTask;
+        await _navigationService.NavigateTo(ViewModelType.Profile);
     }
 
     [RelayCommand]
@@ -133,16 +137,28 @@ public partial class HRDashboardViewModel : ViewModelBase
     private async Task NavigateToAttendance()
     {
         SelectedMenuItem = "Attendance";
-        // TODO: Navigate to attendance view when implemented
-        // await _navigationService.NavigateTo(ViewModelType.Attendance);
-        await Task.CompletedTask;
+        await _navigationService.NavigateTo(ViewModelType.Attendance);
     }
 
     [RelayCommand]
     private async Task NavigateToEmployees()
     {
         SelectedMenuItem = "Employees";
-        await _navigationService.NavigateTo(ViewModelType.EmployeesList);
+        await _navigationService.NavigateTo(ViewModelType.Employees);
+    }
+
+    [RelayCommand]
+    private async Task NavigateToRecruitment()
+    {
+        SelectedMenuItem = "Recruitment";
+        await _navigationService.NavigateTo(ViewModelType.Recruitment);
+    }
+
+    [RelayCommand]
+    private async Task NavigateToForms()
+    {
+        SelectedMenuItem = "Forms";
+        await _navigationService.NavigateTo(ViewModelType.Forms);
     }
 
     #endregion

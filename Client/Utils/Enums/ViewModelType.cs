@@ -1,4 +1,4 @@
-﻿namespace Client.Utils.Enums;
+namespace Client.Utils.Enums;
 
 /// <summary>
 /// Defines the types of ViewModels that can be navigated to in the application
@@ -10,6 +10,12 @@ public enum ViewModelType
     HRDashboard,
     InternDashboard,
     Dashboard, // Legacy - can be removed after migration
-    EmployeesList,
-    EmployeeDetails
+    EmployeesList, // Legacy - replaced by Employees
+    EmployeeDetails,
+    Profile,
+    Employees, // New employees list view with cards
+    Attendance, // Attendance calendar view
+    Recruitment, // Recruitment kanban board
+    Forms, // Forms/Surveys list view
+    CreateSurvey // Create new survey view
 }
