@@ -30,7 +30,7 @@
                 <views:HRDashboardView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:InternDashboardViewModel}">
-                <views:DashboardView />
+                <views:InternDashboardView />
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:EmployeesListViewModel}">
                 <views:EmployeesListView />

@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Client.Models;
 using Client.Services;
 using Client.Utils.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -160,14 +161,4 @@ public partial class HRDashboardViewModel : ViewModelBase
     }
 
     #endregion
-}
-
-/// <summary>
-/// Model for activity feed items
-/// </summary>
-public class ActivityItem
-{
-    public string Title { get; set; } = string.Empty;
-    public string Subtitle { get; set; } = string.Empty;
-    public string TimeAgo { get; set; } = string.Empty;
 }
