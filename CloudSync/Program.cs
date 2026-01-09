@@ -82,6 +82,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+Console.WriteLine($"Connection string: {builder.Configuration.GetConnectionString("PostgresConnection")}");
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

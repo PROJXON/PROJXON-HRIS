@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Client.ViewModels;
+using Client.Models;
 
 /// <summary>
 /// ViewModel for the HR Portal Dashboard
