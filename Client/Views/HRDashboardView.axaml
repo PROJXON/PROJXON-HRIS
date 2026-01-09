@@ -313,6 +313,47 @@
                                        FontSize="15" />
                         </StackPanel>
                     </Button>
+                    
+                    <!-- Forms -->
+                    <Button Command="{Binding NavigateToFormsCommand}"
+                            Background="Transparent"
+                            Foreground="#374151"
+                            CornerRadius="8"
+                            Padding="16,12"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Rectangle Stroke="#374151"
+                                               StrokeThickness="2"
+                                               RadiusX="2"
+                                               RadiusY="2"
+                                               Width="14"
+                                               Height="18"
+                                               Canvas.Left="5"
+                                               Canvas.Top="3" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M9 7h6" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M9 11h6" />
+                                    <Path Stroke="#374151"
+                                          StrokeThickness="2"
+                                          Data="M9 15h4" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock Text="Forms" 
+                                       VerticalAlignment="Center"
+                                       FontSize="15" />
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>

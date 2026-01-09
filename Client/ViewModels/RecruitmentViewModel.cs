@@ -315,6 +315,12 @@ public partial class RecruitmentViewModel : ViewModelBase
         // Already on recruitment page
         await Task.CompletedTask;
     }
+    
+    [RelayCommand]
+    private async Task NavigateToForms()
+    {
+        await _navigationService.NavigateTo(ViewModelType.Forms);
+    }
 
     #endregion
 

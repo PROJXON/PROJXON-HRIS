@@ -41,9 +41,6 @@
             <DataTemplate DataType="{x:Type vm:EmployeeDetailViewModel}">
                 <views:EmployeeDetailView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
-                <views:DashboardView />
-            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
                 <views:ProfileView />
             </DataTemplate>
@@ -53,7 +50,12 @@
             <DataTemplate DataType="{x:Type vm:RecruitmentViewModel}">
                 <views:RecruitmentView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:FormsViewModel}">
+                <views:FormsView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CreateSurveyViewModel}">
+                <views:CreateSurveyView />
+            </DataTemplate>
         </ContentControl.DataTemplates>
     </ContentControl>
-
 </Window>

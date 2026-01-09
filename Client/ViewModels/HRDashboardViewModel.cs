@@ -152,6 +152,13 @@ public partial class HRDashboardViewModel : ViewModelBase
         await _navigationService.NavigateTo(ViewModelType.Recruitment);
     }
 
+    [RelayCommand]
+    private async Task NavigateToForms()
+    {
+        SelectedMenuItem = "Forms";
+        await _navigationService.NavigateTo(ViewModelType.Forms);
+    }
+
     #endregion
 }
 

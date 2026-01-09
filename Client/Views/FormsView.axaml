@@ -4,20 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Client.ViewModels"
              xmlns:converters="using:Client.Utils.Converters"
-             xmlns:responses="clr-namespace:Shared.EmployeeManagement.Responses;assembly=Shared"
              mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
-             x:Class="Client.Views.EmployeesView"
-             x:DataType="vm:EmployeesViewModel"
+             x:Class="Client.Views.FormsView"
+             x:DataType="vm:FormsViewModel"
              x:Name="Root">
     
     <UserControl.Resources>
-        <converters:AlphabetFilterBackgroundConverter x:Key="AlphabetFilterBackgroundConverter" />
-        <converters:AlphabetFilterForegroundConverter x:Key="AlphabetFilterForegroundConverter" />
-        <converters:AlphabetFilterBorderConverter x:Key="AlphabetFilterBorderConverter" />
+        <converters:FormStatusBackgroundConverter x:Key="FormStatusBackground" />
+        <converters:FormStatusForegroundConverter x:Key="FormStatusForeground" />
     </UserControl.Resources>
     
     <Design.DataContext>
-        <vm:EmployeesViewModel />
+        <vm:FormsViewModel />
     </Design.DataContext>
 
     <Grid Background="#F8F9FA">
@@ -247,30 +245,35 @@
                         </StackPanel>
                     </Button>
 
-                    <!-- Employees - Active -->
+                    <!-- Employees -->
                     <Button Command="{Binding NavigateToEmployeesCommand}"
-                            Background="#1F2937"
-                            Foreground="White"
+                            Background="Transparent"
+                            Foreground="#374151"
                             CornerRadius="8"
                             Padding="16,12"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Viewbox Width="20" Height="20">
                                 <Canvas Width="24" Height="24">
-                                    <Ellipse Stroke="White"
+                                    <Ellipse Stroke="#374151"
                                              StrokeThickness="2"
                                              Width="10"
                                              Height="10"
                                              Canvas.Left="6"
                                              Canvas.Top="2" />
-                                    <Path Stroke="White"
+                                    <Path Stroke="#374151"
                                           StrokeThickness="2"
                                           Data="M4 21v-2a4 4 0 0 1 4-4h4.5" />
-                                    <Path Stroke="White"
+                                    <Path Stroke="#374151"
                                           StrokeThickness="2"
                                           Data="M16 3.128a4 4 0 0 1 0 7.744" />
-                                    <Path Stroke="White"
+                                    <Path Stroke="#374151"
                                           StrokeThickness="2"
                                           Data="M22 21v-2a4 4 0 0 0-3-3.87" />
                                 </Canvas>
@@ -321,24 +324,20 @@
                                        FontSize="15" />
                         </StackPanel>
                     </Button>
-                    
-                    <!-- Forms -->
+
+                    <!-- Forms - Active -->
                     <Button Command="{Binding NavigateToFormsCommand}"
-                            Background="Transparent"
-                            Foreground="#374151"
+                            Background="#1F2937"
+                            Foreground="White"
                             CornerRadius="8"
                             Padding="16,12"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#F3F4F6" />
-                            </Style>
-                        </Button.Styles>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Viewbox Width="20" Height="20">
                                 <Canvas Width="24" Height="24">
-                                    <Rectangle Stroke="#374151"
+                                    <!-- Document/Form icon -->
+                                    <Rectangle Stroke="White"
                                                StrokeThickness="2"
                                                RadiusX="2"
                                                RadiusY="2"
@@ -346,13 +345,13 @@
                                                Height="18"
                                                Canvas.Left="5"
                                                Canvas.Top="3" />
-                                    <Path Stroke="#374151"
+                                    <Path Stroke="White"
                                           StrokeThickness="2"
                                           Data="M9 7h6" />
-                                    <Path Stroke="#374151"
+                                    <Path Stroke="White"
                                           StrokeThickness="2"
                                           Data="M9 11h6" />
-                                    <Path Stroke="#374151"
+                                    <Path Stroke="White"
                                           StrokeThickness="2"
                                           Data="M9 15h4" />
                                 </Canvas>
@@ -372,190 +371,247 @@
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="40,32,40,32" Spacing="24">
                 
-                <!-- Header -->
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Employees"
-                               FontSize="28"
-                               FontWeight="Bold"
-                               Foreground="#1F2937" />
-                    <TextBlock Text="Browse and manage employee information"
-                               FontSize="16"
-                               Foreground="#6B7280" />
-                </StackPanel>
+                <!-- Header with Create Survey Button -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <!-- Search Bar -->
-                <Border Background="White"
-                        CornerRadius="24"
-                        Padding="16,12"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1">
-                    <Grid ColumnDefinitions="Auto,*">
-                        <!-- Search Icon -->
-                        <Viewbox Grid.Column="0" Width="20" Height="20" Margin="0,0,12,0">
-                            <Canvas Width="24" Height="24">
-                                <Ellipse Stroke="#9CA3AF"
-                                         StrokeThickness="2"
-                                         Width="11"
-                                         Height="11"
-                                         Canvas.Left="2"
-                                         Canvas.Top="2" />
-                                <Path Stroke="#9CA3AF"
-                                      StrokeThickness="2"
-                                      Data="M21 21l-4.35-4.35" />
-                            </Canvas>
-                        </Viewbox>
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding SearchQuery}"
-                                 Watermark="Search employees by name, email, or department..."
-                                 Background="Transparent"
-                                 BorderThickness="0"
-                                 FontSize="14"
-                                 Foreground="#374151" />
-                    </Grid>
-                </Border>
+                    <StackPanel Grid.Column="0" Spacing="8">
+                        <TextBlock Text="Forms"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="#1F2937" />
+                        <TextBlock Text="Create and manage employee forms"
+                                   FontSize="16"
+                                   Foreground="#6B7280" />
+                    </StackPanel>
 
-                <!-- Alphabetical Filter -->
-                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <ItemsControl ItemsSource="{Binding AlphabetFilters}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type vm:AlphabetFilterItem}">
-                                <Button Command="{Binding #Root.((vm:EmployeesViewModel)DataContext).SelectFilterCommand}"
-                                        CommandParameter="{Binding Letter}"
-                                        Width="44"
-                                        Height="44"
-                                        Margin="0,0,8,8"
-                                        CornerRadius="8"
-                                        HorizontalContentAlignment="Center"
-                                        VerticalContentAlignment="Center"
-                                        Background="{Binding IsSelected, Converter={StaticResource AlphabetFilterBackgroundConverter}}"
-                                        Foreground="{Binding IsSelected, Converter={StaticResource AlphabetFilterForegroundConverter}}"
-                                        BorderBrush="{Binding IsSelected, Converter={StaticResource AlphabetFilterBorderConverter}}"
-                                        BorderThickness="1">
-                                    <Button.Styles>
-                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                            <Setter Property="Background" Value="#F3F4F6" />
-                                        </Style>
-                                    </Button.Styles>
-                                    <TextBlock Text="{Binding Letter}" 
-                                               FontSize="14" 
-                                               FontWeight="Medium" />
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </WrapPanel>
+                    <!-- Create Survey Button -->
+                    <Button Grid.Column="1"
+                            Command="{Binding CreateSurveyCommand}"
+                            Background="#1F2937"
+                            Foreground="White"
+                            CornerRadius="8"
+                            Padding="20,12"
+                            VerticalAlignment="Top">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="+" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" />
+                            <TextBlock Text="Create Survey" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
 
-                <!-- Employee Cards Grid -->
-                <ItemsControl ItemsSource="{Binding FilteredEmployees}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                <!-- Forms List -->
+                <ItemsControl ItemsSource="{Binding Forms}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type vm:EmployeeCardViewModel}">
-                            <Button Command="{Binding #Root.((vm:EmployeesViewModel)DataContext).OpenEmployeeDetailCommand}"
-                                    CommandParameter="{Binding Id}"
-                                    Margin="0,0,16,16"
-                                    Padding="0"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Cursor="Hand">
-                                <Border Background="White"
-                                        CornerRadius="12"
-                                        Padding="24"
-                                        Width="360"
-                                        BorderBrush="#E5E7EB"
-                                        BorderThickness="1">
-                                    <Border.Styles>
-                                        <Style Selector="Border:pointerover">
-                                            <Setter Property="BoxShadow" Value="0 4 12 0 #20000000" />
-                                        </Style>
-                                    </Border.Styles>
-                                    <StackPanel Spacing="16">
-                                        <!-- Header with Avatar and Name -->
-                                        <StackPanel Orientation="Horizontal" Spacing="16">
-                                            <!-- Avatar Circle with Initial -->
-                                            <Border Background="#F3F4F6"
-                                                    CornerRadius="28"
-                                                    Width="56"
-                                                    Height="56">
-                                                <TextBlock Text="{Binding Initial}"
-                                                           FontSize="20"
+                        <DataTemplate DataType="{x:Type vm:FormItemViewModel}">
+                            <Border Background="White"
+                                    CornerRadius="12"
+                                    BorderBrush="#E5E7EB"
+                                    BorderThickness="1"
+                                    Padding="24"
+                                    Margin="0,0,0,16">
+                                <Grid RowDefinitions="Auto,Auto,Auto">
+                                    <!-- Row 1: Title, Status Badge, and Action Button -->
+                                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="8">
+                                            <!-- Title and Status Badge -->
+                                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                                <TextBlock Text="{Binding Title}"
+                                                           FontSize="18"
                                                            FontWeight="SemiBold"
-                                                           Foreground="#6B7280"
-                                                           HorizontalAlignment="Center"
+                                                           Foreground="#1F2937"
                                                            VerticalAlignment="Center" />
+                                                <!-- Status Badge -->
+                                                <Border CornerRadius="4"
+                                                        Padding="8,4"
+                                                        Background="{Binding Status, Converter={StaticResource FormStatusBackground}}"
+                                                        VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding StatusText}"
+                                                               FontSize="12"
+                                                               FontWeight="Medium"
+                                                               Foreground="{Binding Status, Converter={StaticResource FormStatusForeground}}" />
+                                                </Border>
+                                            </StackPanel>
+                                            
+                                            <!-- Description -->
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontSize="14"
+                                                       Foreground="#6B7280" />
+                                            
+                                            <!-- Created Date and Response Count -->
+                                            <StackPanel Orientation="Horizontal" Spacing="24" Margin="0,8,0,0">
+                                                <!-- Created Date -->
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <Viewbox Width="16" Height="16">
+                                                        <Canvas Width="24" Height="24">
+                                                            <Rectangle Stroke="#9CA3AF"
+                                                                       StrokeThickness="2"
+                                                                       RadiusX="2"
+                                                                       RadiusY="2"
+                                                                       Width="18"
+                                                                       Height="18"
+                                                                       Canvas.Left="3"
+                                                                       Canvas.Top="4" />
+                                                            <Path Stroke="#9CA3AF"
+                                                                  StrokeThickness="2"
+                                                                  Data="M16 2v4" />
+                                                            <Path Stroke="#9CA3AF"
+                                                                  StrokeThickness="2"
+                                                                  Data="M8 2v4" />
+                                                            <Path Stroke="#9CA3AF"
+                                                                  StrokeThickness="2"
+                                                                  Data="M3 10h18" />
+                                                        </Canvas>
+                                                    </Viewbox>
+                                                    <TextBlock Text="{Binding CreatedDateDisplay}"
+                                                               FontSize="14"
+                                                               Foreground="#6B7280"
+                                                               VerticalAlignment="Center" />
+                                                </StackPanel>
+                                                
+                                                <!-- Response Count (only show for non-draft) -->
+                                                <StackPanel Orientation="Horizontal" 
+                                                            Spacing="8"
+                                                            IsVisible="{Binding ShowResponseCount}">
+                                                    <Viewbox Width="16" Height="16">
+                                                        <Canvas Width="24" Height="24">
+                                                            <!-- Users icon -->
+                                                            <Ellipse Stroke="#9CA3AF"
+                                                                     StrokeThickness="2"
+                                                                     Width="10"
+                                                                     Height="10"
+                                                                     Canvas.Left="6"
+                                                                     Canvas.Top="2" />
+                                                            <Path Stroke="#9CA3AF"
+                                                                  StrokeThickness="2"
+                                                                  Data="M4 21v-2a4 4 0 0 1 4-4h4.5" />
+                                                            <Path Stroke="#9CA3AF"
+                                                                  StrokeThickness="2"
+                                                                  Data="M16 3.128a4 4 0 0 1 0 7.744" />
+                                                            <Path Stroke="#9CA3AF"
+                                                                  StrokeThickness="2"
+                                                                  Data="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                                        </Canvas>
+                                                    </Viewbox>
+                                                    <TextBlock Text="{Binding ResponseDisplay}"
+                                                               FontSize="14"
+                                                               Foreground="#6B7280"
+                                                               VerticalAlignment="Center" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        
+                                        <!-- Action Button -->
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                            <!-- View Responses (Active) -->
+                                            <Button Command="{Binding #Root.((vm:FormsViewModel)DataContext).ViewResponsesCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    IsVisible="{Binding IsActive}"
+                                                    Background="White"
+                                                    Foreground="#374151"
+                                                    BorderBrush="#D1D5DB"
+                                                    BorderThickness="1"
+                                                    CornerRadius="8"
+                                                    Padding="16,10">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="Background" Value="#F3F4F6" />
+                                                    </Style>
+                                                </Button.Styles>
+                                                <TextBlock Text="View Responses" FontSize="14" />
+                                            </Button>
+                                            
+                                            <!-- View Results (Completed) -->
+                                            <Button Command="{Binding #Root.((vm:FormsViewModel)DataContext).ViewResultsCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    IsVisible="{Binding IsCompleted}"
+                                                    Background="White"
+                                                    Foreground="#374151"
+                                                    BorderBrush="#D1D5DB"
+                                                    BorderThickness="1"
+                                                    CornerRadius="8"
+                                                    Padding="16,10">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="Background" Value="#F3F4F6" />
+                                                    </Style>
+                                                </Button.Styles>
+                                                <TextBlock Text="View Results" FontSize="14" />
+                                            </Button>
+                                            
+                                            <!-- Send to Employees (Draft) -->
+                                            <Button Command="{Binding #Root.((vm:FormsViewModel)DataContext).SendToEmployeesCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    IsVisible="{Binding IsDraft}"
+                                                    Background="#1F2937"
+                                                    Foreground="White"
+                                                    CornerRadius="8"
+                                                    Padding="16,10">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <Viewbox Width="16" Height="16">
+                                                        <Canvas Width="24" Height="24">
+                                                            <!-- Send icon -->
+                                                            <Path Stroke="White"
+                                                                  StrokeThickness="2"
+                                                                  Data="M22 2L11 13" />
+                                                            <Path Stroke="White"
+                                                                  StrokeThickness="2"
+                                                                  Data="M22 2L15 22L11 13L2 9L22 2z" />
+                                                        </Canvas>
+                                                    </Viewbox>
+                                                    <TextBlock Text="Send to Employees" FontSize="14" />
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                    
+                                    <!-- Row 2: Progress Bar (only for Active forms) -->
+                                    <Grid Grid.Row="1" 
+                                          Margin="0,16,0,0"
+                                          IsVisible="{Binding ShowProgressBar}"
+                                          ColumnDefinitions="*,Auto">
+                                        <!-- Progress Bar -->
+                                        <Grid Grid.Column="0" Height="8">
+                                            <!-- Background -->
+                                            <Border Background="#E5E7EB"
+                                                    CornerRadius="4"
+                                                    Height="8" />
+                                            <!-- Filled portion -->
+                                            <Border Background="#1F2937"
+                                                    CornerRadius="4"
+                                                    Height="8"
+                                                    HorizontalAlignment="Left">
+                                                <Border.Width>
+                                                    <MultiBinding>
+                                                        <MultiBinding.Converter>
+                                                            <converters:ProgressWidthConverter />
+                                                        </MultiBinding.Converter>
+                                                        <Binding Path="ResponsePercentage" />
+                                                        <Binding Path="Bounds.Width" RelativeSource="{RelativeSource AncestorType=Grid}" />
+                                                    </MultiBinding>
+                                                </Border.Width>
                                             </Border>
-                                            <StackPanel VerticalAlignment="Center" Spacing="2">
-                                                <TextBlock Text="{Binding FullName}"
-                                                           FontSize="16"
-                                                           FontWeight="SemiBold"
-                                                           Foreground="#1F2937" />
-                                                <TextBlock Text="{Binding JobTitle}"
-                                                           FontSize="14"
-                                                           Foreground="#6B7280" />
-                                            </StackPanel>
-                                        </StackPanel>
+                                        </Grid>
                                         
-                                        <!-- Discord and Email -->
-                                        <StackPanel Spacing="8">
-                                            <!-- Discord -->
-                                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                                <TextBlock Text="#"
-                                                           FontSize="14"
-                                                           FontWeight="Medium"
-                                                           Foreground="#9CA3AF" />
-                                                <TextBlock Text="{Binding DiscordUsername}"
-                                                           FontSize="14"
-                                                           Foreground="#6B7280" />
-                                            </StackPanel>
-                                            <!-- Email -->
-                                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                                <Viewbox Width="16" Height="16">
-                                                    <Canvas Width="24" Height="24">
-                                                        <Rectangle Stroke="#9CA3AF"
-                                                                   StrokeThickness="2"
-                                                                   RadiusX="2"
-                                                                   RadiusY="2"
-                                                                   Width="20"
-                                                                   Height="16"
-                                                                   Canvas.Left="2"
-                                                                   Canvas.Top="4" />
-                                                        <Path Stroke="#9CA3AF"
-                                                              StrokeThickness="2"
-                                                              Data="M22 6l-10 7L2 6" />
-                                                    </Canvas>
-                                                </Viewbox>
-                                                <TextBlock Text="{Binding Email}"
-                                                           FontSize="14"
-                                                           Foreground="#6B7280" />
-                                            </StackPanel>
-                                        </StackPanel>
-                                        
-                                        <!-- Department Tag -->
-                                        <Border Background="#F3F4F6"
-                                                CornerRadius="4"
-                                                Padding="12,6"
-                                                HorizontalAlignment="Left">
-                                            <TextBlock Text="{Binding Department}"
-                                                       FontSize="13"
-                                                       Foreground="#374151" />
-                                        </Border>
-                                    </StackPanel>
-                                </Border>
-                            </Button>
+                                        <!-- Percentage -->
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding ResponsePercentageDisplay}"
+                                                   FontSize="14"
+                                                   Foreground="#6B7280"
+                                                   Margin="16,0,0,0"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
                 <!-- Empty State -->
-                <Border IsVisible="{Binding HasNoResults}"
+                <Border IsVisible="{Binding !Forms.Count}"
                         Background="White"
                         CornerRadius="12"
                         Padding="48"
@@ -563,45 +619,33 @@
                     <StackPanel HorizontalAlignment="Center" Spacing="12">
                         <Viewbox Width="48" Height="48" HorizontalAlignment="Center">
                             <Canvas Width="24" Height="24">
-                                <Ellipse Stroke="#9CA3AF"
-                                         StrokeThickness="2"
-                                         Width="10"
-                                         Height="10"
-                                         Canvas.Left="6"
-                                         Canvas.Top="2" />
+                                <Rectangle Stroke="#9CA3AF"
+                                           StrokeThickness="2"
+                                           RadiusX="2"
+                                           RadiusY="2"
+                                           Width="14"
+                                           Height="18"
+                                           Canvas.Left="5"
+                                           Canvas.Top="3" />
                                 <Path Stroke="#9CA3AF"
                                       StrokeThickness="2"
-                                      Data="M4 21v-2a4 4 0 0 1 4-4h4.5" />
+                                      Data="M9 7h6" />
                                 <Path Stroke="#9CA3AF"
                                       StrokeThickness="2"
-                                      Data="M16 3.128a4 4 0 0 1 0 7.744" />
+                                      Data="M9 11h6" />
                                 <Path Stroke="#9CA3AF"
                                       StrokeThickness="2"
-                                      Data="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                      Data="M9 15h4" />
                             </Canvas>
                         </Viewbox>
-                        <TextBlock Text="No employees found"
+                        <TextBlock Text="No forms yet"
                                    FontSize="16"
                                    FontWeight="Medium"
                                    Foreground="#6B7280"
                                    HorizontalAlignment="Center" />
-                        <TextBlock Text="Try adjusting your search or filter criteria"
+                        <TextBlock Text="Create your first survey to get started"
                                    FontSize="14"
                                    Foreground="#9CA3AF"
-                                   HorizontalAlignment="Center" />
-                    </StackPanel>
-                </Border>
-
-                <!-- Loading Indicator -->
-                <Border IsVisible="{Binding IsLoading}"
-                        Background="White"
-                        CornerRadius="12"
-                        Padding="48"
-                        HorizontalAlignment="Center">
-                    <StackPanel HorizontalAlignment="Center" Spacing="12">
-                        <TextBlock Text="Loading employees..."
-                                   FontSize="16"
-                                   Foreground="#6B7280"
                                    HorizontalAlignment="Center" />
                     </StackPanel>
                 </Border>

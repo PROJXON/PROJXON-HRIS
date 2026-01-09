@@ -449,6 +449,12 @@ public partial class AttendanceViewModel : ViewModelBase
         await _navigationService.NavigateTo(ViewModelType.InternDashboard);
     }
 
+    [RelayCommand]
+    private async Task NavigateToForms()
+    {
+        await _navigationService.NavigateTo(ViewModelType.Forms);
+    }
+    
     #endregion
 
     public override async Task OnNavigatedToAsync()
