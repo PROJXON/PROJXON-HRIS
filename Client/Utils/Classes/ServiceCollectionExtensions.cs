@@ -48,6 +48,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<HRDashboardViewModel>();
         collection.AddTransient<InternDashboardViewModel>();
         collection.AddTransient<TimeOffViewModel>();
+        collection.AddTransient<TimeOffRequestsViewModel>();
         
         // Views
         collection.AddTransient<MainWindow>();
@@ -59,6 +60,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<InternDashboardView>();
         collection.AddTransient<HRDashboardView>();
         collection.AddTransient<TimeOffView>();
+        collection.AddTransient<TimeOffRequestsView>();
         
         collection.AddTransient<PortalSelectionView>();
         collection.AddTransient<HRDashboardView>();

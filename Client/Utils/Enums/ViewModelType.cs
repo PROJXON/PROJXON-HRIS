@@ -10,6 +10,7 @@ public enum ViewModelType
     HRDashboard,
     InternDashboard,
     TimeOff,
+    TimeOffRequests,
     Dashboard, // Legacy - can be removed after migration
     EmployeesList, // Legacy - replaced by Employees
     EmployeeDetails,

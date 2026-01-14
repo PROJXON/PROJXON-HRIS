@@ -128,9 +128,7 @@ public partial class HRDashboardViewModel : ViewModelBase
     private async Task NavigateToTimeOff()
     {
         SelectedMenuItem = "Time Off Requests";
-        // TODO: Navigate to time off view when implemented
-        // await _navigationService.NavigateTo(ViewModelType.TimeOffRequests);
-        await Task.CompletedTask;
+        await _navigationService.NavigateTo(ViewModelType.TimeOffRequests);
     }
 
     [RelayCommand]
