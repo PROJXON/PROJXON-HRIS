@@ -4,17 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Client.ViewModels"
              mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
-             x:Class="Client.Views.HRDashboardView"
-             x:DataType="vm:HRDashboardViewModel">
+             x:Class="Client.Views.CreateSurveyView"
+             x:DataType="vm:CreateSurveyViewModel"
+             x:Name="Root">
     
     <Design.DataContext>
-        <vm:HRDashboardViewModel />
+        <vm:CreateSurveyViewModel />
     </Design.DataContext>
 
     <Grid Background="#F8F9FA">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="280" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="320" />
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar -->
@@ -35,7 +37,6 @@
                                 Background="#F3F4F6"
                                 Width="96"
                                 Height="96">
-                            <!-- User Icon -->
                             <Viewbox Width="48" Height="48"
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center">
@@ -94,21 +95,26 @@
                             Margin="16,0,16,24"
                             Spacing="4">
                     
-                    <!-- Dashboard - Active -->
+                    <!-- Dashboard -->
                     <Button Command="{Binding NavigateToDashboardCommand}"
-                            Background="#1F2937"
-                            Foreground="White"
+                            Background="Transparent"
+                            Foreground="#374151"
                             CornerRadius="8"
                             Padding="16,12"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Viewbox Width="20" Height="20">
                                 <Canvas Width="24" Height="24">
-                                    <Path Stroke="White"
+                                    <Path Stroke="#374151"
                                           StrokeThickness="2"
                                           Data="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                    <Path Stroke="White"
+                                    <Path Stroke="#374151"
                                           StrokeThickness="2"
                                           Data="M9 22V12h6v10" />
                                 </Canvas>
@@ -313,24 +319,19 @@
                                        FontSize="15" />
                         </StackPanel>
                     </Button>
-                    
-                    <!-- Forms -->
+
+                    <!-- Forms - Active -->
                     <Button Command="{Binding NavigateToFormsCommand}"
-                            Background="Transparent"
-                            Foreground="#374151"
+                            Background="#1F2937"
+                            Foreground="White"
                             CornerRadius="8"
                             Padding="16,12"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#F3F4F6" />
-                            </Style>
-                        </Button.Styles>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Viewbox Width="20" Height="20">
                                 <Canvas Width="24" Height="24">
-                                    <Rectangle Stroke="#374151"
+                                    <Rectangle Stroke="White"
                                                StrokeThickness="2"
                                                RadiusX="2"
                                                RadiusY="2"
@@ -338,13 +339,13 @@
                                                Height="18"
                                                Canvas.Left="5"
                                                Canvas.Top="3" />
-                                    <Path Stroke="#374151"
+                                    <Path Stroke="White"
                                           StrokeThickness="2"
                                           Data="M9 7h6" />
-                                    <Path Stroke="#374151"
+                                    <Path Stroke="White"
                                           StrokeThickness="2"
                                           Data="M9 11h6" />
-                                    <Path Stroke="#374151"
+                                    <Path Stroke="White"
                                           StrokeThickness="2"
                                           Data="M9 15h4" />
                                 </Canvas>
@@ -362,268 +363,248 @@
         <ScrollViewer Grid.Column="1"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="40,32,40,32" Spacing="32">
+            <StackPanel Margin="40,32,40,32" Spacing="24">
                 
+                <!-- Back Button -->
+                <Button Command="{Binding GoBackCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="0"
+                        Cursor="Hand"
+                        HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Viewbox Width="20" Height="20">
+                            <Canvas Width="24" Height="24">
+                                <Path Stroke="#374151"
+                                      StrokeThickness="2"
+                                      Data="M19 12H5" />
+                                <Path Stroke="#374151"
+                                      StrokeThickness="2"
+                                      Data="M12 19l-7-7 7-7" />
+                            </Canvas>
+                        </Viewbox>
+                        <TextBlock Text="Back to Forms"
+                                   FontSize="14"
+                                   Foreground="#374151"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+
                 <!-- Header -->
                 <StackPanel Spacing="8">
-                    <TextBlock Text="HR Dashboard"
+                    <TextBlock Text="Create New Survey"
                                FontSize="28"
                                FontWeight="Bold"
                                Foreground="#1F2937" />
-                    <TextBlock Text="Welcome back! Here's what's happening today."
+                    <TextBlock Text="Build a survey to send to your employees"
                                FontSize="16"
                                Foreground="#6B7280" />
                 </StackPanel>
 
-                <!-- Stats Cards -->
-                <Grid ColumnDefinitions="*,*,*,*">
-                    <Grid.Styles>
-                        <Style Selector="Border.stat-card">
-                            <Setter Property="Background" Value="White" />
-                            <Setter Property="CornerRadius" Value="12" />
-                            <Setter Property="Padding" Value="24" />
-                            <Setter Property="BorderBrush" Value="#E5E7EB" />
-                            <Setter Property="BorderThickness" Value="1" />
-                        </Style>
-                    </Grid.Styles>
-                    
-                    <!-- Total Employees -->
-                    <Border Grid.Column="0" Classes="stat-card" Margin="0,0,12,0">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Grid.Column="0" Spacing="4">
-                                <TextBlock Text="Total Employees"
-                                           FontSize="14"
-                                           Foreground="#6B7280" />
-                                <TextBlock Text="{Binding TotalEmployees}"
-                                           FontSize="32"
-                                           FontWeight="Bold"
-                                           Foreground="#1F2937" />
-                            </StackPanel>
-                            <Border Grid.Column="1"
-                                    Background="#3B82F6"
-                                    CornerRadius="10"
-                                    Width="48"
-                                    Height="48"
-                                    VerticalAlignment="Center">
-                                <Viewbox Width="24" Height="24"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center">
-                                    <Canvas Width="24" Height="24">
-                                        <Ellipse Stroke="White"
-                                                 StrokeThickness="2"
-                                                 Width="10"
-                                                 Height="10"
-                                                 Canvas.Left="6"
-                                                 Canvas.Top="2" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M4 21v-2a4 4 0 0 1 4-4h4.5" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M16 3.128a4 4 0 0 1 0 7.744" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                    </Canvas>
-                                </Viewbox>
-                            </Border>
-                        </Grid>
-                    </Border>
-
-                    <!-- Pending Time Off -->
-                    <Border Grid.Column="1" Classes="stat-card" Margin="6,0,6,0">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Grid.Column="0" Spacing="4">
-                                <TextBlock Text="Pending Time Off"
-                                           FontSize="14"
-                                           Foreground="#6B7280" />
-                                <TextBlock Text="{Binding PendingTimeOff}"
-                                           FontSize="32"
-                                           FontWeight="Bold"
-                                           Foreground="#1F2937" />
-                            </StackPanel>
-                            <Border Grid.Column="1"
-                                    Background="#F97316"
-                                    CornerRadius="10"
-                                    Width="48"
-                                    Height="48"
-                                    VerticalAlignment="Center">
-                                <Viewbox Width="24" Height="24"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center">
-                                    <Canvas Width="24" Height="24">
-                                        <Rectangle Stroke="White"
-                                                   StrokeThickness="2"
-                                                   RadiusX="2"
-                                                   RadiusY="2"
-                                                   Width="18"
-                                                   Height="18"
-                                                   Canvas.Left="3"
-                                                   Canvas.Top="4" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M16 2v4" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M8 2v4" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M3 10h18" />
-                                    </Canvas>
-                                </Viewbox>
-                            </Border>
-                        </Grid>
-                    </Border>
-
-                    <!-- Active Recruitments -->
-                    <Border Grid.Column="2" Classes="stat-card" Margin="6,0,6,0">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Grid.Column="0" Spacing="4">
-                                <TextBlock Text="Active Recruitments"
-                                           FontSize="14"
-                                           Foreground="#6B7280"
-                                           TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding ActiveRecruitments}"
-                                           FontSize="32"
-                                           FontWeight="Bold"
-                                           Foreground="#1F2937" />
-                            </StackPanel>
-                            <Border Grid.Column="1"
-                                    Background="#22C55E"
-                                    CornerRadius="10"
-                                    Width="48"
-                                    Height="48"
-                                    VerticalAlignment="Center">
-                                <Viewbox Width="24" Height="24"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center">
-                                    <Canvas Width="24" Height="24">
-                                        <Rectangle Stroke="White"
-                                                   StrokeThickness="2"
-                                                   RadiusX="2"
-                                                   RadiusY="2"
-                                                   Width="14"
-                                                   Height="18"
-                                                   Canvas.Left="5"
-                                                   Canvas.Top="3" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M9 7h6" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M9 11h6" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M9 15h4" />
-                                    </Canvas>
-                                </Viewbox>
-                            </Border>
-                        </Grid>
-                    </Border>
-
-                    <!-- This Month Attendance -->
-                    <Border Grid.Column="3" Classes="stat-card" Margin="12,0,0,0">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Grid.Column="0" Spacing="4">
-                                <TextBlock Text="This Month Attendance"
-                                           FontSize="14"
-                                           Foreground="#6B7280"
-                                           TextWrapping="Wrap" />
-                                <TextBlock Text="{Binding AttendancePercentage, StringFormat={}{0}%}"
-                                           FontSize="32"
-                                           FontWeight="Bold"
-                                           Foreground="#1F2937" />
-                            </StackPanel>
-                            <Border Grid.Column="1"
-                                    Background="#A855F7"
-                                    CornerRadius="10"
-                                    Width="48"
-                                    Height="48"
-                                    VerticalAlignment="Center">
-                                <Viewbox Width="24" Height="24"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center">
-                                    <Canvas Width="24" Height="24">
-                                        <Rectangle Stroke="White"
-                                                   StrokeThickness="2"
-                                                   RadiusX="2"
-                                                   RadiusY="2"
-                                                   Width="18"
-                                                   Height="18"
-                                                   Canvas.Left="3"
-                                                   Canvas.Top="4" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M16 2v4" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M8 2v4" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M3 10h18" />
-                                        <Path Stroke="White"
-                                              StrokeThickness="2"
-                                              Data="M9 16l2 2 4-4" />
-                                    </Canvas>
-                                </Viewbox>
-                            </Border>
-                        </Grid>
-                    </Border>
-                </Grid>
-
-                <!-- Recent Activity Section -->
+                <!-- Survey Details Card -->
                 <Border Background="White"
                         CornerRadius="12"
-                        Padding="24"
                         BorderBrush="#E5E7EB"
-                        BorderThickness="1">
-                    <StackPanel Spacing="16">
-                        <TextBlock Text="Recent Activity"
-                                   FontSize="18"
+                        BorderThickness="1"
+                        Padding="24">
+                    <StackPanel Spacing="20">
+                        <TextBlock Text="Survey Details"
+                                   FontSize="16"
                                    FontWeight="SemiBold"
                                    Foreground="#1F2937" />
                         
-                        <!-- Activity Items -->
-                        <ItemsControl ItemsSource="{Binding RecentActivities}">
+                        <!-- Survey Title -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Survey Title"
+                                       FontSize="14"
+                                       FontWeight="Medium"
+                                       Foreground="#1F2937" />
+                            <TextBox Text="{Binding SurveyTitle}"
+                                     Watermark="e.g., Employee Satisfaction Survey"
+                                     Padding="16,12"
+                                     CornerRadius="8"
+                                     FontSize="14" />
+                        </StackPanel>
+                        
+                        <!-- Description -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Description"
+                                       FontSize="14"
+                                       FontWeight="Medium"
+                                       Foreground="#1F2937" />
+                            <TextBox Text="{Binding SurveyDescription}"
+                                     Watermark="Brief description of the survey purpose"
+                                     Padding="16,12"
+                                     CornerRadius="8"
+                                     FontSize="14"
+                                     MinHeight="80"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Questions Card -->
+                <Border Background="White"
+                        CornerRadius="12"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        Padding="24">
+                    <StackPanel Spacing="20">
+                        <TextBlock Text="Questions"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="#1F2937" />
+                        
+                        <!-- Existing Questions List -->
+                        <ItemsControl ItemsSource="{Binding Questions}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Padding="0,12"
-                                            BorderBrush="#F3F4F6"
-                                            BorderThickness="0,0,0,1">
-                                        <Grid ColumnDefinitions="Auto,*,Auto">
-                                            <!-- Activity Indicator -->
-                                            <Ellipse Grid.Column="0"
-                                                     Width="8"
-                                                     Height="8"
-                                                     Fill="#3B82F6"
-                                                     VerticalAlignment="Center"
-                                                     Margin="0,0,16,0" />
-                                            
-                                            <!-- Activity Content -->
-                                            <StackPanel Grid.Column="1" Spacing="2">
-                                                <TextBlock Text="{Binding Title}"
-                                                           FontSize="14"
-                                                           FontWeight="Medium"
-                                                           Foreground="#1F2937" />
-                                                <TextBlock Text="{Binding Subtitle}"
-                                                           FontSize="13"
+                                <DataTemplate DataType="{x:Type vm:SurveyQuestionViewModel}">
+                                    <Border Background="#F9FAFB"
+                                            CornerRadius="8"
+                                            Padding="16"
+                                            Margin="0,0,0,12">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Spacing="4">
+                                                <TextBlock Text="{Binding QuestionLabel}"
+                                                           FontSize="12"
                                                            Foreground="#6B7280" />
+                                                <TextBlock Text="{Binding QuestionText}"
+                                                           FontSize="14"
+                                                           Foreground="#1F2937"
+                                                           TextWrapping="Wrap" />
                                             </StackPanel>
                                             
-                                            <!-- Timestamp -->
-                                            <TextBlock Grid.Column="2"
-                                                       Text="{Binding TimeAgo}"
-                                                       FontSize="13"
-                                                       Foreground="#9CA3AF"
-                                                       VerticalAlignment="Center" />
+                                            <!-- Delete Button -->
+                                            <Button Grid.Column="1"
+                                                    Command="{Binding #Root.((vm:CreateSurveyViewModel)DataContext).DeleteQuestionCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Padding="8"
+                                                    VerticalAlignment="Top"
+                                                    Cursor="Hand">
+                                                <Viewbox Width="16" Height="16">
+                                                    <Canvas Width="24" Height="24">
+                                                        <!-- Trash icon -->
+                                                        <Path Stroke="#9CA3AF"
+                                                              StrokeThickness="2"
+                                                              Data="M3 6h18" />
+                                                        <Path Stroke="#9CA3AF"
+                                                              StrokeThickness="2"
+                                                              Data="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                                    </Canvas>
+                                                </Viewbox>
+                                            </Button>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        
+                        <!-- Add New Question -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding NewQuestionText}"
+                                     Watermark="Type your question here..."
+                                     Padding="16,12"
+                                     CornerRadius="8"
+                                     FontSize="14"
+                                     Margin="0,0,12,0" />
+                            <Button Grid.Column="1"
+                                    Command="{Binding AddQuestionCommand}"
+                                    Background="#1F2937"
+                                    Foreground="White"
+                                    CornerRadius="8"
+                                    Padding="20,12">
+                                <TextBlock Text="Add Question" FontSize="14" />
+                            </Button>
+                        </Grid>
                     </StackPanel>
                 </Border>
             </StackPanel>
         </ScrollViewer>
+
+        <!-- Right Panel - Survey Summary -->
+        <Border Grid.Column="2"
+                Background="White"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1,0,0,0">
+            <StackPanel Margin="24,32,24,24" Spacing="24">
+                <TextBlock Text="Survey Summary"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="#1F2937" />
+
+                <!-- Total Questions -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Total Questions"
+                               FontSize="14"
+                               Foreground="#6B7280" />
+                    <TextBlock Text="{Binding TotalQuestions}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="#1F2937" />
+                </StackPanel>
+                
+                <!-- Separator -->
+                <Border Height="1" Background="#E5E7EB" />
+
+                <!-- Status -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Status"
+                               FontSize="14"
+                               Foreground="#6B7280" />
+                    <Border Background="#F3F4F6"
+                            CornerRadius="4"
+                            Padding="12,6"
+                            HorizontalAlignment="Left">
+                        <TextBlock Text="{Binding Status}"
+                                   FontSize="14"
+                                   Foreground="#374151" />
+                    </Border>
+                </StackPanel>
+
+                <!-- Action Buttons -->
+                <StackPanel Spacing="12" Margin="0,16,0,0">
+                    <!-- Save as Draft Button -->
+                    <Button Command="{Binding SaveAsDraftCommand}"
+                            Background="#4B5563"
+                            Foreground="White"
+                            CornerRadius="8"
+                            Padding="0,14"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            IsEnabled="{Binding !IsLoading}">
+                        <TextBlock Text="Save as Draft" FontSize="15" FontWeight="Medium" />
+                    </Button>
+                    
+                    <!-- Cancel Button -->
+                    <Button Command="{Binding CancelCommand}"
+                            Background="White"
+                            Foreground="#374151"
+                            BorderBrush="#D1D5DB"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="0,14"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#F3F4F6" />
+                            </Style>
+                        </Button.Styles>
+                        <TextBlock Text="Cancel" FontSize="15" />
+                    </Button>
+                </StackPanel>
+
+                <!-- Error Message -->
+                <TextBlock Text="{Binding ErrorMessage}"
+                           IsVisible="{Binding ErrorMessage.Length}"
+                           FontSize="14"
+                           Foreground="#DC2626"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
