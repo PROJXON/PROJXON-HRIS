@@ -40,6 +40,27 @@ public partial class TimeOffRequestsViewModel : ViewModelBase
 
     #endregion
 
+    [ObservableProperty]
+    private bool _isPopupOpen;
+
+    [ObservableProperty]
+    private TimeOffRequestItemViewModel? _selectedRequest;
+
+    [ObservableProperty]
+    private string _popupActionText = string.Empty;
+
+    [ObservableProperty]
+    private string _popupActionButtonClass = string.Empty;
+
+    public bool IsApprovingAction => PopupActionText == "Approve";
+    public bool IsDecliningAction => PopupActionText == "Decline";
+
+    public string SelectedRequestDetails =>
+    SelectedRequest == null ? "" :
+    $"{SelectedRequest.EmployeeName} is requesting {SelectedRequest.TotalDaysOff} days off\n" +
+    $"{SelectedRequest.LeaveFrom:MM/dd/yyyy} → {SelectedRequest.LeaveTo:MM/dd/yyyy}\n\n" +
+    $"Reason: {SelectedRequest.Reason}";
+
     public TimeOffRequestsViewModel(INavigationService navigationService)
     {
         _navigationService = navigationService;
@@ -75,7 +96,7 @@ public partial class TimeOffRequestsViewModel : ViewModelBase
                 TotalDaysOff = 1,
                 LeaveType = LeaveType.SickLeave,
                 Status = RequestStatus.Pending,
-                Reason = "Family vacation"
+                Reason = "Medical appointment"
             },
             new()
             {
@@ -86,7 +107,7 @@ public partial class TimeOffRequestsViewModel : ViewModelBase
                 TotalDaysOff = 5,
                 LeaveType = LeaveType.PersonalLeave,
                 Status = RequestStatus.Pending,
-                Reason = "Family vacation"
+                Reason = "Personal matters"
             },
             new()
             {
@@ -108,7 +129,7 @@ public partial class TimeOffRequestsViewModel : ViewModelBase
                 TotalDaysOff = 2,
                 LeaveType = LeaveType.SickLeave,
                 Status = RequestStatus.Declined,
-                Reason = "Family vacation"
+                Reason = "Sick leave"
             }
         };
     }
@@ -122,14 +143,6 @@ public partial class TimeOffRequestsViewModel : ViewModelBase
 
         // Update the request status from Pending to Approved
         request.Status = RequestStatus.Approved;
-        
-        // Force UI update by re-triggering property changes
-        var index = TimeOffRequestItem.IndexOf(request);
-        if (index >= 0)
-        {
-            TimeOffRequestItem.RemoveAt(index);
-            TimeOffRequestItem.Insert(index, request);
-        }
     }
 
     [RelayCommand]
@@ -139,14 +152,55 @@ public partial class TimeOffRequestsViewModel : ViewModelBase
 
         // Update the request status from Pending to Declined
         request.Status = RequestStatus.Declined;
-        
-        // Force UI update by re-triggering property changes
-        var index = TimeOffRequestItem.IndexOf(request);
-        if (index >= 0)
+    }
+
+    [RelayCommand]
+    private void OpenApprovePopup(TimeOffRequestItemViewModel request)
+    {
+        SelectedRequest = request;
+        PopupActionText = "Approve";
+        PopupActionButtonClass = "ApproveButton";
+        OnPropertyChanged(nameof(IsApprovingAction));
+        OnPropertyChanged(nameof(IsDecliningAction));
+        IsPopupOpen = true;
+    }
+
+    [RelayCommand]
+    private void OpenDeclinePopup(TimeOffRequestItemViewModel request)
+    {
+        SelectedRequest = request;
+        PopupActionText = "Decline";
+        PopupActionButtonClass = "DeclineButton";
+        OnPropertyChanged(nameof(IsApprovingAction));
+        OnPropertyChanged(nameof(IsDecliningAction));
+        IsPopupOpen = true;
+    }
+
+    [RelayCommand]
+    private void ClosePopup()
+    {
+        IsPopupOpen = false;
+        SelectedRequest = null; // Clear selection when closing
+    }
+
+    [RelayCommand]
+    private void ConfirmAction()
+    {
+        if (SelectedRequest == null)
+            return;
+
+        if (PopupActionText == "Approve")
         {
-            TimeOffRequestItem.RemoveAt(index);
-            TimeOffRequestItem.Insert(index, request);
+            SelectedRequest.Status = RequestStatus.Approved;
         }
+        else if (PopupActionText == "Decline")
+        {
+            SelectedRequest.Status = RequestStatus.Declined;
+        }
+
+        // No need to manually update the collection - property notifications handle it
+        IsPopupOpen = false;
+        SelectedRequest = null; // Clear selection after action
     }
 
     #endregion
@@ -267,4 +321,14 @@ public partial class TimeOffRequestItemViewModel : ObservableObject
         RequestStatus.Declined => "Declined",
         _ => "Unknown"
     };
+
+    // This method is called automatically when Status changes (because of [ObservableProperty])
+    partial void OnStatusChanged(RequestStatus value)
+    {
+        // Notify that all status-dependent properties have changed
+        OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(IsPending));
+        OnPropertyChanged(nameof(IsApproved));
+        OnPropertyChanged(nameof(IsDeclined));
+    }
 }

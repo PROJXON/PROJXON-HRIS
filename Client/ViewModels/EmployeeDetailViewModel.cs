@@ -211,8 +211,7 @@ public partial class EmployeeDetailViewModel : ViewModelBase
     [RelayCommand]
     private async Task NavigateToTimeOff()
     {
-        // TODO: Navigate to time off view when implemented
-        await Task.CompletedTask;
+        await _navigationService.NavigateTo(ViewModelType.TimeOffRequests);
     }
 
     [RelayCommand]

@@ -403,20 +403,20 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Employee Name" 
                                                 Binding="{Binding EmployeeName}" 
-                                                Width="1.5*"
+                                                Width="1.6*"
                                                 FontSize="14"
                                                 Foreground="Black"/>
                             <DataGridTextColumn Header="Leave From" 
                                                 Binding="{Binding LeaveFrom, StringFormat={}{0:MM/dd/yyyy}}" 
-                                                Width="*"
+                                                Width="1.2*"
                                                 FontSize="14"
                                                 Foreground="Black"/>
                             <DataGridTextColumn Header="Leave To" 
                                                 Binding="{Binding LeaveTo, StringFormat={}{0:MM/dd/yyyy}}" 
-                                                Width="*"
+                                                Width="1.2*"
                                                 FontSize="14"
                                                 Foreground="Black"/>
-                            <DataGridTemplateColumn Header="Total Days" Width="*">
+                            <DataGridTemplateColumn Header="Total Days" Width="1.1*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel VerticalAlignment="Center">
@@ -430,10 +430,10 @@
                             </DataGridTemplateColumn>
                             <DataGridTextColumn Header="Leave Type" 
                                                 Binding="{Binding LeaveType}" 
-                                                Width="1.2*"
+                                                Width="1.3*"
                                                 FontSize="14"
                                                 Foreground="#374151"/>
-                            <DataGridTemplateColumn Header="Status" Width="*">
+                            <DataGridTemplateColumn Header="Status" Width="1.1*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Border Background="{Binding Status, Converter={StaticResource RequestStatusBackground}}" 
@@ -450,13 +450,13 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Actions" Width="1.5*">
+                            <DataGridTemplateColumn Header="Actions" Width="2.2*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
                                             <!-- Show buttons for Pending requests -->
                                             <Button Content="✓ Approve" 
-                                                    Command="{Binding #Root.DataContext.ApproveRequestCommand}"
+                                                    Command="{Binding #Root.DataContext.OpenApprovePopupCommand}"
                                                     CommandParameter="{Binding}"
                                                     IsVisible="{Binding IsPending}"
                                                     Background="#1F2937" 
@@ -473,7 +473,7 @@
                                                 </Button.Styles>
                                             </Button>
                                             <Button Content="✕ Decline" 
-                                                    Command="{Binding #Root.DataContext.DenyRequestCommand}"
+                                                    Command="{Binding #Root.DataContext.OpenDeclinePopupCommand}"
                                                     CommandParameter="{Binding}"
                                                     IsVisible="{Binding IsPending}"
                                                     Background="#DC2626" 
@@ -505,5 +505,106 @@
 
             </StackPanel>
         </ScrollViewer>
+
+        <!-- Confirmation Popup Overlay -->
+        <Border Grid.Column="0" 
+                Grid.ColumnSpan="2" 
+                Background="#80000000"
+                IsVisible="{Binding IsPopupOpen}"
+                ZIndex="1000">
+            <Border Background="White"
+                    CornerRadius="12"
+                    MaxWidth="500"
+                    Padding="32"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BoxShadow="0 10 30 5 #40000000">
+                <StackPanel Spacing="24">
+                    <!-- Popup Header -->
+                    <StackPanel Spacing="8">
+                        <TextBlock FontSize="24" 
+                                   FontWeight="Bold" 
+                                   Foreground="#1F2937">
+                            <Run Text="{Binding PopupActionText}"/>
+                            <Run Text=" Request"/>
+                        </TextBlock>
+                        <TextBlock Text="Are you sure you want to proceed with this action?" 
+                                   FontSize="14" 
+                                   Foreground="#6B7280"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Request Details -->
+                    <Border Background="#F9FAFB" 
+                            CornerRadius="8" 
+                            Padding="16">
+                        <TextBlock Text="{Binding SelectedRequestDetails}"
+                                   FontSize="14"
+                                   Foreground="#374151"
+                                   TextWrapping="Wrap"
+                                   LineHeight="20"/>
+                    </Border>
+
+                    <!-- Action Buttons -->
+                    <StackPanel Orientation="Horizontal" 
+                                Spacing="12" 
+                                HorizontalAlignment="Right">
+                        <Button Content="Cancel"
+                                Command="{Binding ClosePopupCommand}"
+                                Background="#F3F4F6"
+                                Foreground="#374151"
+                                Padding="20,12"
+                                CornerRadius="8"
+                                FontSize="14"
+                                FontWeight="Medium"
+                                MinWidth="100"
+                                BorderThickness="0">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="#E5E7EB"/>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                        <!-- Approve Button (shown when approving) -->
+                        <Button Content="Approve"
+                                Command="{Binding ConfirmActionCommand}"
+                                IsVisible="{Binding IsApprovingAction}"
+                                Background="#1F2937"
+                                Foreground="White"
+                                Padding="20,12"
+                                CornerRadius="8"
+                                FontSize="14"
+                                FontWeight="Medium"
+                                MinWidth="100"
+                                BorderThickness="0">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="#374151"/>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                        
+                        <!-- Decline Button (shown when declining) -->
+                        <Button Content="Decline"
+                                Command="{Binding ConfirmActionCommand}"
+                                IsVisible="{Binding IsDecliningAction}"
+                                Background="#DC2626"
+                                Foreground="White"
+                                Padding="20,12"
+                                CornerRadius="8"
+                                FontSize="14"
+                                FontWeight="Medium"
+                                MinWidth="100"
+                                BorderThickness="0">
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="#B91C1C"/>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
     </Grid>
 </UserControl>
