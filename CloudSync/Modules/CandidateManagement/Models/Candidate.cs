@@ -36,11 +36,11 @@ public class Candidate
     [StringLength(20)]
     public string? Status { get; set; }
 
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    // FIXED: Removed [DatabaseGenerated] so EF Core sends the value we set in code
     public DateTime CreateDateTime { get; set; } = DateTime.UtcNow;
     
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime UpdateDateTime { get; set; }
+    // FIXED: Removed [DatabaseGenerated]
+    public DateTime UpdateDateTime { get; set; } = DateTime.UtcNow;
     
     [Url]
     [StringLength(200)]
@@ -83,6 +83,8 @@ public class Candidate
     [StringLength(30)]
     public string? RecruitingSource { get; set; }
     
+    public int? InterviewerId { get; set; }
+    
     [ForeignKey("InterviewerId")]
     public Employee? Interviewer { get; set; }
     
@@ -93,5 +95,4 @@ public class Candidate
     
     [StringLength(400)]
     public string? Notes { get; set; }
-    
 }

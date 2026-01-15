@@ -5,11 +5,13 @@ services:
       context: .
       target: final
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       db:
         condition: service_healthy
     environment:
+      - ASPSNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__PostgresConnection=Host=db;Port=5432;Database=hrisdb;Username=postgres;Password=${DB_PASSWORD}
   db:
     image: postgres:15

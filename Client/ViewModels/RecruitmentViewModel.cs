@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Client.Services;
 using Client.Utils.Enums;
+using Client.Utils.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Shared.CandidateManagement.Requests;
+using Shared.CandidateManagement.Responses;
 
 namespace Client.ViewModels;
 
@@ -16,6 +20,7 @@ namespace Client.ViewModels;
 public partial class RecruitmentViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
+    private readonly IApiClient _apiClient;
 
     #region Sidebar User Profile
 
@@ -51,6 +56,9 @@ public partial class RecruitmentViewModel : ViewModelBase
     [ObservableProperty]
     private string _newCandidateLocation = string.Empty;
 
+    [ObservableProperty]
+    private bool _isLoading;
+
     #endregion
 
     #region Move to Stage Dialog
@@ -69,15 +77,25 @@ public partial class RecruitmentViewModel : ViewModelBase
 
     #endregion
 
-    public RecruitmentViewModel(INavigationService navigationService)
+    #region Hire Confirmation
+
+    [ObservableProperty]
+    private bool _isHireConfirmationOpen;
+
+    [ObservableProperty]
+    private CandidateViewModel? _candidateToHire;
+
+    #endregion
+
+    public RecruitmentViewModel(INavigationService navigationService, IApiClient apiClient)
     {
         _navigationService = navigationService;
+        _apiClient = apiClient;
         InitializeStages();
-        LoadMockData();
     }
 
     // Parameterless constructor for design-time support
-    public RecruitmentViewModel() : this(null!)
+    public RecruitmentViewModel() : this(null!, null!)
     {
     }
 
@@ -104,74 +122,52 @@ public partial class RecruitmentViewModel : ViewModelBase
         };
     }
 
-    private void LoadMockData()
+    private async Task LoadCandidatesAsync()
     {
-        // Application Review
-        var applicationReview = Stages.First(s => s.StageId == "application_review");
-        applicationReview.Candidates.Add(new CandidateViewModel
+        var result = await _apiClient.GetAllAsync<IEnumerable<CandidateResponse>>("api/candidate");
+        if (result.IsSuccess && result.Data != null)
         {
-            Id = 1,
-            FullName = "James Rodriguez",
-            Position = "Backend Developer",
-            Location = "Austin, TX",
-            AppliedDate = new DateTime(2025, 10, 9),
-            Email = "james.rodriguez@email.com",
-            CurrentStageId = "application_review"
-        });
+            foreach (var stage in Stages) stage.Candidates.Clear();
 
-        // Technical Assessment
-        var technicalAssessment = Stages.First(s => s.StageId == "technical_assessment");
-        technicalAssessment.Candidates.Add(new CandidateViewModel
-        {
-            Id = 2,
-            FullName = "Emma Thompson",
-            Position = "Product Manager",
-            Location = "Seattle, WA",
-            AppliedDate = new DateTime(2025, 10, 4),
-            Email = "emma.thompson@email.com",
-            CurrentStageId = "technical_assessment"
-        });
+            foreach (var c in result.Data)
+            {
+                // Normalize Backend Status to Frontend Stage ID
+                string mappedStageId = "application_review"; // Default
 
-        // Interview
-        var interview = Stages.First(s => s.StageId == "interview");
-        interview.Candidates.Add(new CandidateViewModel
-        {
-            Id = 3,
-            FullName = "Michael Chen",
-            Position = "Senior Frontend Developer",
-            Location = "New York, NY",
-            AppliedDate = new DateTime(2025, 9, 30),
-            Email = "michael.chen@email.com",
-            CurrentStageId = "interview"
-        });
-        interview.Candidates.Add(new CandidateViewModel
-        {
-            Id = 4,
-            FullName = "David Kim",
-            Position = "DevOps Engineer",
-            Location = "Boston, MA",
-            AppliedDate = new DateTime(2025, 10, 7),
-            Email = "david.kim@email.com",
-            CurrentStageId = "interview"
-        });
+                if (!string.IsNullOrEmpty(c.Status))
+                {
+                    var normalized = c.Status.Trim();
 
-        // Offer
-        var offer = Stages.First(s => s.StageId == "offer");
-        offer.Candidates.Add(new CandidateViewModel
-        {
-            Id = 5,
-            FullName = "Sarah Williams",
-            Position = "UX Designer",
-            Location = "San Francisco, CA",
-            AppliedDate = new DateTime(2025, 9, 27),
-            Email = "sarah.williams@email.com",
-            CurrentStageId = "offer"
-        });
+                    if (normalized.Equals("Applied", StringComparison.OrdinalIgnoreCase))
+                        mappedStageId = "application_review";
+                    else if (normalized.Equals("Technical Assessment", StringComparison.OrdinalIgnoreCase))
+                        mappedStageId = "technical_assessment";
+                    else if (normalized.Equals("Interview", StringComparison.OrdinalIgnoreCase))
+                        mappedStageId = "interview";
+                    else if (normalized.Equals("Offer", StringComparison.OrdinalIgnoreCase))
+                        mappedStageId = "offer";
+                    else if (normalized.Equals("Hired", StringComparison.OrdinalIgnoreCase))
+                        mappedStageId = "hired";
+                    else if (normalized.Equals("Rejected", StringComparison.OrdinalIgnoreCase))
+                        mappedStageId = "rejected";
+                }
 
-        // Update candidate counts
-        foreach (var stage in Stages)
-        {
-            stage.UpdateCandidateCount();
+                var vm = new CandidateViewModel
+                {
+                    Id = c.Id,
+                    FullName = $"{c.FirstName} {c.LastName}",
+                    Email = c.Email,
+                    Position = c.JobAppliedFor,
+                    Location = c.Location,
+                    AppliedDate = c.AppliedDate,
+                    CurrentStageId = mappedStageId
+                };
+
+                var stage = Stages.FirstOrDefault(s => s.StageId == mappedStageId);
+                stage?.Candidates.Add(vm);
+            }
+
+            foreach (var stage in Stages) stage.UpdateCandidateCount();
         }
     }
 
@@ -194,27 +190,72 @@ public partial class RecruitmentViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void AddCandidate()
+    private async Task AddCandidate()
     {
         if (string.IsNullOrWhiteSpace(NewCandidateFullName))
             return;
 
-        var newCandidate = new CandidateViewModel
+        // Split name for API
+        var names = NewCandidateFullName.Trim().Split(' ', 2);
+        var firstName = names[0];
+        var lastName = names.Length > 1 ? names[1] : ".";
+
+        var request = new CreateCandidateRequest
         {
-            Id = Stages.SelectMany(s => s.Candidates).Max(c => c.Id) + 1,
-            FullName = NewCandidateFullName,
+            FirstName = firstName,
+            LastName = lastName,
             Email = NewCandidateEmail,
-            Position = NewCandidatePosition,
+            JobAppliedFor = NewCandidatePosition,
             Location = NewCandidateLocation,
-            AppliedDate = DateTime.Today,
-            CurrentStageId = "application_review"
+            Phone = "N/A" // Default or add field to UI
         };
 
-        var applicationReviewStage = Stages.First(s => s.StageId == "application_review");
-        applicationReviewStage.Candidates.Add(newCandidate);
-        applicationReviewStage.UpdateCandidateCount();
+        IsLoading = true;
+        try
+        {
+            // Save to Backend
+            var response = await _apiClient.PostAsync<CandidateResponse>("api/candidate", request);
 
-        IsAddCandidateDialogOpen = false;
+            if (response.IsSuccess && response.Data != null)
+            {
+                // Add to UI using the REAL ID from the database
+                var newCandidate = new CandidateViewModel
+                {
+                    Id = response.Data.Id, // CRITICAL: This links UI to DB
+                    FullName = $"{response.Data.FirstName} {response.Data.LastName}",
+                    Email = response.Data.Email,
+                    Position = response.Data.JobAppliedFor,
+                    Location = response.Data.Location,
+                    AppliedDate = response.Data.AppliedDate,
+                    CurrentStageId = "application_review"
+                };
+
+                var applicationReviewStage = Stages.First(s => s.StageId == "application_review");
+                applicationReviewStage.Candidates.Add(newCandidate);
+                applicationReviewStage.UpdateCandidateCount();
+
+                IsAddCandidateDialogOpen = false;
+
+                // Clear fields
+                NewCandidateFullName = string.Empty;
+                NewCandidateEmail = string.Empty;
+                NewCandidatePosition = string.Empty;
+                NewCandidateLocation = string.Empty;
+            }
+            else
+            {
+                // Handle error (optional: add an ErrorMessage property to bind to in UI)
+                Console.WriteLine($"Failed to add candidate: {response.ErrorMessage}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     #endregion
@@ -228,13 +269,13 @@ public partial class RecruitmentViewModel : ViewModelBase
 
         SelectedCandidateForMove = candidate;
         SelectedStageForMove = candidate.CurrentStageId;
-        
+
         // Update selection state
         foreach (var stage in AvailableStages)
         {
             stage.IsSelected = stage.StageId == candidate.CurrentStageId;
         }
-        
+
         IsMoveToStageDialogOpen = true;
     }
 
@@ -246,9 +287,21 @@ public partial class RecruitmentViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void SelectStage(StageOption? stageOption)
+    private async Task SelectStage(StageOption? stageOption)
     {
         if (stageOption == null || SelectedCandidateForMove == null) return;
+
+        // Intercept "Hired" selection - trigger hire confirmation popup instead
+        if (stageOption.StageId.Equals("hired", StringComparison.OrdinalIgnoreCase))
+        {
+            // Close the move dialog
+            IsMoveToStageDialogOpen = false;
+            // Trigger the hire confirmation popup instead
+            InitiateHire(SelectedCandidateForMove);
+            // Clear selection
+            SelectedCandidateForMove = null;
+            return;
+        }
 
         // Update selection state
         foreach (var stage in AvailableStages)
@@ -256,22 +309,104 @@ public partial class RecruitmentViewModel : ViewModelBase
             stage.IsSelected = stage.StageId == stageOption.StageId;
         }
 
-        // Move candidate to new stage
-        var currentStage = Stages.First(s => s.StageId == SelectedCandidateForMove.CurrentStageId);
-        var newStage = Stages.First(s => s.StageId == stageOption.StageId);
+        // Find Current Stage (Safe Lookup)
+        var currentStage = Stages.FirstOrDefault(s => s.StageId == SelectedCandidateForMove.CurrentStageId);
+        var newStage = Stages.FirstOrDefault(s => s.StageId == stageOption.StageId);
 
-        if (currentStage.StageId != newStage.StageId)
+        if (currentStage != null && newStage != null && currentStage.StageId != newStage.StageId)
         {
+            // Move in UI immediately
             currentStage.Candidates.Remove(SelectedCandidateForMove);
             SelectedCandidateForMove.CurrentStageId = stageOption.StageId;
             newStage.Candidates.Add(SelectedCandidateForMove);
 
             currentStage.UpdateCandidateCount();
             newStage.UpdateCandidateCount();
+
+            // Map ID back to readable Status string for DB
+            string dbStatus = stageOption.StageName;
+            if (stageOption.StageId == "application_review") dbStatus = "Applied";
+
+            try
+            {
+                // We send the status string as a JSON string
+                await _apiClient.PutAsync<object>($"api/candidate/{SelectedCandidateForMove.Id}/status", dbStatus);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to save stage move: {ex.Message}");
+            }
         }
 
         IsMoveToStageDialogOpen = false;
         SelectedCandidateForMove = null;
+    }
+
+    #endregion
+
+    #region Hire Confirmation Commands
+
+    [RelayCommand]
+    private void InitiateHire(CandidateViewModel candidate)
+    {
+        CandidateToHire = candidate;
+        IsHireConfirmationOpen = true;
+    }
+
+    [RelayCommand]
+    private void CancelHire()
+    {
+        IsHireConfirmationOpen = false;
+        CandidateToHire = null;
+    }
+
+    [RelayCommand]
+    private async Task ConfirmHire()
+    {
+        if (CandidateToHire == null) return;
+
+        try 
+        {
+            // Execute Backend Call
+            var result = await _apiClient.PostAsync<object>($"api/candidate/{CandidateToHire.Id}/hire", null);
+
+            // Update UI if Successful
+            if (result.IsSuccess)
+            {
+                // ROBUST FIND: Find the stage that actually holds this candidate object right now
+                var sourceStage = Stages.FirstOrDefault(s => s.Candidates.Contains(CandidateToHire));
+                
+                // Find Target
+                var targetStage = Stages.FirstOrDefault(s => s.StageId == "hired");
+
+                // Move the card
+                if (sourceStage != null && targetStage != null && sourceStage != targetStage)
+                {
+                    sourceStage.Candidates.Remove(CandidateToHire);
+                    
+                    CandidateToHire.CurrentStageId = "hired"; // Update the data model
+                    targetStage.Candidates.Add(CandidateToHire); // Add to new UI column
+
+                    // Refresh counters
+                    sourceStage.UpdateCandidateCount();
+                    targetStage.UpdateCandidateCount();
+                }
+            }
+            else 
+            {
+                Console.WriteLine($"Hire failed: {result.ErrorMessage}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in ConfirmHire: {ex.Message}");
+        }
+        finally
+        {
+            // Always close the dialog
+            IsHireConfirmationOpen = false;
+            CandidateToHire = null;
+        }
     }
 
     #endregion
@@ -315,7 +450,7 @@ public partial class RecruitmentViewModel : ViewModelBase
         // Already on recruitment page
         await Task.CompletedTask;
     }
-    
+
     [RelayCommand]
     private async Task NavigateToForms()
     {
@@ -326,7 +461,7 @@ public partial class RecruitmentViewModel : ViewModelBase
 
     public override async Task OnNavigatedToAsync()
     {
-        // TODO: Load actual recruitment data from API
+        await LoadCandidatesAsync();
         await base.OnNavigatedToAsync();
     }
 }
@@ -389,7 +524,7 @@ public partial class CandidateViewModel : ObservableObject
     private bool _isHovered;
 
     public string Initial => !string.IsNullOrEmpty(FullName) ? FullName[0].ToString().ToUpper() : "?";
-    
+
     public string AppliedDateDisplay => $"Applied {AppliedDate:M/d/yyyy}";
 }
 
