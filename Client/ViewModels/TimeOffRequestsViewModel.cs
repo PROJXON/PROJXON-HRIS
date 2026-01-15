@@ -55,6 +55,12 @@ public partial class TimeOffRequestsViewModel : ViewModelBase
     public bool IsApprovingAction => PopupActionText == "Approve";
     public bool IsDecliningAction => PopupActionText == "Decline";
 
+    public string PopupDescriptionText =>
+        SelectedRequest == null ? "" :
+        PopupActionText == "Approve" 
+            ? $"Are you sure you want to approve the time off request from {SelectedRequest.EmployeeName} for {SelectedRequest.TotalDaysOff} day(s)?"
+            : $"Are you sure you want to decline the time off request from {SelectedRequest.EmployeeName} for {SelectedRequest.TotalDaysOff} day(s)?";
+
     public string SelectedRequestDetails =>
     SelectedRequest == null ? "" :
     $"{SelectedRequest.EmployeeName} is requesting {SelectedRequest.TotalDaysOff} days off\n" +
@@ -162,6 +168,7 @@ public partial class TimeOffRequestsViewModel : ViewModelBase
         PopupActionButtonClass = "ApproveButton";
         OnPropertyChanged(nameof(IsApprovingAction));
         OnPropertyChanged(nameof(IsDecliningAction));
+        OnPropertyChanged(nameof(PopupDescriptionText));
         IsPopupOpen = true;
     }
 
@@ -173,6 +180,7 @@ public partial class TimeOffRequestsViewModel : ViewModelBase
         PopupActionButtonClass = "DeclineButton";
         OnPropertyChanged(nameof(IsApprovingAction));
         OnPropertyChanged(nameof(IsDecliningAction));
+        OnPropertyChanged(nameof(PopupDescriptionText));
         IsPopupOpen = true;
     }
 
