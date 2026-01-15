@@ -8,6 +8,7 @@ public interface IAuthenticationService
 {
     event EventHandler<AuthenticationChangedEventArgs>? AuthenticationChanged;
     bool IsAuthenticated { get; }
+    string? CurrentUserEmail { get; } // Added for Dev Mode logic
     Task<bool> LoginAsync();
     Task LogoutAsync();
 }

@@ -12,6 +12,9 @@ using CloudSync.Modules.UserManagement.Repositories;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
+using CloudSync.Modules.CandidateManagement.Repositories;
+using CloudSync.Modules.CandidateManagement.Services;
+
 using Npgsql;
 using Serilog;
 
@@ -48,6 +51,7 @@ var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(dataSource));
 
+// Security & User Services
 builder.Services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -55,10 +59,16 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IInvitedUserService, InvitedUserService>();
 builder.Services.AddScoped<IInvitedUserRepository, InvitedUserRepository>();
+
+// Employee Services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+// Candidate Services
+builder.Services.AddScoped<ICandidateService, CandidateService>();
+builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -100,7 +110,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

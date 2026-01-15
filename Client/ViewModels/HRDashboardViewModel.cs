@@ -1,23 +1,23 @@
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
+using Avalonia;
 using Client.Models;
+using Client.Models.EmployeeManagement;
 using Client.Services;
 using Client.Utils.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Shared.EmployeeManagement.Responses;
 
 namespace Client.ViewModels;
-using Client.Models;
 
-/// <summary>
-/// ViewModel for the HR Portal Dashboard
-/// Provides access to HR-specific features like employee management, recruitment, time off approval, etc.
-/// </summary>
 public partial class HRDashboardViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
-
-    #region User Profile Properties
+    private readonly IUserPreferencesService _userPreferencesService;
+    private readonly IEmployeeRepository _employeeRepository;
 
     [ObservableProperty]
     private string _userName = "John Smith";
@@ -25,95 +25,112 @@ public partial class HRDashboardViewModel : ViewModelBase
     [ObservableProperty]
     private string _userRole = "HR Manager";
 
-    #endregion
-
-    #region Dashboard Statistics
+    [ObservableProperty]
+    private int _totalEmployees;
 
     [ObservableProperty]
-    private int _totalEmployees = 48;
+    private int _pendingTimeOff = 0;
 
     [ObservableProperty]
-    private int _pendingTimeOff = 12;
+    private int _activeRecruitments = 0;
 
     [ObservableProperty]
-    private int _activeRecruitments = 5;
-
-    [ObservableProperty]
-    private int _attendancePercentage = 96;
-
-    #endregion
-
-    #region Recent Activity
+    private int _attendancePercentage = 0;
 
     [ObservableProperty]
     private ObservableCollection<ActivityItem> _recentActivities = new();
 
-    #endregion
-
-    #region Selected Menu Item
-
     [ObservableProperty]
     private string _selectedMenuItem = "Dashboard";
 
-    #endregion
+    public bool IsDevUser => ((MainWindowViewModel)Application.Current!.DataContext!).IsDevUser;
+    public bool ShowDevOptions => IsDevUser && IsDevModeEnabled;
 
-    public HRDashboardViewModel(INavigationService navigationService)
+    public bool IsDevModeEnabled
+    {
+        get => ((MainWindowViewModel)Application.Current!.DataContext!).IsDevModeEnabled;
+        set
+        {
+            ((MainWindowViewModel)Application.Current!.DataContext!).IsDevModeEnabled = value;
+            OnPropertyChanged(nameof(ShowDevOptions));
+            OnPropertyChanged(nameof(IsDevModeEnabled));
+        }
+    }
+
+    public bool DevModeToggle
+    {
+        get => ((MainWindowViewModel)Application.Current!.DataContext!).IsDevModeEnabled;
+        set
+        {
+            ((MainWindowViewModel)Application.Current!.DataContext!).IsDevModeEnabled = value;
+            OnPropertyChanged(nameof(ShowDevOptions));
+            OnPropertyChanged(nameof(DevModeToggle));
+        }
+    }
+
+    public HRDashboardViewModel(
+        INavigationService navigationService,
+        IUserPreferencesService userPreferencesService,
+        IEmployeeRepository employeeRepository)
     {
         _navigationService = navigationService;
-        LoadRecentActivities();
+        _userPreferencesService = userPreferencesService;
+        _employeeRepository = employeeRepository;
     }
 
-    // Parameterless constructor for design-time support
-    public HRDashboardViewModel() : this(null!)
+    public HRDashboardViewModel() : this(null!, null!, null!)
     {
-    }
-
-    private void LoadRecentActivities()
-    {
-        RecentActivities = new ObservableCollection<ActivityItem>
-        {
-            new ActivityItem
-            {
-                Title = "New time off request",
-                Subtitle = "John Smith",
-                TimeAgo = "2 hours ago"
-            },
-            new ActivityItem
-            {
-                Title = "Employee onboarded",
-                Subtitle = "Sarah Johnson joined Marketing",
-                TimeAgo = "5 hours ago"
-            },
-            new ActivityItem
-            {
-                Title = "Time off approved",
-                Subtitle = "Mike Davis - Vacation",
-                TimeAgo = "Yesterday"
-            },
-            new ActivityItem
-            {
-                Title = "New recruitment posted",
-                Subtitle = "Senior Developer position",
-                TimeAgo = "2 days ago"
-            }
-        };
     }
 
     public override async Task OnNavigatedToAsync()
     {
-        // TODO: Load real data from services
-        // await LoadDashboardDataAsync();
-        
+        await LoadDashboardDataAsync();
         await base.OnNavigatedToAsync();
     }
 
-    #region Navigation Commands
+    private async Task LoadDashboardDataAsync()
+    {
+        var result = await _employeeRepository.GetAllAsync<EmployeeResponse>();
+
+        if (result.IsSuccess && result.Value != null)
+        {
+            var employees = result.Value.ToList();
+
+            TotalEmployees = employees.Count;
+
+            RecentActivities.Clear();
+
+            var recentHires = employees
+                .OrderByDescending(e => e.CreateDateTime)
+                .Take(5);
+
+            foreach (var emp in recentHires)
+            {
+                var name = $"{emp.BasicInfo?.FirstName} {emp.BasicInfo?.LastName}".Trim();
+                var created = emp.CreateDateTime ?? DateTime.UtcNow;
+
+                RecentActivities.Add(new ActivityItem
+                {
+                    Title = "New Employee Hired",
+                    Subtitle = $"{name} joined the team",
+                    TimeAgo = GetTimeAgo(created)
+                });
+            }
+        }
+    }
+
+    private string GetTimeAgo(DateTime date)
+    {
+        var span = DateTime.UtcNow - date;
+        if (span.TotalMinutes < 60) return $"{span.TotalMinutes:F0} mins ago";
+        if (span.TotalHours < 24) return $"{span.TotalHours:F0} hours ago";
+        return $"{span.TotalDays:F0} days ago";
+    }
 
     [RelayCommand]
     private async Task NavigateToDashboard()
     {
         SelectedMenuItem = "Dashboard";
-        // Already on dashboard, could refresh data
         await Task.CompletedTask;
     }
 
@@ -128,8 +145,6 @@ public partial class HRDashboardViewModel : ViewModelBase
     private async Task NavigateToTimeOff()
     {
         SelectedMenuItem = "Time Off Requests";
-        // TODO: Navigate to time off view when implemented
-        // await _navigationService.NavigateTo(ViewModelType.TimeOffRequests);
         await Task.CompletedTask;
     }
 
@@ -161,5 +176,10 @@ public partial class HRDashboardViewModel : ViewModelBase
         await _navigationService.NavigateTo(ViewModelType.Forms);
     }
 
-    #endregion
+    [RelayCommand]
+    private async Task SwitchToInternPortal()
+    {
+        await _userPreferencesService.ClearPortalPreferenceAsync();
+        await _navigationService.NavigateTo(ViewModelType.InternDashboard);
+    }
 }

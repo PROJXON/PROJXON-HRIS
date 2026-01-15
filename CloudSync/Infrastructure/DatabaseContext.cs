@@ -32,12 +32,36 @@ public class DatabaseContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder
             .UseNpgsql()
-    .UseSnakeCaseNamingConvention();
+            .UseSnakeCaseNamingConvention();
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
             .HasKey(u => u.Id);
+        
+        // Convert Enums to Strings for EmployeePosition
+        modelBuilder.Entity<EmployeePosition>()
+            .Property(e => e.EmploymentStatus)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<EmployeePosition>()
+            .Property(e => e.EmploymentType)
+            .HasConversion<string>();
+
+        // Convert Enums to Strings for EmployeeBasic (Owned Type)
+        modelBuilder.Entity<Employee>().OwnsOne(e => e.BasicInfo, basicInfo =>
+        {
+            basicInfo.Property(e => e.Gender)
+                .HasConversion<string>();
+            
+            basicInfo.Property(e => e.MaritalStatus)
+                .HasConversion<string>();
+        });
+
+        // Convert Enums to Strings for EmployeeEducation
+        modelBuilder.Entity<EmployeeEducation>()
+            .Property(e => e.EducationLevel)
+            .HasConversion<string>();
         
         modelBuilder.Entity<InvitedUser>()
             .HasKey(u => u.Id);
@@ -56,32 +80,37 @@ public class DatabaseContext : DbContext
         
         modelBuilder.Entity<Employee>()
             .HasKey(u => u.Id);
-        modelBuilder.Entity<Employee>().OwnsOne(e => e.BasicInfo);
+        
         modelBuilder.Entity<Employee>().OwnsOne(e => e.ContactInfo, contactInfo =>
         {
             contactInfo.OwnsOne(ci => ci.PermanentAddress);
             contactInfo.OwnsOne(ci => ci.MailingAddress);
         });
+        
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.PositionDetails)
             .WithOne(d => d.Employee)
             .HasForeignKey<EmployeePosition>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Documents)
             .WithOne(d => d.Employee)
             .HasForeignKey<EmployeeDocuments>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Legal)
             .WithOne(d => d.Employee)
             .HasForeignKey<EmployeeLegal>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Education)
             .WithOne(d => d.Employee)
             .HasForeignKey<EmployeeEducation>(e => e.Id)
             .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<Employee>()
             .HasOne(e => e.Training)
             .WithOne(d => d.Employee)

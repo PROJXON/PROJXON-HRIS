@@ -14,6 +14,8 @@ using Client.Utils.Classes;
 using Client.Utils.Exceptions.ApplicationState;
 using Client.Utils.Exceptions.Auth;
 using Client.Utils.Exceptions.Network;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace Client.Services;
 
@@ -28,9 +30,11 @@ public class AuthenticationService : IAuthenticationService
     private readonly string _redirectUri;
     private readonly string _clientSecret;
     private readonly SemaphoreSlim _authSemaphore = new(1, 1);
-
+    
     private string? _appJwtToken;
     private DateTime _tokenExpiry = DateTime.MinValue;
+    
+    public string? CurrentUserEmail { get; private set; } // Added implementation
         
     public event EventHandler<AuthenticationChangedEventArgs>? AuthenticationChanged;
     public bool IsAuthenticated => !string.IsNullOrEmpty(_appJwtToken) && DateTime.UtcNow < _tokenExpiry;
@@ -116,7 +120,21 @@ public class AuthenticationService : IAuthenticationService
             var appJwtResponse = await ExchangeGoogleTokenForAppJwtAsync(googleTokenResponse.IdToken!);
             await StoreAppJwtAsync(appJwtResponse.JwtToken, appJwtResponse.ExpiresIn);
 
-            _logger.LogInformation("Login completed successfully.");
+            // Extract Email for Dev Mode check
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadJwtToken(appJwtResponse.JwtToken);
+            
+            // Updated to include the specific claim type found in logs
+            var emailClaim = jsonToken.Claims.FirstOrDefault(c => 
+                c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" ||
+                c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress" || 
+                c.Type == "email" || 
+                c.Type == "unique_name" || 
+                c.Type == "sub"); 
+                
+            CurrentUserEmail = emailClaim?.Value;
+
+            _logger.LogInformation($"Login completed. User: {CurrentUserEmail}");
             AuthenticationChanged?.Invoke(this, new AuthenticationChangedEventArgs(true));
             return true;
         }
@@ -510,7 +528,20 @@ public class AuthenticationService : IAuthenticationService
 
             if (IsAuthenticated)
             {
-                _logger.LogInformation("Loaded valid stored JWT. Expires at: {Expiry}", _tokenExpiry);
+                // Extract email from stored token
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadJwtToken(_appJwtToken);
+                
+                // Updated to include the specific claim type found in logs
+                var emailClaim = jsonToken.Claims.FirstOrDefault(c => 
+                    c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" ||
+                    c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress" || 
+                    c.Type == "email" || 
+                    c.Type == "unique_name" || 
+                    c.Type == "sub");
+                CurrentUserEmail = emailClaim?.Value;
+
+                _logger.LogInformation("Loaded valid stored JWT.");
                 AuthenticationChanged?.Invoke(this, new AuthenticationChangedEventArgs(true));
             }
             else
