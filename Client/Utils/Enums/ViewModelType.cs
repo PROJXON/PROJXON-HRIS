@@ -15,6 +15,7 @@ public enum ViewModelType
     EmployeesList, // Legacy - replaced by Employees
     EmployeeDetails,
     Profile,
+    InternProfile,
     Employees, // New employees list view with cards
     Attendance, // Attendance calendar view
     Recruitment, // Recruitment kanban board

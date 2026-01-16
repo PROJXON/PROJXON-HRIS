@@ -70,6 +70,7 @@ public partial class MainWindowViewModel : ObservableObject
             ViewModelType.Employees => new EmployeesViewModel(_employeeRepository, _navigationService),
             ViewModelType.EmployeeDetails => CreateEmployeeDetailViewModel(e.EntityId),
             ViewModelType.Profile => new ProfileViewModel(_navigationService),
+            ViewModelType.InternProfile => new InternProfileViewModel(_navigationService),
             ViewModelType.Attendance => new AttendanceViewModel(_navigationService),
             ViewModelType.Recruitment => new RecruitmentViewModel(_navigationService),
             ViewModelType.Forms => new FormsViewModel(_navigationService),
