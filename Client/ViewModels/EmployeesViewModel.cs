@@ -17,6 +17,7 @@ public partial class EmployeesViewModel : ViewModelBase
 {
     private readonly IEmployeeRepository _employeeRepository;
     private readonly INavigationService _navigationService;
+    private readonly IInvitationService? _invitationService;
 
     [ObservableProperty] private string _userName = "John Smith";
     [ObservableProperty] private string _userRole = "HR Manager";
@@ -28,16 +29,28 @@ public partial class EmployeesViewModel : ViewModelBase
     [ObservableProperty] private bool _isLoading;
     [ObservableProperty] private string _errorMessage = string.Empty;
     [ObservableProperty] private bool _hasNoResults;
+    
+    // Invite Dialog Properties
+    [ObservableProperty] private bool _isInviteDialogOpen;
+    [ObservableProperty] private string _inviteEmail = string.Empty;
+    [ObservableProperty] private bool _isInviteSending;
+    [ObservableProperty] private string _inviteResultMessage = string.Empty;
+    [ObservableProperty] private bool _inviteResultIsSuccess;
+    [ObservableProperty] private bool _hasInviteResult;
 
-    public EmployeesViewModel(IEmployeeRepository employeeRepository, INavigationService navigationService)
+    public EmployeesViewModel(
+        IEmployeeRepository employeeRepository, 
+        INavigationService navigationService,
+        IInvitationService? invitationService = null)
     {
         _employeeRepository = employeeRepository;
         _navigationService = navigationService;
+        _invitationService = invitationService;
         InitializeAlphabetFilters();
     }
 
     // Parameterless constructor for design-time support
-    public EmployeesViewModel() : this(null!, null!) { }
+    public EmployeesViewModel() : this(null!, null!, null) { }
 
     private void InitializeAlphabetFilters()
     {
@@ -59,19 +72,24 @@ public partial class EmployeesViewModel : ViewModelBase
     {
         if (_employeeRepository == null) return;
 
-        IsLoading = true;
-        ErrorMessage = string.Empty;
-        HasNoResults = false;
+        // Set initial state on UI Thread
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            IsLoading = true;
+            ErrorMessage = string.Empty;
+            HasNoResults = false;
+        });
 
         try
         {
             var result = await _employeeRepository.GetAllAsync<EmployeeResponse>();
-            if (result.IsSuccess)
+        
+            // Dispatch results to UI Thread
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var employees = result.Value?.ToList() ?? [];
-                
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                if (result.IsSuccess)
                 {
+                    var employees = result.Value?.ToList() ?? [];
                     AllEmployees = new ObservableCollection<EmployeeCardViewModel>(
                         employees.Select(e => new EmployeeCardViewModel
                         {
@@ -84,20 +102,29 @@ public partial class EmployeesViewModel : ViewModelBase
                             Department = "General" 
                         }));
                     ApplyFilters();
-                });
-            }
-            else
-            {
-                ErrorMessage = $"Failed to load: {result.ErrorMessage}";
-            }
+                }
+                else
+                {
+                    ErrorMessage = $"Failed to load: {result.ErrorMessage}";
+                    HasNoResults = true; 
+                }
+            });
         }
         catch (Exception ex)
         {
-            ErrorMessage = ex.Message;
+            // Dispatch error state to UI Thread
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                ErrorMessage = $"Error: {ex.Message}";
+                HasNoResults = true;
+            });
         }
         finally
         {
-            IsLoading = false;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                IsLoading = false;
+            });
         }
     }
 
@@ -139,6 +166,107 @@ public partial class EmployeesViewModel : ViewModelBase
     {
         await _navigationService.NavigateTo(ViewModelType.EmployeeDetails, employeeId);
     }
+    
+    #region Invite Dialog Commands
+    
+    [RelayCommand]
+    private void OpenInviteDialog()
+    {
+        InviteEmail = string.Empty;
+        InviteResultMessage = string.Empty;
+        HasInviteResult = false;
+        IsInviteDialogOpen = true;
+    }
+    
+    [RelayCommand]
+    private void CloseInviteDialog()
+    {
+        IsInviteDialogOpen = false;
+        InviteEmail = string.Empty;
+        InviteResultMessage = string.Empty;
+        HasInviteResult = false;
+    }
+    
+    [RelayCommand(AllowConcurrentExecutions = false)]
+    private async Task SendInvite()
+    {
+        if (string.IsNullOrWhiteSpace(InviteEmail))
+        {
+            InviteResultMessage = "Please enter an email address.";
+            InviteResultIsSuccess = false;
+            HasInviteResult = true;
+            return;
+        }
+        
+        if (!IsValidEmail(InviteEmail))
+        {
+            InviteResultMessage = "Please enter a valid email address.";
+            InviteResultIsSuccess = false;
+            HasInviteResult = true;
+            return;
+        }
+        
+        if (_invitationService == null)
+        {
+            InviteResultMessage = "Invitation service is not available.";
+            InviteResultIsSuccess = false;
+            HasInviteResult = true;
+            return;
+        }
+        
+        IsInviteSending = true;
+        HasInviteResult = false;
+        
+        try
+        {
+            // TODO: Get actual logged-in employee ID from auth context
+            const int currentEmployeeId = 1;
+            
+            var result = await _invitationService.SendInvitationAsync(
+                InviteEmail.Trim(), 
+                currentEmployeeId);
+            
+            if (result.IsSuccess)
+            {
+                InviteResultMessage = $"Invitation sent successfully to {InviteEmail}";
+                InviteResultIsSuccess = true;
+                InviteEmail = string.Empty;
+            }
+            else
+            {
+                InviteResultMessage = result.ErrorMessage ?? "Failed to send invitation.";
+                InviteResultIsSuccess = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            InviteResultMessage = $"Error: {ex.Message}";
+            InviteResultIsSuccess = false;
+        }
+        finally
+        {
+            IsInviteSending = false;
+            HasInviteResult = true;
+        }
+    }
+    
+    private static bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+        
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email.Trim();
+        }
+        catch
+        {
+            return false;
+        }
+    }
+    
+    #endregion
 
     #region Navigation
     [RelayCommand] private async Task NavigateToDashboard() => await _navigationService.NavigateTo(ViewModelType.HRDashboard);

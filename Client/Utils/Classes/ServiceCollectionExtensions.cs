@@ -29,6 +29,9 @@ public static class ServiceCollectionExtensions
         
         collection.AddScoped<IEmployeeRepository, EmployeeRepository>();
         
+        // Services
+        collection.AddScoped<IInvitationService, InvitationService>();
+        
         // ViewModels
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<LoginViewModel>();

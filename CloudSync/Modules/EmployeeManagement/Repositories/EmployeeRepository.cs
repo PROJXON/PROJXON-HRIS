@@ -49,6 +49,31 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
         }
     }
     
+    public async Task<Employee?> GetByEmailAsync(string email)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return null;
+            
+            var normalizedEmail = email.ToLowerInvariant();
+            
+            return await context.Employees
+                .Include(e => e.Documents)
+                .Include(e => e.Education)
+                .Include(e => e.Legal)
+                .Include(e => e.PositionDetails)
+                .Include(e => e.Training)
+                .FirstOrDefaultAsync(e => 
+                    (e.ContactInfo.PersonalEmail != null && e.ContactInfo.PersonalEmail.ToLower() == normalizedEmail) ||
+                    (e.ContactInfo.ProjxonEmail != null && e.ContactInfo.ProjxonEmail.ToLower() == normalizedEmail));
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
+    }
+    
     public async Task<IEnumerable<Employee>> GetByDepartmentAsync(int departmentId)
     {
         try

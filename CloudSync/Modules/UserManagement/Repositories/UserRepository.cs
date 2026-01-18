@@ -1,4 +1,4 @@
-﻿using CloudSync.Exceptions.Business;
+using CloudSync.Exceptions.Business;
 using CloudSync.Infrastructure;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -25,12 +25,41 @@ public class UserRepository(DatabaseContext context, IInvitedUserRepository invi
         return await context.Users.FirstOrDefaultAsync(u => u.GoogleUserId == googleUserId);
     }
     
+    /// <summary>
+    /// Creates a new User from an invitation with Employee and Role linking.
+    /// </summary>
+    public async Task<User> CreateUserFromInvitationAsync(
+        InvitedUser invitedUser, 
+        string googleUserId, 
+        int employeeId, 
+        int roleId)
+    {
+        await using var transaction = await context.Database.BeginTransactionAsync();
+        try
+        {
+            var newUser = await CreateAsync(invitedUser, googleUserId, employeeId, roleId);
+            invitedUserRepository.AcceptInvite(invitedUser);
+        
+            await transaction.CommitAsync();
+            return newUser;
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+    
+    /// <summary>
+    /// Legacy overload/Fallback.
+    /// </summary>
     public async Task<User> CreateUserFromInvitationAsync(InvitedUser invitedUser, string googleUserId)
     {
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
         {
-            var newUser = await CreateAsync(invitedUser, googleUserId);
+            // Default to Role 3 (Intern) and 0 EmployeeId if not specified
+            var newUser = await CreateAsync(invitedUser, googleUserId, 0, 3);
             invitedUserRepository.AcceptInvite(invitedUser);
         
             await transaction.CommitAsync();
@@ -43,13 +72,19 @@ public class UserRepository(DatabaseContext context, IInvitedUserRepository invi
         }
     }
 
-    private async Task<User> CreateAsync(InvitedUser invitedUser, string googleUserId)
+    private async Task<User> CreateAsync(InvitedUser invitedUser, string googleUserId, int employeeId, int roleId)
     {
         var newUser = new User
         {
-            GoogleUserId = googleUserId, Email = invitedUser.Email, LastLoginDateTime = DateTime.UtcNow, UserSettings = null
+            GoogleUserId = googleUserId, 
+            Email = invitedUser.Email, 
+            EmployeeId = employeeId,
+            RoleId = roleId,
+            LastLoginDateTime = DateTime.UtcNow, 
+            UserSettings = null
         };
         await context.Users.AddAsync(newUser);
+        await context.SaveChangesAsync();
         return newUser;
     }
 
@@ -58,8 +93,21 @@ public class UserRepository(DatabaseContext context, IInvitedUserRepository invi
         var existingUser = await context.Users.FindAsync(id);
         if (existingUser == null)
             throw new EntityNotFoundException("User with the given ID does not exist.");
+        
+        // Update standard fields
         existingUser.Email = request.Email;
         existingUser.UserSettings = request.UserSettings;
+        
+        // FIXED: Use > 0 check because properties are now non-nullable ints
+        if (request.RoleId > 0)
+        {
+            existingUser.RoleId = request.RoleId;
+        }
+        
+        if (request.EmployeeId > 0)
+        {
+            existingUser.EmployeeId = request.EmployeeId;
+        }
         
         await context.SaveChangesAsync();
     }
