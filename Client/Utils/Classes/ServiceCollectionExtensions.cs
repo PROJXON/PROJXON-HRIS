@@ -4,6 +4,7 @@ using Client.Services;
 using Client.Utils.Interfaces;
 using Client.ViewModels;
 using Client.Views;
+using Client.Views.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,11 +15,17 @@ public static class ServiceCollectionExtensions
     public static void AddCommonServices(this IServiceCollection collection, IConfigurationRoot configuration, string baseUrl)
     {
         collection.AddSingleton<IConfiguration>(configuration);
+
+        // Core services
         collection.AddSingleton<INavigationService, NavigationService>();
         collection.AddSingleton<IAuthenticationService, AuthenticationService>();
         collection.AddSingleton<IUserPreferencesService, UserPreferencesService>();
-        collection.AddLogging();
+        collection.AddSingleton<ISessionService, SessionService>();
         
+        collection.AddSingleton<IFileService, FileService>(); 
+
+        collection.AddLogging();
+
         collection.AddHttpClient("OAuth");
         collection.AddHttpClient<IApiClient, ApiClient>("Api", client =>
         {
@@ -26,12 +33,15 @@ public static class ServiceCollectionExtensions
             client.Timeout = TimeSpan.FromSeconds(30);
             client.DefaultRequestHeaders.Add("User-Agent", "HRIS-App/1.0");
         });
-        
+
         collection.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        
+
         // Services
         collection.AddScoped<IInvitationService, InvitationService>();
-        
+
+        // Shared ViewModels (single instance across views)
+        collection.AddSingleton<SidebarViewModel>();
+
         // ViewModels
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<LoginViewModel>();
@@ -47,7 +57,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<RecruitmentViewModel>();
         collection.AddTransient<FormsViewModel>();
         collection.AddTransient<CreateSurveyViewModel>();
-        
+
         // Views
         collection.AddTransient<MainWindow>();
         collection.AddTransient<LoginView>();
@@ -63,5 +73,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<RecruitmentView>();
         collection.AddTransient<FormsView>();
         collection.AddTransient<CreateSurveyView>();
+        
+        collection.AddTransient<SidebarView>();
     }
 }

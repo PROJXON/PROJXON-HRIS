@@ -17,15 +17,8 @@ public partial class FormsViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
 
-    #region Sidebar User Profile
-
-    [ObservableProperty]
-    private string _userName = "John Smith";
-
-    [ObservableProperty]
-    private string _userRole = "HR Manager";
-
-    #endregion
+    // Shared Sidebar
+    public SidebarViewModel Sidebar { get; }
 
     #region Forms Data
 
@@ -40,14 +33,16 @@ public partial class FormsViewModel : ViewModelBase
 
     #endregion
 
-    public FormsViewModel(INavigationService navigationService)
+    public FormsViewModel(INavigationService navigationService, SidebarViewModel sidebarViewModel)
     {
         _navigationService = navigationService;
+        Sidebar = sidebarViewModel;
+        
         LoadMockData();
     }
 
     // Parameterless constructor for design-time support
-    public FormsViewModel() : this(null!)
+    public FormsViewModel() : this(null!, null!)
     {
     }
 
@@ -136,56 +131,9 @@ public partial class FormsViewModel : ViewModelBase
 
     #endregion
 
-    #region Navigation Commands
-
-    [RelayCommand]
-    private async Task NavigateToDashboard()
-    {
-        await _navigationService.NavigateTo(ViewModelType.HRDashboard);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToProfile()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Profile);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToTimeOff()
-    {
-        // TODO: Navigate to time off view when implemented
-        await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task NavigateToAttendance()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Attendance);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToEmployees()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Employees);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToRecruitment()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Recruitment);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToForms()
-    {
-        // Already on forms page
-        await Task.CompletedTask;
-    }
-
-    #endregion
-
     public override async Task OnNavigatedToAsync()
     {
+        Sidebar.CurrentPage = "Forms";
         // TODO: Load actual forms data from API
         await base.OnNavigatedToAsync();
     }

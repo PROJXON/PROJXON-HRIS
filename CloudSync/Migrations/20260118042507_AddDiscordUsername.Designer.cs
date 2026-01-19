@@ -5,6 +5,7 @@ using CloudSync.Infrastructure;
 using CloudSync.Modules.EmployeeManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CloudSync.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260118042507_AddDiscordUsername")]
+    partial class AddDiscordUsername
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -893,9 +896,21 @@ namespace CloudSync.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("employee_id");
 
+                    b.Property<string>("GoogleUserId")
+                        .HasColumnType("text")
+                        .HasColumnName("google_user_id");
+
                     b.Property<DateTime>("LastLoginDateTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_login_date_time");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
+
+                    b.Property<string>("RoleName")
+                        .HasColumnType("text")
+                        .HasColumnName("role_name");
 
                     b.Property<string>("UserSettings")
                         .HasColumnType("text")

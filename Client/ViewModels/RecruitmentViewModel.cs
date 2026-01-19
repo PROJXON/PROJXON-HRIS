@@ -22,15 +22,7 @@ public partial class RecruitmentViewModel : ViewModelBase
     private readonly INavigationService _navigationService;
     private readonly IApiClient _apiClient;
 
-    #region Sidebar User Profile
-
-    [ObservableProperty]
-    private string _userName = "John Smith";
-
-    [ObservableProperty]
-    private string _userRole = "HR Manager";
-
-    #endregion
+    public SidebarViewModel Sidebar { get; }
 
     #region Pipeline Stages
 
@@ -87,15 +79,19 @@ public partial class RecruitmentViewModel : ViewModelBase
 
     #endregion
 
-    public RecruitmentViewModel(INavigationService navigationService, IApiClient apiClient)
+    public RecruitmentViewModel(
+        INavigationService navigationService, 
+        IApiClient apiClient,
+        SidebarViewModel sidebarViewModel)
     {
         _navigationService = navigationService;
         _apiClient = apiClient;
+        Sidebar = sidebarViewModel;
         InitializeStages();
     }
 
     // Parameterless constructor for design-time support
-    public RecruitmentViewModel() : this(null!, null!)
+    public RecruitmentViewModel() : this(null!, null!, new SidebarViewModel())
     {
     }
 
@@ -120,6 +116,19 @@ public partial class RecruitmentViewModel : ViewModelBase
             new() { StageId = "hired", StageName = "Hired" },
             new() { StageId = "rejected", StageName = "Rejected" }
         };
+    }
+
+    public override async Task OnNavigatedToAsync()
+    {
+        Sidebar.CurrentPage = "Recruitment";
+        await LoadCandidatesAsync();
+        await base.OnNavigatedToAsync();
+    }
+
+    public override async Task OnNavigatedFromAsync()
+    {
+        await Sidebar.OnNavigatedFromAsync();
+        await base.OnNavigatedFromAsync();
     }
 
     private async Task LoadCandidatesAsync()
@@ -410,60 +419,6 @@ public partial class RecruitmentViewModel : ViewModelBase
     }
 
     #endregion
-
-    #region Navigation Commands
-
-    [RelayCommand]
-    private async Task NavigateToDashboard()
-    {
-        await _navigationService.NavigateTo(ViewModelType.HRDashboard);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToProfile()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Profile);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToTimeOff()
-    {
-        // TODO: Navigate to time off view when implemented
-        await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task NavigateToAttendance()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Attendance);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToEmployees()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Employees);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToRecruitment()
-    {
-        // Already on recruitment page
-        await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task NavigateToForms()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Forms);
-    }
-
-    #endregion
-
-    public override async Task OnNavigatedToAsync()
-    {
-        await LoadCandidatesAsync();
-        await base.OnNavigatedToAsync();
-    }
 }
 
 /// <summary>

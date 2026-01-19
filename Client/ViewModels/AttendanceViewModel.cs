@@ -17,15 +17,8 @@ public partial class AttendanceViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
 
-    #region Sidebar User Profile
-
-    [ObservableProperty]
-    private string _userName = "John Smith";
-
-    [ObservableProperty]
-    private string _userRole = "HR Manager";
-
-    #endregion
+    // Shared Sidebar
+    public SidebarViewModel Sidebar { get; }
 
     #region Calendar State
 
@@ -80,15 +73,17 @@ public partial class AttendanceViewModel : ViewModelBase
 
     #endregion
 
-    public AttendanceViewModel(INavigationService navigationService)
+    public AttendanceViewModel(INavigationService navigationService, SidebarViewModel sidebarViewModel)
     {
         _navigationService = navigationService;
+        Sidebar = sidebarViewModel;
+        
         _currentMonth = new DateTime(2025, 10, 1); // October 2025 as shown in Figma
         GenerateCalendar();
     }
 
     // Parameterless constructor for design-time support
-    public AttendanceViewModel() : this(null!)
+    public AttendanceViewModel() : this(null!, null!)
     {
     }
 
@@ -403,62 +398,9 @@ public partial class AttendanceViewModel : ViewModelBase
 
     #endregion
 
-    #region Navigation Commands
-
-    [RelayCommand]
-    private async Task NavigateToDashboard()
-    {
-        await _navigationService.NavigateTo(ViewModelType.HRDashboard);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToProfile()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Profile);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToTimeOff()
-    {
-        // TODO: Navigate to time off view when implemented
-        await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task NavigateToAttendance()
-    {
-        // Already on attendance page
-        await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task NavigateToEmployees()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Employees);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToRecruitment()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Recruitment);
-    }
-
-    [RelayCommand]
-    private async Task SwitchToInternPortal()
-    {
-        await _navigationService.NavigateTo(ViewModelType.InternDashboard);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToForms()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Forms);
-    }
-    
-    #endregion
-
     public override async Task OnNavigatedToAsync()
     {
+        Sidebar.CurrentPage = "Attendance";
         // TODO: Load actual attendance data from API
         await base.OnNavigatedToAsync();
     }

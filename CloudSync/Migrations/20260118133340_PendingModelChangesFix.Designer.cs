@@ -5,6 +5,7 @@ using CloudSync.Infrastructure;
 using CloudSync.Modules.EmployeeManagement.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CloudSync.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260118133340_PendingModelChangesFix")]
+    partial class PendingModelChangesFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1005,11 +1008,6 @@ namespace CloudSync.Migrations
                             b1.Property<int>("EmployeeId")
                                 .HasColumnType("integer")
                                 .HasColumnName("id");
-
-                            b1.Property<string>("DiscordUsername")
-                                .HasMaxLength(50)
-                                .HasColumnType("character varying(50)")
-                                .HasColumnName("contact_info_discord_username");
 
                             b1.Property<string>("EmergencyContactName")
                                 .HasMaxLength(40)

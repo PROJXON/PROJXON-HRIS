@@ -19,8 +19,8 @@ public partial class EmployeesViewModel : ViewModelBase
     private readonly INavigationService _navigationService;
     private readonly IInvitationService? _invitationService;
 
-    [ObservableProperty] private string _userName = "John Smith";
-    [ObservableProperty] private string _userRole = "HR Manager";
+    public SidebarViewModel Sidebar { get; }
+
     [ObservableProperty] private string _searchQuery = string.Empty;
     [ObservableProperty] private string _selectedFilter = "All";
     [ObservableProperty] private ObservableCollection<AlphabetFilterItem> _alphabetFilters = new();
@@ -41,16 +41,18 @@ public partial class EmployeesViewModel : ViewModelBase
     public EmployeesViewModel(
         IEmployeeRepository employeeRepository, 
         INavigationService navigationService,
+        SidebarViewModel sidebarViewModel,
         IInvitationService? invitationService = null)
     {
         _employeeRepository = employeeRepository;
         _navigationService = navigationService;
         _invitationService = invitationService;
+        Sidebar = sidebarViewModel;
         InitializeAlphabetFilters();
     }
 
     // Parameterless constructor for design-time support
-    public EmployeesViewModel() : this(null!, null!, null) { }
+    public EmployeesViewModel() : this(null!, null!, new SidebarViewModel(), null) { }
 
     private void InitializeAlphabetFilters()
     {
@@ -64,7 +66,15 @@ public partial class EmployeesViewModel : ViewModelBase
 
     public override async Task OnNavigatedToAsync()
     {
+        Sidebar.CurrentPage = "Employees";
         await LoadEmployeesAsync();
+        await base.OnNavigatedToAsync();
+    }
+
+    public override async Task OnNavigatedFromAsync()
+    {
+        await Sidebar.OnNavigatedFromAsync();
+        await base.OnNavigatedFromAsync();
     }
 
     [RelayCommand(AllowConcurrentExecutions = false)]
@@ -266,16 +276,6 @@ public partial class EmployeesViewModel : ViewModelBase
         }
     }
     
-    #endregion
-
-    #region Navigation
-    [RelayCommand] private async Task NavigateToDashboard() => await _navigationService.NavigateTo(ViewModelType.HRDashboard);
-    [RelayCommand] private async Task NavigateToProfile() => await _navigationService.NavigateTo(ViewModelType.Profile);
-    [RelayCommand] private async Task NavigateToTimeOff() => await Task.CompletedTask;
-    [RelayCommand] private async Task NavigateToAttendance() => await _navigationService.NavigateTo(ViewModelType.Attendance);
-    [RelayCommand] private async Task NavigateToEmployees() => await Task.CompletedTask;
-    [RelayCommand] private async Task NavigateToRecruitment() => await _navigationService.NavigateTo(ViewModelType.Recruitment);
-    [RelayCommand] private async Task NavigateToForms() => await _navigationService.NavigateTo(ViewModelType.Forms);
     #endregion
 }
 

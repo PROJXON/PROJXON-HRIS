@@ -17,15 +17,7 @@ public partial class CreateSurveyViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
 
-    #region Sidebar User Profile
-
-    [ObservableProperty]
-    private string _userName = "John Smith";
-
-    [ObservableProperty]
-    private string _userRole = "HR Manager";
-
-    #endregion
+    public SidebarViewModel Sidebar { get; }
 
     #region Survey Details
 
@@ -62,14 +54,15 @@ public partial class CreateSurveyViewModel : ViewModelBase
 
     #endregion
 
-    public CreateSurveyViewModel(INavigationService navigationService)
+    public CreateSurveyViewModel(INavigationService navigationService, SidebarViewModel sidebarViewModel)
     {
         _navigationService = navigationService;
+        Sidebar = sidebarViewModel;
         Questions.CollectionChanged += (s, e) => OnPropertyChanged(nameof(TotalQuestions));
     }
 
     // Parameterless constructor for design-time support
-    public CreateSurveyViewModel() : this(null!)
+    public CreateSurveyViewModel() : this(null!, new SidebarViewModel())
     {
     }
 
@@ -153,55 +146,10 @@ public partial class CreateSurveyViewModel : ViewModelBase
 
     #endregion
 
-    #region Navigation Commands
-
-    [RelayCommand]
-    private async Task NavigateToDashboard()
-    {
-        await _navigationService.NavigateTo(ViewModelType.HRDashboard);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToProfile()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Profile);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToTimeOff()
-    {
-        // TODO: Navigate to time off view when implemented
-        await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task NavigateToAttendance()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Attendance);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToEmployees()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Employees);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToRecruitment()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Recruitment);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToForms()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Forms);
-    }
-
-    #endregion
-
     public override async Task OnNavigatedToAsync()
     {
+        Sidebar.CurrentPage = "Forms";
+
         // Reset form when navigating to create new survey
         SurveyTitle = string.Empty;
         SurveyDescription = string.Empty;

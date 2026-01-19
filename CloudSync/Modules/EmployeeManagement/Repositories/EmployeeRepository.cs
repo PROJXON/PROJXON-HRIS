@@ -16,7 +16,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .ToListAsync();
         }
@@ -34,7 +34,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
@@ -62,7 +62,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => 
                     (e.ContactInfo.PersonalEmail != null && e.ContactInfo.PersonalEmail.ToLower() == normalizedEmail) ||
@@ -82,7 +82,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .Where(e => e.PositionDetails != null && e.PositionDetails.DepartmentId == departmentId)
                 .ToListAsync();
@@ -121,7 +121,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (existingEmployee == null)
@@ -152,7 +152,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (employee == null)
