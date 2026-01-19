@@ -17,5 +17,7 @@ public enum ViewModelType
     Attendance, // Attendance calendar view
     Recruitment, // Recruitment kanban board
     Forms, // Forms/Surveys list view
-    CreateSurvey // Create new survey view
+    CreateSurvey, // Create new survey view
+    Tasks, // New tasks view
+    TakeSurvey // Take survey view for employees to complete surveys
 }

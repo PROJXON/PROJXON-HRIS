@@ -335,16 +335,21 @@ public class AuthenticationService : IAuthenticationService
                             <html>
                             <head>
                                 <title>Authentication Complete</title>
+                                <meta charset="utf-8">
                                 <style>
-                                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-                                    .success { color: #4CAF50; }
-                                    .container { max-width: 400px; margin: 0 auto; }
+                                    body { font-family: 'Segoe UI', Arial, sans-serif; text-align: center; padding: 50px; background-color: #F3F4F6; color: #1F2937; }
+                                    .container { background-color: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); max-width: 400px; margin: 0 auto; }
+                                    .success-icon { font-size: 48px; color: #10B981; margin-bottom: 20px; display: block; }
+                                    h2 { margin-top: 0; font-weight: 600; }
+                                    p { color: #6B7280; }
                                 </style>
                             </head>
                             <body>
                                 <div class='container'>
-                                    <h2 class='success'>✓ Authentication Successful</h2>
-                                    <p>You can now close this window and return to the application.</p>
+                                    <span class='success-icon'>✓</span>
+                                    <h2>Authentication Successful</h2>
+                                    <p>You have successfully signed in to PROJXON HRIS.</p>
+                                    <p>You can close this window now.</p>
                                 </div>
                                 <script>
                                     setTimeout(function() { window.close(); }, 3000);

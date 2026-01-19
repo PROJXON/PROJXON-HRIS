@@ -121,6 +121,7 @@ public partial class RecruitmentViewModel : ViewModelBase
     public override async Task OnNavigatedToAsync()
     {
         Sidebar.CurrentPage = "Recruitment";
+        Sidebar.SetPortalMode(false);
         await LoadCandidatesAsync();
         await base.OnNavigatedToAsync();
     }

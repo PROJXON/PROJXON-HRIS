@@ -195,7 +195,7 @@ public partial class EmployeeDetailViewModel : ViewModelBase
     public override async Task OnNavigatedToAsync()
     {
         Sidebar.CurrentPage = "Employees";
-
+        Sidebar.SetPortalMode(false);
         if (_currentEmployeeId > 0 && _employeeRepository != null)
         {
             await LoadEmployeeAsync();

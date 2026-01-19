@@ -8,4 +8,6 @@ public class UserResponse
     public DateTime LastLoginDateTime { get; set; }
     public string? UserSettings { get; set; }
     public int EmployeeId { get; set; }
+    
+    public int RoleId { get; set; }
 }

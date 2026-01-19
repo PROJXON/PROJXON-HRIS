@@ -17,7 +17,6 @@
         <converters:SidebarBackgroundConverter x:Key="SidebarBackgroundConverter" />
         <converters:SidebarForegroundConverter x:Key="SidebarForegroundConverter" />
         <converters:SidebarIconStrokeConverter x:Key="SidebarIconStrokeConverter" />
-        <converters:BoolToStringConverter x:Key="BoolToStringConverter" />
     </UserControl.Resources>
 
     <Border Background="White"
@@ -120,7 +119,7 @@
                         </Style>
                     </StackPanel.Styles>
 
-                    <!-- Dashboard -->
+                    <!-- Dashboard (Shared) -->
                     <Button Command="{Binding NavigateToDashboardCommand}"
                             Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Dashboard'}"
                             Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Dashboard'}">
@@ -137,127 +136,190 @@
                         </StackPanel>
                     </Button>
 
-                    <!-- Profile -->
-                    <Button Command="{Binding NavigateToProfileCommand}"
-                            Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Profile'}"
-                            Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Profile'}">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Viewbox Width="20" Height="20">
-                                <Canvas Width="24" Height="24">
-                                    <Ellipse Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Profile'}"
-                                             StrokeThickness="2" Width="10" Height="10" Canvas.Left="7" Canvas.Top="2" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Profile'}"
-                                          StrokeThickness="2" Data="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" />
-                                </Canvas>
-                            </Viewbox>
-                            <TextBlock Text="Profile" VerticalAlignment="Center" FontSize="15" />
-                        </StackPanel>
-                    </Button>
+                    <!-- HR SPECIFIC LINKS -->
+                    <StackPanel IsVisible="{Binding !IsInternView}" Spacing="4">
+                        <!-- Profile -->
+                        <Button Command="{Binding NavigateToProfileCommand}"
+                                Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Profile'}"
+                                Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Profile'}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Ellipse Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Profile'}"
+                                                 StrokeThickness="2" Width="10" Height="10" Canvas.Left="7" Canvas.Top="2" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Profile'}"
+                                              StrokeThickness="2" Data="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="Profile" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
+                        
+                        <!-- Attendance -->
+                        <Button Command="{Binding NavigateToAttendanceCommand}"
+                                Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Attendance'}"
+                                Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Attendance'}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
+                                              StrokeThickness="2" Data="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
+                                              StrokeThickness="2" Data="M16 2v4" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
+                                              StrokeThickness="2" Data="M8 2v4" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
+                                              StrokeThickness="2" Data="M3 10h18" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="Attendance" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
+                        
+                        <!-- Employees -->
+                        <Button Command="{Binding NavigateToEmployeesCommand}"
+                                Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Employees'}"
+                                Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Employees'}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Ellipse Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Employees'}"
+                                                 StrokeThickness="2" Width="10" Height="10" Canvas.Left="6" Canvas.Top="2" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Employees'}"
+                                              StrokeThickness="2" Data="M4 21v-2a4 4 0 0 1 4-4h4.5" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Employees'}"
+                                              StrokeThickness="2" Data="M16 3.128a4 4 0 0 1 0 7.744" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Employees'}"
+                                              StrokeThickness="2" Data="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="Employees" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
 
-                    <!-- Time Off Requests -->
-                    <Button Command="{Binding NavigateToTimeOffCommand}"
-                            Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='TimeOff'}"
-                            Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='TimeOff'}">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Viewbox Width="20" Height="20">
-                                <Canvas Width="24" Height="24">
-                                    <Rectangle Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='TimeOff'}"
-                                               StrokeThickness="2" RadiusX="2" RadiusY="2" Width="18" Height="18" Canvas.Left="3" Canvas.Top="4" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='TimeOff'}"
-                                          StrokeThickness="2" Data="M16 2v4" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='TimeOff'}"
-                                          StrokeThickness="2" Data="M8 2v4" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='TimeOff'}"
-                                          StrokeThickness="2" Data="M3 10h18" />
-                                </Canvas>
-                            </Viewbox>
-                            <TextBlock Text="Time Off Requests" VerticalAlignment="Center" FontSize="15" />
-                        </StackPanel>
-                    </Button>
+                        <!-- Recruitment -->
+                        <Button Command="{Binding NavigateToRecruitmentCommand}"
+                                Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Recruitment'}"
+                                Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Recruitment'}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Rectangle Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Recruitment'}"
+                                                   StrokeThickness="2" RadiusX="2" RadiusY="2" Width="14" Height="18" Canvas.Left="5" Canvas.Top="3" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Recruitment'}"
+                                              StrokeThickness="2" Data="M9 7h6" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Recruitment'}"
+                                              StrokeThickness="2" Data="M9 11h6" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Recruitment'}"
+                                              StrokeThickness="2" Data="M9 15h4" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="Recruitment" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
 
-                    <!-- Attendance -->
-                    <Button Command="{Binding NavigateToAttendanceCommand}"
-                            Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Attendance'}"
-                            Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Attendance'}">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Viewbox Width="20" Height="20">
-                                <Canvas Width="24" Height="24">
-                                    <Rectangle Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
-                                               StrokeThickness="2" RadiusX="2" RadiusY="2" Width="18" Height="18" Canvas.Left="3" Canvas.Top="4" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
-                                          StrokeThickness="2" Data="M16 2v4" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
-                                          StrokeThickness="2" Data="M8 2v4" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
-                                          StrokeThickness="2" Data="M3 10h18" />
-                                </Canvas>
-                            </Viewbox>
-                            <TextBlock Text="Attendance" VerticalAlignment="Center" FontSize="15" />
-                        </StackPanel>
-                    </Button>
+                        <!-- Forms -->
+                        <Button Command="{Binding NavigateToFormsCommand}"
+                                Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Forms'}"
+                                Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Forms'}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Rectangle Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Forms'}"
+                                                   StrokeThickness="2" RadiusX="2" RadiusY="2" Width="14" Height="18" Canvas.Left="5" Canvas.Top="3" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Forms'}"
+                                              StrokeThickness="2" Data="M9 7h6" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Forms'}"
+                                              StrokeThickness="2" Data="M9 11h6" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Forms'}"
+                                              StrokeThickness="2" Data="M9 15h4" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="Forms" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
 
-                    <!-- Employees -->
-                    <Button Command="{Binding NavigateToEmployeesCommand}"
-                            Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Employees'}"
-                            Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Employees'}">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Viewbox Width="20" Height="20">
-                                <Canvas Width="24" Height="24">
-                                    <Ellipse Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Employees'}"
-                                             StrokeThickness="2" Width="10" Height="10" Canvas.Left="6" Canvas.Top="2" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Employees'}"
-                                          StrokeThickness="2" Data="M4 21v-2a4 4 0 0 1 4-4h4.5" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Employees'}"
-                                          StrokeThickness="2" Data="M16 3.128a4 4 0 0 1 0 7.744" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Employees'}"
-                                          StrokeThickness="2" Data="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                </Canvas>
-                            </Viewbox>
-                            <TextBlock Text="Employees" VerticalAlignment="Center" FontSize="15" />
-                        </StackPanel>
-                    </Button>
+                    <!-- INTERN SPECIFIC LINKS -->
+                    <StackPanel IsVisible="{Binding IsInternView}" Spacing="4">
+                        <!-- My Profile -->
+                        <Button Command="{Binding NavigateToProfileCommand}"
+                                Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Profile'}"
+                                Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Profile'}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Ellipse Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Profile'}"
+                                                 StrokeThickness="2" 
+                                                 Width="8" 
+                                                 Height="8" 
+                                                 Canvas.Left="8" 
+                                                 Canvas.Top="3" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Profile'}"
+                                              StrokeThickness="2" Data="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="My Profile" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
 
-                    <!-- Recruitment -->
-                    <Button Command="{Binding NavigateToRecruitmentCommand}"
-                            Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Recruitment'}"
-                            Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Recruitment'}">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Viewbox Width="20" Height="20">
-                                <Canvas Width="24" Height="24">
-                                    <Rectangle Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Recruitment'}"
-                                               StrokeThickness="2" RadiusX="2" RadiusY="2" Width="14" Height="18" Canvas.Left="5" Canvas.Top="3" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Recruitment'}"
-                                          StrokeThickness="2" Data="M9 7h6" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Recruitment'}"
-                                          StrokeThickness="2" Data="M9 11h6" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Recruitment'}"
-                                          StrokeThickness="2" Data="M9 15h4" />
-                                </Canvas>
-                            </Viewbox>
-                            <TextBlock Text="Recruitment" VerticalAlignment="Center" FontSize="15" />
-                        </StackPanel>
-                    </Button>
+                        <!-- My Attendance -->
+                        <Button Command="{Binding NavigateToAttendanceCommand}"
+                                Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Attendance'}"
+                                Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Attendance'}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
+                                              StrokeThickness="2" Data="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
+                                              StrokeThickness="2" Data="M16 2v4" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
+                                              StrokeThickness="2" Data="M8 2v4" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Attendance'}"
+                                              StrokeThickness="2" Data="M3 10h18" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="My Attendance" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
 
-                    <!-- Forms -->
-                    <Button Command="{Binding NavigateToFormsCommand}"
-                            Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Forms'}"
-                            Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Forms'}">
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Viewbox Width="20" Height="20">
-                                <Canvas Width="24" Height="24">
-                                    <Rectangle Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Forms'}"
-                                               StrokeThickness="2" RadiusX="2" RadiusY="2" Width="14" Height="18" Canvas.Left="5" Canvas.Top="3" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Forms'}"
-                                          StrokeThickness="2" Data="M9 7h6" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Forms'}"
-                                          StrokeThickness="2" Data="M9 11h6" />
-                                    <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Forms'}"
-                                          StrokeThickness="2" Data="M9 15h4" />
-                                </Canvas>
-                            </Viewbox>
-                            <TextBlock Text="Forms" VerticalAlignment="Center" FontSize="15" />
-                        </StackPanel>
-                    </Button>
+                        <!-- Tasks -->
+                        <Button Command="{Binding NavigateToTasksCommand}"
+                                Background="{Binding CurrentPage, Converter={StaticResource SidebarBackgroundConverter}, ConverterParameter='Tasks'}"
+                                Foreground="{Binding CurrentPage, Converter={StaticResource SidebarForegroundConverter}, ConverterParameter='Tasks'}">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Tasks'}"
+                                              StrokeThickness="2" Data="M9 11l3 3L22 4" />
+                                        <Path Stroke="{Binding CurrentPage, Converter={StaticResource SidebarIconStrokeConverter}, ConverterParameter='Tasks'}"
+                                              StrokeThickness="2" Data="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="Tasks" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
+
+                        <!-- Time Off (Coming Soon) -->
+                        <Button Command="{Binding TriggerTimeOffCommand}"
+                                Background="Transparent"
+                                Foreground="#6B7280">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Stroke="#6B7280" StrokeThickness="2" Data="M8 2v4" />
+                                        <Path Stroke="#6B7280" StrokeThickness="2" Data="M16 2v4" />
+                                        <Path Stroke="#6B7280" StrokeThickness="2" Data="M3 10h18" />
+                                        <Path Stroke="#6B7280" StrokeThickness="2" Data="M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+                                        <Path Stroke="#6B7280" StrokeThickness="2" Data="M12 14h-2" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="Time Off" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
                 </StackPanel>
             </ScrollViewer>
         </Grid>

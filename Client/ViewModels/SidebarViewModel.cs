@@ -35,6 +35,12 @@ public partial class SidebarViewModel : ViewModelBase
     [ObservableProperty]
     private string _currentPage = string.Empty;
 
+    // New Property to toggle menu items
+    [ObservableProperty]
+    private bool _isInternView;
+
+    public event EventHandler? ComingSoonRequested;
+
     public SidebarViewModel(
         ISessionService sessionService,
         IFileService fileService,
@@ -140,12 +146,20 @@ public partial class SidebarViewModel : ViewModelBase
         }
     }
 
+    public void SetPortalMode(bool isIntern)
+    {
+        IsInternView = isIntern;
+    }
+
     #region Navigation Commands
 
     [RelayCommand]
     private async Task NavigateToDashboard()
     {
-        await _navigationService.NavigateTo(ViewModelType.HRDashboard);
+        if (IsInternView)
+            await _navigationService.NavigateTo(ViewModelType.InternDashboard);
+        else
+            await _navigationService.NavigateTo(ViewModelType.HRDashboard);
     }
 
     [RelayCommand]
@@ -154,34 +168,30 @@ public partial class SidebarViewModel : ViewModelBase
         await _navigationService.NavigateTo(ViewModelType.Profile);
     }
 
+    // HR Specific
     [RelayCommand]
-    private async Task NavigateToTimeOff()
+    private async Task NavigateToEmployees() => await _navigationService.NavigateTo(ViewModelType.Employees);
+
+    [RelayCommand]
+    private async Task NavigateToRecruitment() => await _navigationService.NavigateTo(ViewModelType.Recruitment);
+
+    [RelayCommand]
+    private async Task NavigateToForms() => await _navigationService.NavigateTo(ViewModelType.Forms);
+
+    // Intern Specific
+    [RelayCommand]
+    private async Task NavigateToAttendance() => await _navigationService.NavigateTo(ViewModelType.Attendance);
+
+    [RelayCommand]
+    private void TriggerTimeOff()
     {
-        await Task.CompletedTask;
+        ComingSoonRequested?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand]
-    private async Task NavigateToAttendance()
+    private async Task NavigateToTasks()
     {
-        await _navigationService.NavigateTo(ViewModelType.Attendance);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToEmployees()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Employees);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToRecruitment()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Recruitment);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToForms()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Forms);
+        await _navigationService.NavigateTo(ViewModelType.Tasks); 
     }
 
     #endregion
@@ -189,9 +199,6 @@ public partial class SidebarViewModel : ViewModelBase
     public override async Task OnNavigatedFromAsync()
     {
         await base.OnNavigatedFromAsync();
-        if (_sessionService != null)
-        {
-            _sessionService.SessionChanged -= OnSessionChanged;
-        }
+        // Do not unsubscribe session service here as Sidebar is a Singleton
     }
 }

@@ -74,6 +74,9 @@ builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
 // For production GCP migration, replace LocalFileStorageService with GcpFileStorageService
 builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
 
+//Survey Service
+builder.Services.AddScoped<ISurveyService, SurveyService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {

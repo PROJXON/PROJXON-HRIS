@@ -1,132 +1,81 @@
 <Window xmlns="https://github.com/avaloniaui"
-xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-xmlns:vm="using:Client.ViewModels"
-xmlns:views="using:Client.Views"
-xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
-x:Class="Client.Views.MainWindow"
-x:DataType="vm:MainWindowViewModel"
-Width="1440"
-Height="900"
-MinWidth="1024"
-MinHeight="768"
-Icon="/Assets/avalonia-logo.ico"
-Title="PROJXON HRIS">
-    
-<Design.DataContext>
-    <vm:MainWindowViewModel/>
-</Design.DataContext>
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Client.ViewModels"
+        xmlns:views="using:Client.Views"
+        xmlns:components="using:Client.Views.Components"
+        xmlns:converters="using:Client.Utils.Converters"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
+        x:Class="Client.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Width="1440" Height="900"
+        MinWidth="1024" MinHeight="768"
+        Icon="/Assets/orka_icon.ico" 
+        Title="OrkaHR">
 
-<Grid>
-    <!-- Main Content Layer -->
-    <ContentControl Content="{Binding CurrentViewModel}">
-        <ContentControl.DataTemplates>
-            <DataTemplate DataType="{x:Type vm:LoginViewModel}">
-                <views:LoginView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:PortalSelectionViewModel}">
-                <views:PortalSelectionView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:HRDashboardViewModel}">
-                <views:HRDashboardView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:InternDashboardViewModel}">
-                <views:InternDashboardView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:EmployeesListViewModel}">
-                <views:EmployeesListView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:EmployeesViewModel}">
-                <views:EmployeesView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:EmployeeDetailViewModel}">
-                <views:EmployeeDetailView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
-                <views:ProfileView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:AttendanceViewModel}">
-                <views:AttendanceView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:RecruitmentViewModel}">
-                <views:RecruitmentView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:FormsViewModel}">
-                <views:FormsView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:CreateSurveyViewModel}">
-                <views:CreateSurveyView />
-            </DataTemplate>
-        </ContentControl.DataTemplates>
-    </ContentControl>
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
 
-    <!-- Floating Button: Dev Mode (Bottom Right, Stacked above Switch Portal) -->
-    <Button Command="{Binding ToggleDevModeCommand}"
-            IsVisible="{Binding IsDevButtonVisible}"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Margin="0,0,24,144"
-            Background="White"
-            BorderBrush="#E5E7EB"
-            BorderThickness="1"
-            CornerRadius="8"
-            Padding="16,10"
-            Cursor="Hand"
-            ZIndex="999">
-        <Button.Styles>
-            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                <Setter Property="Background" Value="#F3F4F6" />
-            </Style>
-        </Button.Styles>
-        <StackPanel Orientation="Horizontal" Spacing="8">
-            <Viewbox Width="16" Height="16">
-                <Canvas Width="24" Height="24">
-                    <!-- Code/Terminal Icon -->
-                    <Path Stroke="#F59E0B" StrokeThickness="2" Data="M16 18l6-6-6-6" />
-                    <Path Stroke="#F59E0B" StrokeThickness="2" Data="M8 6l-6 6 6 6" />
-                </Canvas>
-            </Viewbox>
-            <TextBlock Text="{Binding DevModeButtonText}" 
-                       FontSize="14" 
-                       FontWeight="Medium" 
-                       Foreground="#374151" />
+    <Panel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar: Visibility now controlled by IsSidebarVisible, NOT IsAuthenticated -->
+            <Border Grid.Column="0" 
+                    IsVisible="{Binding IsSidebarVisible}" 
+                    Width="280">
+                <components:SidebarView DataContext="{Binding SidebarViewModel}" />
+            </Border>
+
+            <!-- Main Content: Spans 2 columns if sidebar is hidden, 1 if visible -->
+            <ContentControl Grid.Column="{Binding IsSidebarVisible, Converter={x:Static converters:BoolToColumnConverter.Instance}}"
+                            Grid.ColumnSpan="{Binding IsSidebarVisible, Converter={x:Static converters:BoolToColumnSpanConverter.Instance}}"
+                            Content="{Binding CurrentViewModel}">
+                <ContentControl.DataTemplates>
+                    <DataTemplate DataType="{x:Type vm:LoginViewModel}"><views:LoginView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:PortalSelectionViewModel}"><views:PortalSelectionView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:HRDashboardViewModel}"><views:HRDashboardView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:InternDashboardViewModel}"><views:InternDashboardView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:EmployeesListViewModel}"><views:EmployeesListView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:EmployeesViewModel}"><views:EmployeesView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:EmployeeDetailViewModel}"><views:EmployeeDetailView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:ProfileViewModel}"><views:ProfileView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:AttendanceViewModel}"><views:AttendanceView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:RecruitmentViewModel}"><views:RecruitmentView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:FormsViewModel}"><views:FormsView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:CreateSurveyViewModel}"><views:CreateSurveyView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:TasksViewModel}"><views:TasksView /></DataTemplate>
+                    <DataTemplate DataType="{x:Type vm:TakeSurveyViewModel}"><views:TakeSurveyView /></DataTemplate>
+                </ContentControl.DataTemplates>
+            </ContentControl>
+        </Grid>
+        
+        <!-- Coming Soon Overlay -->
+        <Grid IsVisible="{Binding IsComingSoonOpen}" Background="#80000000" ZIndex="2000">
+            <Border Background="White" CornerRadius="12" Padding="32" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center" BoxShadow="0 10 30 0 #40000000">
+                <StackPanel Spacing="16">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Feature Coming Soon" FontSize="20" FontWeight="Bold" Foreground="#1F2937" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Time Off requests are currently under development." FontSize="15" Foreground="#6B7280" TextAlignment="Center" TextWrapping="Wrap"/>
+                    </StackPanel>
+                    <Button Command="{Binding CloseComingSoonCommand}" Content="Got it" HorizontalAlignment="Center" Background="#1F2937" Foreground="White" CornerRadius="6" Padding="24,10" Cursor="Hand"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Floating Buttons -->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,24,24" Spacing="12" ZIndex="1000">
+            <Button Command="{Binding ToggleDevModeCommand}" IsVisible="{Binding IsDevButtonVisible}" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="16,10" Cursor="Hand">
+                 <TextBlock Text="{Binding DevModeButtonText}" Foreground="#374151" />
+            </Button>
+            <Button Command="{Binding SwitchPortalCommand}" IsVisible="{Binding IsSwitchPortalVisible}" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="16,10" Cursor="Hand">
+                <TextBlock Text="Switch Portal" FontWeight="Bold" Foreground="#1F2937" />
+            </Button>
         </StackPanel>
-    </Button>
-
-    <!-- Floating Button: Switch Portal (Bottom Right) -->
-    <Button Command="{Binding SwitchPortalCommand}"
-            IsVisible="{Binding IsSwitchPortalVisible}"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Margin="0,0,24,80"
-            Background="White"
-            BorderBrush="#E5E7EB"
-            BorderThickness="1"
-            CornerRadius="8"
-            Padding="16,10"
-            Cursor="Hand"
-            ZIndex="999">
-        <Button.Styles>
-            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                <Setter Property="Background" Value="#F3F4F6" />
-            </Style>
-        </Button.Styles>
-        <StackPanel Orientation="Horizontal" Spacing="8">
-            <Viewbox Width="16" Height="16">
-                <Canvas Width="24" Height="24">
-                    <!-- Refresh/Switch Icon -->
-                    <Path Stroke="#1F2937" StrokeThickness="2" Data="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                    <Path Stroke="#1F2937" StrokeThickness="2" Data="M3 3v5h5"/>
-                    <Path Stroke="#1F2937" StrokeThickness="2" Data="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
-                    <Path Stroke="#1F2937" StrokeThickness="2" Data="M16 21h5v-5"/>
-                </Canvas>
-            </Viewbox>
-            <TextBlock Text="Switch Portal" 
-                       FontSize="14" 
-                       FontWeight="Bold" 
-                       Foreground="#1F2937" />
-        </StackPanel>
-    </Button>
-</Grid>
+    </Panel>
 </Window>

@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Client.Services;
 using Client.Utils.Enums;
+using Client.Utils.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Shared.EmployeeManagement.Responses;
+using Client.Models.EmployeeManagement;
 
 namespace Client.ViewModels;
 
@@ -16,6 +20,8 @@ namespace Client.ViewModels;
 public partial class FormsViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
+    private readonly IApiClient _apiClient;
+    private readonly IEmployeeRepository _employeeRepository;
 
     // Shared Sidebar
     public SidebarViewModel Sidebar { get; }
@@ -33,54 +39,70 @@ public partial class FormsViewModel : ViewModelBase
 
     #endregion
 
-    public FormsViewModel(INavigationService navigationService, SidebarViewModel sidebarViewModel)
+    public FormsViewModel(INavigationService navigationService, SidebarViewModel sidebarViewModel, IApiClient apiClient, IEmployeeRepository employeeRepository)
     {
         _navigationService = navigationService;
         Sidebar = sidebarViewModel;
-        
-        LoadMockData();
+        _apiClient = apiClient;
+        _employeeRepository = employeeRepository;
     }
 
     // Parameterless constructor for design-time support
-    public FormsViewModel() : this(null!, null!)
+    public FormsViewModel() : this(null!, null!, null!, null!)
     {
     }
 
-    private void LoadMockData()
+    private async Task LoadFormsAsync()
     {
-        Forms = new ObservableCollection<FormItemViewModel>
+        IsLoading = true;
+        try
         {
-            new()
+            int totalEmployees = 0;
+            var empResult = await _employeeRepository.GetAllAsync<EmployeeResponse>();
+            if (empResult.IsSuccess && empResult.Value != null)
+                totalEmployees = empResult.Value.Count();
+
+            var assignmentResult = await _apiClient.GetAllAsync<IEnumerable<SurveyAssignmentResponse>>("api/Survey/assignments");
+            var allAssignments = assignmentResult.IsSuccess && assignmentResult.Data != null 
+                ? assignmentResult.Data.ToList() 
+                : new List<SurveyAssignmentResponse>();
+
+            var result = await _apiClient.GetAllAsync<IEnumerable<SurveyResponse>>("api/Survey");
+            if (result.IsSuccess && result.Data != null)
             {
-                Id = 1,
-                Title = "Employee Satisfaction Survey Q4 2025",
-                Description = "Quarterly employee satisfaction and engagement survey",
-                Status = FormStatus.Active,
-                CreatedDate = new DateTime(2025, 9, 30),
-                ResponseCount = 32,
-                TotalRecipients = 48
-            },
-            new()
-            {
-                Id = 2,
-                Title = "New Hire Onboarding Feedback",
-                Description = "Feedback on the onboarding process for new employees",
-                Status = FormStatus.Completed,
-                CreatedDate = new DateTime(2025, 9, 14),
-                ResponseCount = 8,
-                TotalRecipients = 8
-            },
-            new()
-            {
-                Id = 3,
-                Title = "Remote Work Policy Feedback",
-                Description = "Gathering feedback on current remote work policies",
-                Status = FormStatus.Draft,
-                CreatedDate = new DateTime(2025, 10, 11),
-                ResponseCount = 0,
-                TotalRecipients = 48
+                Forms.Clear();
+                foreach (var s in result.Data)
+                {
+                    // Calculate based on assignments
+                    var specificAssignments = allAssignments.Where(a => a.SurveyId == s.Id).ToList();
+                    
+                    int activeRecipients = specificAssignments.Count;
+                    int completedCount = specificAssignments.Count(a => a.IsCompleted);
+
+                    // Fallback for UI if no assignments exist but survey is active
+                    if (s.IsActive && activeRecipients == 0) activeRecipients = totalEmployees;
+
+                    Forms.Add(new FormItemViewModel
+                    {
+                        Id = s.Id,
+                        Title = s.Title,
+                        Description = s.Description,
+                        Status = s.IsActive ? FormStatus.Active : FormStatus.Draft,
+                        CreatedDate = s.CreatedDate,
+                        ResponseCount = completedCount,
+                        TotalRecipients = activeRecipients
+                    });
+                }
             }
-        };
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     #region Form Actions
@@ -95,9 +117,9 @@ public partial class FormsViewModel : ViewModelBase
     private async Task ViewResponses(FormItemViewModel? form)
     {
         if (form == null) return;
-        
-        // TODO: Navigate to responses view
-        // For now, just log the action
+
+        // Placeholder as no specific view exists yet, but ensures button isn't dead
+        // Ideally navigate to a details page
         await Task.CompletedTask;
     }
 
@@ -105,27 +127,41 @@ public partial class FormsViewModel : ViewModelBase
     private async Task ViewResults(FormItemViewModel? form)
     {
         if (form == null) return;
-        
+
         // TODO: Navigate to results view
         await Task.CompletedTask;
     }
 
     [RelayCommand]
-    private void SendToEmployees(FormItemViewModel? form)
+    private async Task SendToEmployees(FormItemViewModel? form)
     {
         if (form == null) return;
 
-        // Update the form status from Draft to Active
-        form.Status = FormStatus.Active;
-        form.TotalRecipients = 48; // Mock: sending to all employees
-        form.ResponseCount = 0;
-        
-        // Force UI update by re-triggering property changes
-        var index = Forms.IndexOf(form);
-        if (index >= 0)
+        IsLoading = true;
+        ErrorMessage = string.Empty;
+
+        try
         {
-            Forms.RemoveAt(index);
-            Forms.Insert(index, form);
+            // Call Backend to generate assignments for all employees
+            var response = await _apiClient.PostAsync<object>($"api/Survey/{form.Id}/assign-all", null);
+
+            if (response.IsSuccess)
+            {
+                // Reload to refresh counts/status
+                await LoadFormsAsync();
+            }
+            else
+            {
+                ErrorMessage = "Failed to assign: " + response.ErrorMessage;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
@@ -134,8 +170,8 @@ public partial class FormsViewModel : ViewModelBase
     public override async Task OnNavigatedToAsync()
     {
         Sidebar.CurrentPage = "Forms";
-        // TODO: Load actual forms data from API
-        await base.OnNavigatedToAsync();
+        Sidebar.SetPortalMode(false);
+        await LoadFormsAsync();
     }
 }
 
@@ -176,17 +212,17 @@ public partial class FormItemViewModel : ObservableObject
     private int _totalRecipients;
 
     public string CreatedDateDisplay => $"Created {CreatedDate:M/d/yyyy}";
-    
+
     public string ResponseDisplay => $"{ResponseCount} / {TotalRecipients} responses";
-    
+
     public double ResponsePercentage => TotalRecipients > 0 ? (double)ResponseCount / TotalRecipients * 100 : 0;
-    
+
     public string ResponsePercentageDisplay => $"{ResponsePercentage:F0}%";
 
     public bool IsDraft => Status == FormStatus.Draft;
     public bool IsActive => Status == FormStatus.Active;
     public bool IsCompleted => Status == FormStatus.Completed;
-    
+
     public bool ShowProgressBar => Status == FormStatus.Active;
     public bool ShowResponseCount => Status != FormStatus.Draft;
 

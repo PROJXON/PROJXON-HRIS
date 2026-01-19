@@ -20,7 +20,6 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly SidebarViewModel _sidebarViewModel;
     private readonly IFileService _fileService;
     private readonly IEmployeeRepository _employeeRepository;
-    
     private readonly IInvitationService _invitationService;
 
     [ObservableProperty]
@@ -32,10 +31,17 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsSwitchPortalVisible))]
     private bool _isAuthenticated;
 
+    // Controls sidebar visibility per-view
+    [ObservableProperty]
+    private bool _isSidebarVisible;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDevButtonVisible))]
     [NotifyPropertyChangedFor(nameof(IsSwitchPortalVisible))]
     private bool _isDevModeEnabled = true;
+    
+    [ObservableProperty]
+    private bool _isComingSoonOpen;
 
     [ObservableProperty]
     private string _devModeButtonText = "Disable Dev Mode";
@@ -46,7 +52,12 @@ public partial class MainWindowViewModel : ObservableObject
          _authService.CurrentUserEmail.Equals("annalysa.vicci.projxon@gmail.com", StringComparison.OrdinalIgnoreCase));
 
     public bool IsDevButtonVisible => IsDevUser && IsDevModeEnabled;
-    public bool IsSwitchPortalVisible => IsAuthenticated && IsDevModeEnabled;
+    
+    public bool IsSwitchPortalVisible => 
+        IsAuthenticated && 
+        ((IsDevUser && IsDevModeEnabled) || _sessionService.IsHrOrExecutive);
+
+    public SidebarViewModel SidebarViewModel => _sidebarViewModel;
 
     public MainWindowViewModel(
         INavigationService navigationService,
@@ -71,6 +82,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         _navigationService.NavigationRequested += OnNavigationRequested;
         _authService.AuthenticationChanged += OnIsAuthenticatedChanged;
+        
+        _sidebarViewModel.ComingSoonRequested += (s, e) => IsComingSoonOpen = true;
 
         InitializeView();
     }
@@ -82,34 +95,100 @@ public partial class MainWindowViewModel : ObservableObject
         if (IsAuthenticated)
         {
             CurrentViewModel = new PortalSelectionViewModel(_navigationService, _userPreferencesService);
+            IsSidebarVisible = false;
         }
         else
         {
             CurrentViewModel = new LoginViewModel(_authService);
+            IsSidebarVisible = false;
         }
     }
 
     private async Task OnNavigationRequested(object? sender, NavigationEventArgs e)
     {
-        ViewModelBase? newVm = e.ViewModelType switch
+        ViewModelBase? newVm = null;
+
+        // 1. Determine Logic based on ViewModel Type
+        switch (e.ViewModelType)
         {
-            ViewModelType.Login => new LoginViewModel(_authService),
-            ViewModelType.PortalSelection => new PortalSelectionViewModel(_navigationService, _userPreferencesService),
-            ViewModelType.HRDashboard => new HRDashboardViewModel(_navigationService, _userPreferencesService, _employeeRepository, _sessionService, _apiClient, _sidebarViewModel),
-            ViewModelType.InternDashboard => new InternDashboardViewModel(_navigationService),
-            ViewModelType.Dashboard => new DashboardViewModel(_navigationService),
-            ViewModelType.EmployeesList => new EmployeesListViewModel(_employeeRepository, _navigationService),
-            
-            ViewModelType.Employees => new EmployeesViewModel(_employeeRepository, _navigationService, _sidebarViewModel, _invitationService),
-            
-            ViewModelType.EmployeeDetails => CreateEmployeeDetailViewModel(e.EntityId),
-            ViewModelType.Profile => new ProfileViewModel(_navigationService, _sessionService, _employeeRepository, _fileService, _apiClient, _sidebarViewModel),
-            ViewModelType.Attendance => new AttendanceViewModel(_navigationService, _sidebarViewModel),
-            ViewModelType.Recruitment => new RecruitmentViewModel(_navigationService, _apiClient, _sidebarViewModel),
-            ViewModelType.Forms => new FormsViewModel(_navigationService, _sidebarViewModel),
-            ViewModelType.CreateSurvey => new CreateSurveyViewModel(_navigationService, _sidebarViewModel),
-            _ => CurrentViewModel
-        };
+            case ViewModelType.Login:
+                newVm = new LoginViewModel(_authService);
+                IsSidebarVisible = false;
+                break;
+
+            case ViewModelType.PortalSelection:
+                newVm = new PortalSelectionViewModel(_navigationService, _userPreferencesService);
+                IsSidebarVisible = false;
+                break;
+
+            // For all Dashboards and Detail views, SHOW Sidebar
+            case ViewModelType.HRDashboard:
+                newVm = new HRDashboardViewModel(_navigationService, _userPreferencesService, _employeeRepository, _sessionService, _apiClient, _sidebarViewModel);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.InternDashboard:
+                newVm = new InternDashboardViewModel(_navigationService, _sessionService, _apiClient, _sidebarViewModel);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.Dashboard:
+                newVm = new DashboardViewModel(_navigationService);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.EmployeesList:
+                newVm = new EmployeesListViewModel(_employeeRepository, _navigationService);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.Employees:
+                newVm = new EmployeesViewModel(_employeeRepository, _navigationService, _sidebarViewModel, _invitationService);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.EmployeeDetails:
+                newVm = CreateEmployeeDetailViewModel(e.EntityId);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.Profile:
+                newVm = new ProfileViewModel(
+                    _navigationService, 
+                    _sessionService, 
+                    _employeeRepository, 
+                    _fileService, 
+                    _apiClient, 
+                    _sidebarViewModel,
+                    _userPreferencesService,
+                    null);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.Attendance:
+                newVm = new AttendanceViewModel(_navigationService, _sidebarViewModel, _userPreferencesService, _apiClient, _sessionService);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.Recruitment:
+                newVm = new RecruitmentViewModel(_navigationService, _apiClient, _sidebarViewModel);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.Forms:
+                newVm = new FormsViewModel(_navigationService, _sidebarViewModel, _apiClient, _employeeRepository);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.CreateSurvey:
+                newVm = new CreateSurveyViewModel(_navigationService, _sidebarViewModel, _apiClient);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.Tasks:
+                newVm = new TasksViewModel(_sessionService, _apiClient, _sidebarViewModel, _navigationService);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.TakeSurvey:
+                var takeSurveyVm = new TakeSurveyViewModel(_apiClient, _navigationService);
+                if (e.EntityId > 0) await takeSurveyVm.LoadFromAssignmentAsync(e.EntityId);
+                newVm = takeSurveyVm;
+                IsSidebarVisible = true;
+                break;
+                
+            default:
+                newVm = CurrentViewModel;
+                break;
+        }
 
         if (newVm is null) return;
         if (CurrentViewModel is not null) await CurrentViewModel.OnNavigatedFromAsync();
@@ -128,8 +207,27 @@ public partial class MainWindowViewModel : ObservableObject
     private async void OnIsAuthenticatedChanged(object? sender, AuthenticationChangedEventArgs e)
     {
         IsAuthenticated = e.IsAuthenticated;
+        OnPropertyChanged(nameof(IsSwitchPortalVisible)); 
+        OnPropertyChanged(nameof(IsDevButtonVisible)); 
+
         if (IsAuthenticated)
-            await _navigationService.NavigateTo(ViewModelType.PortalSelection);
+        {
+            if (IsDevUser)
+            {
+                await _navigationService.NavigateTo(ViewModelType.PortalSelection);
+                return;
+            }
+
+            if (_sessionService.IsHrOrExecutive)
+            {
+                await _navigationService.NavigateTo(ViewModelType.PortalSelection);
+            }
+            else
+            {
+                await _userPreferencesService.SetPortalPreferenceAsync(PortalType.Intern);
+                await _navigationService.NavigateTo(ViewModelType.InternDashboard);
+            }
+        }
         else
         {
             await _userPreferencesService.ClearPortalPreferenceAsync();
@@ -168,4 +266,7 @@ public partial class MainWindowViewModel : ObservableObject
     
     [RelayCommand]
     private async Task Logout() => await _authService.LogoutAsync();
+    
+    [RelayCommand]
+    private void CloseComingSoon() => IsComingSoonOpen = false;
 }

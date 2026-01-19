@@ -23,6 +23,7 @@ public partial class ProfileViewModel : ViewModelBase
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IFileService _fileService;
     private readonly IApiClient _apiClient;
+    private readonly IUserPreferencesService _userPreferencesService;
     private readonly ILogger<ProfileViewModel>? _logger;
     
     // Hardcoded for dev environment
@@ -134,6 +135,7 @@ public partial class ProfileViewModel : ViewModelBase
         IFileService fileService,
         IApiClient apiClient,
         SidebarViewModel sidebarViewModel,
+        IUserPreferencesService userPreferencesService,
         ILogger<ProfileViewModel>? logger = null)
     {
         _navigationService = navigationService;
@@ -142,6 +144,7 @@ public partial class ProfileViewModel : ViewModelBase
         _fileService = fileService;
         _apiClient = apiClient;
         Sidebar = sidebarViewModel;
+        _userPreferencesService = userPreferencesService;
         _logger = logger;
 
         // Initialize immediately so binding context exists before data load
@@ -149,7 +152,7 @@ public partial class ProfileViewModel : ViewModelBase
     }
 
     // Constructor for Design-time
-    public ProfileViewModel() : this(null!, null!, null!, null!, null!, null!) { }
+    public ProfileViewModel() : this(null!, null!, null!, null!, null!, null!, null!) { }
 
     private void InitializeDepartments()
     {
@@ -167,6 +170,10 @@ public partial class ProfileViewModel : ViewModelBase
     public override async Task OnNavigatedToAsync()
     {
         Sidebar.CurrentPage = "Profile";
+        
+        // Determine portal mode from saved preference
+        var portalPref = await _userPreferencesService.GetPortalPreferenceAsync();
+        Sidebar.SetPortalMode(portalPref == PortalType.Intern);
 
         if (_sessionService.IsSessionValid)
         {
@@ -359,7 +366,7 @@ public partial class ProfileViewModel : ViewModelBase
                 {
                     PositionName = EditJobTitle,
                     DepartmentId = SelectedDepartment?.Id,
-                    HireDate = hireDateUtc  // Now using UTC DateTime
+                    HireDate = hireDateUtc
                 }
             };
 

@@ -48,6 +48,12 @@ public interface ISessionService
     string? JobTitle { get; }
     
     /// <summary>
+    /// Indicates whether the current user has HR or Executive access.
+    /// Returns true if user is Admin (Role 1), HR (Role 2), or in Human Resources/Executive departments.
+    /// </summary>
+    bool IsHrOrExecutive { get; }
+    
+    /// <summary>
     /// Event raised when session data is updated.
     /// </summary>
     event EventHandler<SessionChangedEventArgs>? SessionChanged;

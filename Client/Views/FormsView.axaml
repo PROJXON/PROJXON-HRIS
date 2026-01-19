@@ -20,14 +20,7 @@
     </Design.DataContext>
 
     <Grid Background="#F8F9FA">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="280" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <!-- Sidebar -->
-        <components:SidebarView Grid.Column="0" DataContext="{Binding Sidebar}" />
-
+        
         <!-- Main Content Area -->
         <ScrollViewer Grid.Column="1"
                       HorizontalScrollBarVisibility="Disabled"
@@ -213,6 +206,11 @@
                                                     Foreground="White"
                                                     CornerRadius="8"
                                                     Padding="16,10">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="Background" Value="#374151" />
+                                                    </Style>
+                                                </Button.Styles>
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                                     <Viewbox Width="16" Height="16">
                                                         <Canvas Width="24" Height="24">

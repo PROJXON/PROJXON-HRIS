@@ -1,11 +1,15 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Client.Services;
 using Client.Utils.Enums;
+using Client.Utils.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Shared.EmployeeManagement.Requests;
+using Shared.EmployeeManagement.Responses;
 
 namespace Client.ViewModels;
 
@@ -16,6 +20,7 @@ namespace Client.ViewModels;
 public partial class CreateSurveyViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
+    private readonly IApiClient _apiClient;
 
     public SidebarViewModel Sidebar { get; }
 
@@ -54,15 +59,19 @@ public partial class CreateSurveyViewModel : ViewModelBase
 
     #endregion
 
-    public CreateSurveyViewModel(INavigationService navigationService, SidebarViewModel sidebarViewModel)
+    public CreateSurveyViewModel(
+        INavigationService navigationService, 
+        SidebarViewModel sidebarViewModel,
+        IApiClient apiClient)
     {
         _navigationService = navigationService;
         Sidebar = sidebarViewModel;
+        _apiClient = apiClient;
         Questions.CollectionChanged += (s, e) => OnPropertyChanged(nameof(TotalQuestions));
     }
 
     // Parameterless constructor for design-time support
-    public CreateSurveyViewModel() : this(null!, new SidebarViewModel())
+    public CreateSurveyViewModel() : this(null!, new SidebarViewModel(), null!)
     {
     }
 
@@ -116,11 +125,27 @@ public partial class CreateSurveyViewModel : ViewModelBase
 
         try
         {
-            // TODO: Call API to save survey as draft
-            await Task.Delay(500); // Simulate API call
+            // Serialize questions
+            var questionsData = Questions.Select(q => new { id = q.QuestionNumber, text = q.QuestionText });
+            var jsonQuestions = JsonSerializer.Serialize(questionsData);
 
-            // Navigate back to forms list
-            await _navigationService.NavigateTo(ViewModelType.Forms);
+            var request = new CreateSurveyRequest
+            {
+                Title = SurveyTitle,
+                Description = SurveyDescription,
+                QuestionsJson = jsonQuestions
+            };
+
+            var response = await _apiClient.PostAsync<SurveyResponse>("api/Survey", request);
+
+            if (response.IsSuccess)
+            {
+                await _navigationService.NavigateTo(ViewModelType.Forms);
+            }
+            else
+            {
+                ErrorMessage = response.ErrorMessage;
+            }
         }
         catch (Exception ex)
         {
@@ -149,6 +174,7 @@ public partial class CreateSurveyViewModel : ViewModelBase
     public override async Task OnNavigatedToAsync()
     {
         Sidebar.CurrentPage = "Forms";
+        Sidebar.SetPortalMode(false);
 
         // Reset form when navigating to create new survey
         SurveyTitle = string.Empty;

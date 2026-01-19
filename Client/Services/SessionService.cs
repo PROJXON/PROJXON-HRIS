@@ -60,6 +60,27 @@ public class SessionService : ISessionService
 
     public string? JobTitle => _currentEmployee?.PositionDetails?.PositionName;
 
+    public bool IsHrOrExecutive
+    {
+        get
+        {
+            // Role 1 = Admin, Role 2 = HR
+            if (_currentUser?.RoleId == 1 || _currentUser?.RoleId == 2) 
+                return true;
+
+            // Allow "Human Resources" and "Executive" Departments
+            var department = _currentEmployee?.PositionDetails?.Department;
+            if (!string.IsNullOrEmpty(department) && 
+               (department.Equals("Human Resources", StringComparison.OrdinalIgnoreCase) || 
+                department.Equals("Executive", StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     public event EventHandler<SessionChangedEventArgs>? SessionChanged;
 
     public SessionService(

@@ -21,14 +21,7 @@
     </Design.DataContext>
 
     <Grid Background="#F8F9FA">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="280" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <!-- Sidebar -->
-        <components:SidebarView Grid.Column="0" DataContext="{Binding Sidebar}" />
-
+        
         <!-- Main Content Area -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>

@@ -27,14 +27,7 @@
     <Panel>
         <!-- Main Content Grid -->
         <Grid Background="#F8F9FA">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="280" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <!-- Sidebar -->
-            <components:SidebarView Grid.Column="0" DataContext="{Binding Sidebar}" />
-
+            
             <!-- Main Content Area -->
             <ScrollViewer Grid.Column="1"
                           HorizontalScrollBarVisibility="Disabled"
