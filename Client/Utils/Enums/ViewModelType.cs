@@ -18,6 +18,7 @@ public enum ViewModelType
     InternProfile,
     Employees, // New employees list view with cards
     Attendance, // Attendance calendar view
+    InternAttendance,
     Recruitment, // Recruitment kanban board
     Forms, // Forms/Surveys list view
     CreateSurvey // Create new survey view

@@ -127,9 +127,7 @@ public partial class InternDashboardViewModel : ViewModelBase
     private async Task NavigateToAttendance()
     {
         SelectedMenuItem = "My Attendance";
-        // TODO: Navigate to attendance view when implemented
-        // await _navigationService.NavigateTo(ViewModelType.TimeOffRequests);
-        await Task.CompletedTask;
+        await _navigationService.NavigateTo(ViewModelType.InternAttendance);
     }
 
     [RelayCommand]

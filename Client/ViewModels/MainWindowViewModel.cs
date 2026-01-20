@@ -72,6 +72,7 @@ public partial class MainWindowViewModel : ObservableObject
             ViewModelType.Profile => new ProfileViewModel(_navigationService),
             ViewModelType.InternProfile => new InternProfileViewModel(_navigationService),
             ViewModelType.Attendance => new AttendanceViewModel(_navigationService),
+            ViewModelType.InternAttendance => new InternAttendanceViewModel(_navigationService),
             ViewModelType.Recruitment => new RecruitmentViewModel(_navigationService),
             ViewModelType.Forms => new FormsViewModel(_navigationService),
             ViewModelType.CreateSurvey => new CreateSurveyViewModel(_navigationService),
