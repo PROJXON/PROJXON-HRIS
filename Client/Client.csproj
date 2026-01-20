@@ -6,6 +6,7 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <ApplicationIcon>Assets\orka_icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,7 +14,18 @@
         <Folder Include="Utils\Exceptions\UserOperations\" />
     </ItemGroup>
 
+    <!-- Ensure appsettings files are available at runtime (bin/Debug/net9.0, bin/Release/net9.0) -->
     <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appsettings.Development.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.5.0" />
         <PackageReference Include="Avalonia" Version="11.3.4" />
         <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.4" />
         <PackageReference Include="Avalonia.Controls.WebView" Version="11.3.5" />
@@ -28,10 +40,11 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.6" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.6" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Shared\Shared.csproj" />
+        <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -39,12 +52,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-   
-    <ItemGroup>
-      <AdditionalFiles Include="Styles\Styles.axaml" />
+        <AdditionalFiles Include="Styles\Styles.axaml" />
     </ItemGroup>
 </Project>

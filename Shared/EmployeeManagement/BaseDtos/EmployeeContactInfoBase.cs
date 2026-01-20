@@ -9,4 +9,5 @@ public class EmployeeContactInfoBase
     public string? EmergencyContactName { get; set; }
     public string? EmergencyContactPhoneNumber { get; set; }
     public string? ProjxonEmail { get; set; }
+    public string? DiscordUsername { get; set; }
 }

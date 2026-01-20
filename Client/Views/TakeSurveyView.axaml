@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.TakeSurveyView"
+             x:DataType="vm:TakeSurveyViewModel">
+    
+    <Border Background="White" CornerRadius="12" BorderBrush="#E5E7EB" BorderThickness="1" MaxWidth="800" Margin="40" VerticalAlignment="Top">
+        <StackPanel Spacing="24" Margin="32">
+            <!-- Header -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="Bold" Foreground="#1F2937" />
+                <TextBlock Text="{Binding Description}" FontSize="16" Foreground="#6B7280" TextWrapping="Wrap" />
+            </StackPanel>
+            
+            <Separator Height="1" Background="#E5E7EB" />
+            
+            <!-- Questions -->
+            <ScrollViewer MaxHeight="500">
+                <ItemsControl ItemsSource="{Binding Questions}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Spacing="8" Margin="0,0,0,24">
+                                <TextBlock Text="{Binding QuestionText}" FontSize="16" FontWeight="Medium" Foreground="#374151" TextWrapping="Wrap"/>
+                                <TextBox Text="{Binding Answer}" 
+                                         AcceptsReturn="True" 
+                                         Height="80" 
+                                         TextWrapping="Wrap"
+                                         Watermark="Type your answer here..."
+                                         CornerRadius="6"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            
+            <!-- Actions -->
+            <StackPanel Orientation="Horizontal" Spacing="16" HorizontalAlignment="Right">
+                <Button Command="{Binding CancelCommand}" Content="Cancel" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" Foreground="#374151" CornerRadius="6" Padding="16,10"/>
+                <Button Command="{Binding SubmitSurveyCommand}" Content="Submit Survey" Background="#1F2937" Foreground="White" CornerRadius="6" Padding="24,10" IsEnabled="{Binding !IsLoading}"/>
+            </StackPanel>
+            
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        </StackPanel>
+    </Border>
+</UserControl>

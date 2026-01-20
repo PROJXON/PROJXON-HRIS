@@ -15,4 +15,6 @@ public class EmployeeContactInfo
     [StringLength(40)] public string? EmergencyContactName { get; set; }
     [Phone][StringLength(15)] public string? EmergencyContactPhoneNumber { get; set; }
     [EmailAddress] [StringLength(60)] public string? ProjxonEmail { get; set; }
+    
+    [StringLength(50)] public string? DiscordUsername { get; set; }
 }

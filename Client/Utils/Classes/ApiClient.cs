@@ -85,6 +85,24 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
         }
     }
 
+    public async Task<ApiResponse<T>> PutAsync<T>(string endpoint, object data, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            logger.LogDebug("PUT request to {Endpoint}", endpoint);
+
+            var json = JsonSerializer.Serialize(data, _jsonOptions);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PutAsync(endpoint, content, cancellationToken);
+            return await ProcessResponse<T>(response, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            return HandleException<T>(e);
+        }
+    }
+
     public async Task<ApiResponse<object?>> DeleteAsync<T>(string endpoint, int id, CancellationToken cancellationToken = default)
     {
         try

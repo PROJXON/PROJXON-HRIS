@@ -3,6 +3,7 @@ using Client.Services;
 using Client.Utils.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia;
 
 namespace Client.ViewModels;
 
@@ -41,17 +42,23 @@ public partial class PortalSelectionViewModel : ViewModelBase
 
     public override async Task OnNavigatedToAsync()
     {
-        // Check if user has a stored portal preference
-        var savedPortal = await _userPreferencesService.GetPortalPreferenceAsync();
-        
-        if (savedPortal.HasValue)
+        var mainVm = (MainWindowViewModel?)Application.Current?.DataContext;
+        var isDev = mainVm?.IsDevUser ?? false;
+
+        // If it's a dev user, DO NOT auto-navigate. Let them choose.
+        if (!isDev)
         {
-            // Auto-navigate to saved portal
-            var targetViewModel = savedPortal.Value == PortalType.HR 
-                ? ViewModelType.HRDashboard 
-                : ViewModelType.InternDashboard;
+            // Check if user has a stored portal preference
+            var savedPortal = await _userPreferencesService.GetPortalPreferenceAsync();
             
-            await _navigationService.NavigateTo(targetViewModel);
+            if (savedPortal.HasValue)
+            {
+                var targetViewModel = savedPortal.Value == PortalType.HR 
+                    ? ViewModelType.HRDashboard 
+                    : ViewModelType.InternDashboard;
+                
+                await _navigationService.NavigateTo(targetViewModel);
+            }
         }
         
         await base.OnNavigatedToAsync();

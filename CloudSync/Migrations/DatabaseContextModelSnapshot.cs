@@ -19,7 +19,7 @@ namespace CloudSync.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -48,7 +48,6 @@ namespace CloudSync.Migrations
                         .HasColumnName("cover_letter_url");
 
                     b.Property<DateTime>("CreateDateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("create_date_time");
 
@@ -151,7 +150,6 @@ namespace CloudSync.Migrations
                         .HasColumnName("universities_attended");
 
                     b.Property<DateTime>("UpdateDateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("update_date_time");
 
@@ -167,6 +165,40 @@ namespace CloudSync.Migrations
                         .HasDatabaseName("ix_candidate_interviewer_id");
 
                     b.ToTable("candidate", (string)null);
+                });
+
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Attendance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employee_id");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("interval")
+                        .HasColumnName("end_time");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("interval")
+                        .HasColumnName("start_time");
+
+                    b.HasKey("Id")
+                        .HasName("pk_attendance");
+
+                    b.HasIndex("EmployeeId")
+                        .HasDatabaseName("ix_attendance_employee_id");
+
+                    b.ToTable("attendance", (string)null);
                 });
 
             modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Department", b =>
@@ -396,9 +428,9 @@ namespace CloudSync.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("degrees_earned");
 
-                    b.Property<int?>("EducationLevel")
+                    b.Property<string>("EducationLevel")
                         .HasMaxLength(20)
-                        .HasColumnType("integer")
+                        .HasColumnType("character varying(20)")
                         .HasColumnName("education_level");
 
                     b.Property<string>("GraduateDegree")
@@ -512,12 +544,12 @@ namespace CloudSync.Migrations
                         .HasColumnType("character varying(30)")
                         .HasColumnName("employee_life_cycle_stage");
 
-                    b.Property<int?>("EmploymentStatus")
-                        .HasColumnType("integer")
+                    b.Property<string>("EmploymentStatus")
+                        .HasColumnType("text")
                         .HasColumnName("employment_status");
 
-                    b.Property<int?>("EmploymentType")
-                        .HasColumnType("integer")
+                    b.Property<string>("EmploymentType")
+                        .HasColumnType("text")
                         .HasColumnName("employment_type");
 
                     b.Property<DateTime?>("ExitDate")
@@ -674,6 +706,95 @@ namespace CloudSync.Migrations
                     b.ToTable("project_teams", (string)null);
                 });
 
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Survey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CreatedByHrId")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_hr_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_date");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("QuestionsJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("questions_json");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("pk_surveys");
+
+                    b.ToTable("surveys", (string)null);
+                });
+
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.SurveyAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("AssignedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("assigned_date");
+
+                    b.Property<DateTime?>("CompletedDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("completed_date");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employee_id");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_completed");
+
+                    b.Property<string>("ResponseJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("response_json");
+
+                    b.Property<int>("SurveyId")
+                        .HasColumnType("integer")
+                        .HasColumnName("survey_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_survey_assignments");
+
+                    b.HasIndex("EmployeeId")
+                        .HasDatabaseName("ix_survey_assignments_employee_id");
+
+                    b.HasIndex("SurveyId")
+                        .HasDatabaseName("ix_survey_assignments_survey_id");
+
+                    b.ToTable("survey_assignments", (string)null);
+                });
+
             modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.TeamMember", b =>
                 {
                     b.Property<int>("Id")
@@ -783,7 +904,6 @@ namespace CloudSync.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreateDateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("create_date_time");
 
@@ -804,7 +924,6 @@ namespace CloudSync.Migrations
                         .HasColumnName("google_user_id");
 
                     b.Property<DateTime>("LastLoginDateTime")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_login_date_time");
 
@@ -893,9 +1012,17 @@ namespace CloudSync.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email");
 
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("employee_id");
+
                     b.Property<DateTime>("LastLoginDateTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_login_date_time");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
 
                     b.Property<string>("UserSettings")
                         .HasColumnType("text")
@@ -915,6 +1042,18 @@ namespace CloudSync.Migrations
                         .HasConstraintName("fk_candidate_employees_interviewer_id");
 
                     b.Navigation("Interviewer");
+                });
+
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Attendance", b =>
+                {
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_attendance_employees_employee_id");
+
+                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.Department", b =>
@@ -949,8 +1088,8 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_first_name");
 
-                            b1.Property<int?>("Gender")
-                                .HasColumnType("integer")
+                            b1.Property<string>("Gender")
+                                .HasColumnType("text")
                                 .HasColumnName("basic_info_gender");
 
                             b1.Property<string>("LastName")
@@ -958,8 +1097,8 @@ namespace CloudSync.Migrations
                                 .HasColumnType("character varying(40)")
                                 .HasColumnName("basic_info_last_name");
 
-                            b1.Property<int?>("MaritalStatus")
-                                .HasColumnType("integer")
+                            b1.Property<string>("MaritalStatus")
+                                .HasColumnType("text")
                                 .HasColumnName("basic_info_marital_status");
 
                             b1.Property<string>("NamePronunciation")
@@ -1005,6 +1144,11 @@ namespace CloudSync.Migrations
                             b1.Property<int>("EmployeeId")
                                 .HasColumnType("integer")
                                 .HasColumnName("id");
+
+                            b1.Property<string>("DiscordUsername")
+                                .HasMaxLength(50)
+                                .HasColumnType("character varying(50)")
+                                .HasColumnName("contact_info_discord_username");
 
                             b1.Property<string>("EmergencyContactName")
                                 .HasMaxLength(40)
@@ -1249,6 +1393,27 @@ namespace CloudSync.Migrations
                         .HasConstraintName("fk_employee_trainings_employees_id");
 
                     b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.SurveyAssignment", b =>
+                {
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_survey_assignments_employees_employee_id");
+
+                    b.HasOne("CloudSync.Modules.EmployeeManagement.Models.Survey", "Survey")
+                        .WithMany()
+                        .HasForeignKey("SurveyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_survey_assignments_surveys_survey_id");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Survey");
                 });
 
             modelBuilder.Entity("CloudSync.Modules.EmployeeManagement.Models.TeamMember", b =>

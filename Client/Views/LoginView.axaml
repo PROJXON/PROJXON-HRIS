@@ -3,32 +3,56 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Client.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+             mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="720"
              x:Class="Client.Views.LoginView"
              x:DataType="vm:LoginViewModel">
     <Design.DataContext>
         <vm:LoginViewModel/>
     </Design.DataContext>
 
+    <!-- Changed Background from Default (Black/Dark) to Silver/White -->
     <Grid RowDefinitions="*,Auto,*"
-          ColumnDefinitions="*,Auto,*">
+          ColumnDefinitions="*,Auto,*"
+          Background="#F3F4F6"> 
+        
         <StackPanel Grid.Row="1" Grid.Column="1"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Spacing="15">
+                    Spacing="24">
 
+            <StackPanel Spacing="8" HorizontalAlignment="Center">
+                <TextBlock Text="OrkaHR" FontSize="32" FontWeight="Bold" Foreground="#111827" HorizontalAlignment="Center"/>
+                <TextBlock Text="Sign in to your account" FontSize="16" Foreground="#6B7280" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Styled Google Button -->
             <Button Command="{Binding LoginWithGoogleCommand}"
-                    Classes="GoogleLoginButton">
-                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                    <!-- Placeholder for Google Logo -->
-                    <!-- You would typically use an Image control here,
-                         referencing an SVG or PNG asset for the Google logo. -->
-                    <!-- For example: -->
-                    <!-- <Image Source="/Assets/google_logo.svg" Width="24" Height="24" /> -->
-                    <TextBlock Text="G" FontSize="20" FontWeight="Bold" Foreground="Red" VerticalAlignment="Center" />
-                    <TextBlock Text="Login with Google" VerticalAlignment="Center" />
+                    Background="White"
+                    BorderBrush="#D1D5DB"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="16,12"
+                    Cursor="Hand"
+                    HorizontalAlignment="Center"
+                    Width="300">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="#F9FAFB" />
+                        <Setter Property="BorderBrush" Value="#D1D5DB" />
+                    </Style>
+                </Button.Styles>
+                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                    <!-- Simple Text Representation of G Logo, ideally use Path/SVG -->
+                    <TextBlock Text="G" FontSize="20" FontWeight="Bold" Foreground="#DB4437" VerticalAlignment="Center" FontFamily="Arial"/>
+                    <TextBlock Text="Sign in with Google" VerticalAlignment="Center" FontSize="15" FontWeight="Medium" Foreground="#374151"/>
                 </StackPanel>
             </Button>
+            
+            <ProgressBar IsIndeterminate="True" 
+                         IsVisible="{Binding IsLoggingIn}" 
+                         Width="200" 
+                         Height="4"
+                         Foreground="#1F2937"/>
         </StackPanel>
     </Grid>
 </UserControl>

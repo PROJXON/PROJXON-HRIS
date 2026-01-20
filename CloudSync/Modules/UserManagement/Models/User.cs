@@ -28,11 +28,10 @@ public class User
     [ForeignKey("EmployeeId")]
     public Employee? Employee { get; set; }
 
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+    // This allows the C# default value below to be sent to the DB
     public DateTime CreateDateTime { get; set; } = DateTime.UtcNow;
     
-    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-    public DateTime LastLoginDateTime { get; set; }
+    public DateTime LastLoginDateTime { get; set; } = DateTime.UtcNow;
     
     [Column(TypeName = "jsonb")]
     public string? UserSettings { get; set; }

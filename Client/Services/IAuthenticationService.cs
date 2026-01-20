@@ -8,6 +8,8 @@ public interface IAuthenticationService
 {
     event EventHandler<AuthenticationChangedEventArgs>? AuthenticationChanged;
     bool IsAuthenticated { get; }
+    string? CurrentUserEmail { get; } 
     Task<bool> LoginAsync();
     Task LogoutAsync();
+    Task<string> GetAccessTokenAsync();
 }

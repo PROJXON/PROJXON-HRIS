@@ -16,7 +16,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .ToListAsync();
         }
@@ -34,7 +34,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
@@ -42,6 +42,31 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 throw new EmployeeException("Employee with the given ID does not exist", 404);
 
             return employee;
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
+    }
+    
+    public async Task<Employee?> GetByEmailAsync(string email)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return null;
+            
+            var normalizedEmail = email.ToLowerInvariant();
+            
+            return await context.Employees
+                .Include(e => e.Documents)
+                .Include(e => e.Education)
+                .Include(e => e.Legal)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
+                .Include(e => e.Training)
+                .FirstOrDefaultAsync(e => 
+                    (e.ContactInfo.PersonalEmail != null && e.ContactInfo.PersonalEmail.ToLower() == normalizedEmail) ||
+                    (e.ContactInfo.ProjxonEmail != null && e.ContactInfo.ProjxonEmail.ToLower() == normalizedEmail));
         }
         catch (Exception e)
         {
@@ -57,7 +82,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .Where(e => e.PositionDetails != null && e.PositionDetails.DepartmentId == departmentId)
                 .ToListAsync();
@@ -96,7 +121,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (existingEmployee == null)
@@ -127,7 +152,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Documents)
                 .Include(e => e.Education)
                 .Include(e => e.Legal)
-                .Include(e => e.PositionDetails)
+                .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .FirstOrDefaultAsync(e => e.Id == id);
             if (employee == null)

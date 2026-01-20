@@ -7,4 +7,7 @@ public class UserResponse
     public DateTime CreateDateTime { get; set; }
     public DateTime LastLoginDateTime { get; set; }
     public string? UserSettings { get; set; }
+    public int EmployeeId { get; set; }
+    
+    public int RoleId { get; set; }
 }

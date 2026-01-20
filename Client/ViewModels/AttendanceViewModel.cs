@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Client.Services;
 using Client.Utils.Enums;
+using Client.Utils.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Shared.Attendance;
 
 namespace Client.ViewModels;
 
@@ -16,16 +19,12 @@ namespace Client.ViewModels;
 public partial class AttendanceViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
-
-    #region Sidebar User Profile
-
-    [ObservableProperty]
-    private string _userName = "John Smith";
-
-    [ObservableProperty]
-    private string _userRole = "HR Manager";
-
-    #endregion
+    private readonly IUserPreferencesService _userPreferencesService;
+    private readonly IApiClient _apiClient;
+    private readonly ISessionService _sessionService;
+    
+    // Sidebar handled by MainWindow now, injected to set properties
+    private readonly SidebarViewModel _sidebarViewModel;
 
     #region Calendar State
 
@@ -80,15 +79,25 @@ public partial class AttendanceViewModel : ViewModelBase
 
     #endregion
 
-    public AttendanceViewModel(INavigationService navigationService)
+    public AttendanceViewModel(
+        INavigationService navigationService, 
+        SidebarViewModel sidebarViewModel,
+        IUserPreferencesService userPreferencesService,
+        IApiClient apiClient,
+        ISessionService sessionService)
     {
         _navigationService = navigationService;
-        _currentMonth = new DateTime(2025, 10, 1); // October 2025 as shown in Figma
+        _sidebarViewModel = sidebarViewModel;
+        _userPreferencesService = userPreferencesService;
+        _apiClient = apiClient;
+        _sessionService = sessionService;
+        
+        CurrentMonth = DateTime.UtcNow;
         GenerateCalendar();
     }
 
     // Parameterless constructor for design-time support
-    public AttendanceViewModel() : this(null!)
+    public AttendanceViewModel() : this(null!, null!, null!, null!, null!)
     {
     }
 
@@ -115,7 +124,7 @@ public partial class AttendanceViewModel : ViewModelBase
         }
 
         // Add actual days
-        var today = new DateTime(2025, 10, 15); // Simulating "today" for the demo
+        var today = DateTime.UtcNow.Date;
         
         for (int day = 1; day <= daysInMonth; day++)
         {
@@ -127,9 +136,6 @@ public partial class AttendanceViewModel : ViewModelBase
                 IsToday = date == today,
                 IsEmpty = false
             };
-
-            // Add mock attendance data matching the Figma design
-            SetMockAttendanceData(calendarDay, day);
 
             CalendarDays.Add(calendarDay);
         }
@@ -147,35 +153,41 @@ public partial class AttendanceViewModel : ViewModelBase
         }
     }
 
-    private void SetMockAttendanceData(CalendarDayViewModel day, int dayNumber)
+    private async Task LoadAttendanceData()
     {
-        // Based on the Figma design
-        switch (dayNumber)
+        if (_sessionService.CurrentEmployee == null) return;
+        
+        try 
         {
-            case 10:
-                day.HasAttendance = true;
-                day.StartTime = new TimeSpan(8, 45, 0);
-                day.EndTime = new TimeSpan(17, 15, 0);
-                day.TimeDisplay = "08:45-\n17:15";
-                break;
-            case 13:
-                day.HasAttendance = true;
-                day.StartTime = new TimeSpan(9, 15, 0);
-                day.EndTime = new TimeSpan(17, 45, 0);
-                day.TimeDisplay = "09:15-\n17:45";
-                break;
-            case 14:
-                day.HasAttendance = true;
-                day.StartTime = new TimeSpan(9, 0, 0);
-                day.EndTime = new TimeSpan(17, 30, 0);
-                day.TimeDisplay = "09:00-\n17:30";
-                break;
-            case 20:
-            case 21:
-            case 22:
-                day.IsOnLeave = true;
-                day.LeaveText = "Leave";
-                break;
+            var result = await _apiClient.GetAllAsync<IEnumerable<AttendanceResponse>>($"api/Attendance/{_sessionService.CurrentEmployee.Id}");
+            
+            if (result.IsSuccess && result.Data != null)
+            {
+                var records = result.Data.ToList();
+                
+                // Re-generate calendar to clear any existing data
+                GenerateCalendar();
+
+                foreach (var day in CalendarDays)
+                {
+                    // Skip empty cells
+                    if (day.IsEmpty) continue;
+                    
+                    // Match by Date only
+                    var record = records.FirstOrDefault(r => r.Date.Date == day.Date.Date);
+                    if (record != null)
+                    {
+                        day.HasAttendance = true;
+                        day.StartTime = record.StartTime;
+                        day.EndTime = record.EndTime;
+                        day.TimeDisplay = $"{record.StartTime:hh\\:mm}-\n{record.EndTime:hh\\:mm}";
+                    }
+                }
+            }
+        }
+        catch (Exception) 
+        { 
+            // TODO: Log error
         }
     }
 
@@ -187,6 +199,7 @@ public partial class AttendanceViewModel : ViewModelBase
         CurrentMonth = CurrentMonth.AddMonths(-1);
         GenerateCalendar();
         ClearTimeEntry();
+        _ = LoadAttendanceData(); // Fire and forget
     }
 
     [RelayCommand]
@@ -195,6 +208,7 @@ public partial class AttendanceViewModel : ViewModelBase
         CurrentMonth = CurrentMonth.AddMonths(1);
         GenerateCalendar();
         ClearTimeEntry();
+        _ = LoadAttendanceData(); // Fire and forget
     }
 
     #endregion
@@ -364,20 +378,32 @@ public partial class AttendanceViewModel : ViewModelBase
     [RelayCommand]
     private async Task SaveTimeEntry()
     {
-        if (SelectedDay == null)
+        if (SelectedDay == null || _sessionService.CurrentEmployee == null) 
             return;
 
-        // Update the calendar day with the new times
         if (SelectedDay.StartTime.HasValue && SelectedDay.EndTime.HasValue)
         {
-            SelectedDay.HasAttendance = true;
-            SelectedDay.TimeDisplay = $"{SelectedDay.StartTime.Value.Hours:D2}:{SelectedDay.StartTime.Value.Minutes:D2}-\n{SelectedDay.EndTime.Value.Hours:D2}:{SelectedDay.EndTime.Value.Minutes:D2}";
+            var request = new CreateAttendanceRequest
+            {
+                EmployeeId = _sessionService.CurrentEmployee.Id ?? 0,
+                Date = SelectedDay.Date,
+                StartTime = SelectedDay.StartTime.Value,
+                EndTime = SelectedDay.EndTime.Value
+            };
+
+            var result = await _apiClient.PostAsync<AttendanceResponse>("api/Attendance", request);
+
+            if (result.IsSuccess)
+            {
+                SelectedDay.HasAttendance = true;
+                SelectedDay.TimeDisplay = $"{SelectedDay.StartTime.Value:hh\\:mm}-\n{SelectedDay.EndTime.Value:hh\\:mm}";
+                
+                // Update local list view
+                OnPropertyChanged(nameof(CalendarDays));
+                
+                IsTimePickerOpen = false;
+            }
         }
-
-        // TODO: Call API to save attendance
-        await Task.Delay(100); // Simulate save
-
-        IsTimePickerOpen = false;
     }
 
     [RelayCommand]
@@ -403,64 +429,16 @@ public partial class AttendanceViewModel : ViewModelBase
 
     #endregion
 
-    #region Navigation Commands
-
-    [RelayCommand]
-    private async Task NavigateToDashboard()
-    {
-        await _navigationService.NavigateTo(ViewModelType.HRDashboard);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToProfile()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Profile);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToTimeOff()
-    {
-        // TODO: Navigate to time off view when implemented
-        await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task NavigateToAttendance()
-    {
-        // Already on attendance page
-        await Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task NavigateToEmployees()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Employees);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToRecruitment()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Recruitment);
-    }
-
-    [RelayCommand]
-    private async Task SwitchToInternPortal()
-    {
-        await _navigationService.NavigateTo(ViewModelType.InternDashboard);
-    }
-
-    [RelayCommand]
-    private async Task NavigateToForms()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Forms);
-    }
-    
-    #endregion
-
     public override async Task OnNavigatedToAsync()
     {
-        // TODO: Load actual attendance data from API
-        await base.OnNavigatedToAsync();
+        _sidebarViewModel.CurrentPage = "Attendance";
+        
+        // Determine portal mode from saved preference
+        var portalPref = await _userPreferencesService.GetPortalPreferenceAsync();
+        _sidebarViewModel.SetPortalMode(portalPref == PortalType.Intern);
+        
+        // Load actual attendance data from API
+        await LoadAttendanceData();
     }
 }
 

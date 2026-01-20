@@ -12,6 +12,9 @@ using CloudSync.Modules.UserManagement.Repositories;
 using CloudSync.Modules.UserManagement.Repositories.Interfaces;
 using CloudSync.Modules.UserManagement.Services;
 using CloudSync.Modules.UserManagement.Services.Interfaces;
+using CloudSync.Modules.CandidateManagement.Repositories;
+using CloudSync.Modules.CandidateManagement.Services;
+
 using Npgsql;
 using Serilog;
 
@@ -48,6 +51,7 @@ var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(dataSource));
 
+// Security & User Services
 builder.Services.AddScoped<IGoogleTokenValidator, GoogleTokenValidator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
@@ -55,10 +59,23 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IInvitedUserService, InvitedUserService>();
 builder.Services.AddScoped<IInvitedUserRepository, InvitedUserRepository>();
+
+// Employee Services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+// Candidate Services
+builder.Services.AddScoped<ICandidateService, CandidateService>();
+builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
+
+// File Storage Service - Strategy Pattern Implementation
+// For production GCP migration, replace LocalFileStorageService with GcpFileStorageService
+builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
+//Survey Service
+builder.Services.AddScoped<ISurveyService, SurveyService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -99,17 +116,35 @@ app.UseSerilogRequestLogging();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// Enable static file serving for uploaded files
+// Files in wwwroot/uploads will be accessible via /uploads/{path}
+app.UseStaticFiles();
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
+// Ensure wwwroot/uploads directory exists
+var uploadsPath = Path.Combine(app.Environment.WebRootPath ?? app.Environment.ContentRootPath, "uploads");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+    Console.WriteLine($"Created uploads directory: {uploadsPath}");
+}
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     db.Database.Migrate();
+}
+
+// Ensure wwwroot exists for uploads
+var webRoot = app.Environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+if (!Directory.Exists(webRoot))
+{
+    Directory.CreateDirectory(webRoot);
 }
 
 app.Run();
