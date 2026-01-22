@@ -154,6 +154,21 @@
                                 <TextBlock Text="Profile" VerticalAlignment="Center" FontSize="15" />
                             </StackPanel>
                         </Button>
+
+                        <!-- Time Off Requests (Coming Soon) -->
+                        <Button Command="{Binding TriggerComingSoonCommand}"
+                                Background="Transparent"
+                                Foreground="#6B7280">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <Viewbox Width="20" Height="20">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Stroke="#6B7280" StrokeThickness="2" Data="M9 11l3 3L22 4" />
+                                        <Path Stroke="#6B7280" StrokeThickness="2" Data="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock Text="Time Off Requests" VerticalAlignment="Center" FontSize="15" />
+                            </StackPanel>
+                        </Button>
                         
                         <!-- Attendance -->
                         <Button Command="{Binding NavigateToAttendanceCommand}"
@@ -302,7 +317,7 @@
                         </Button>
 
                         <!-- Time Off (Coming Soon) -->
-                        <Button Command="{Binding TriggerTimeOffCommand}"
+                        <Button Command="{Binding TriggerComingSoonCommand}"
                                 Background="Transparent"
                                 Foreground="#6B7280">
                             <StackPanel Orientation="Horizontal" Spacing="12">

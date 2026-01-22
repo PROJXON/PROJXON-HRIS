@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,18 +9,20 @@ using Client.Utils.Enums;
 using Client.Utils.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Shared.Attendance;
+using Shared.EmployeeManagement.Responses;
 
 namespace Client.ViewModels;
 
-/// <summary>
-/// ViewModel for the Employee Detail view
-/// Displays detailed employee information with tabs for Personal Info, Attendance, Documents, and Performance
-/// </summary>
 public partial class EmployeeDetailViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
     private readonly IEmployeeRepository? _employeeRepository;
+    private readonly IApiClient _apiClient;
+    private readonly IFileService _fileService;
     private int _currentEmployeeId;
+    
+    private const string BaseUrl = "http://localhost:8080";
 
     public SidebarViewModel Sidebar { get; }
 
@@ -30,6 +33,9 @@ public partial class EmployeeDetailViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isAttendanceTabSelected;
+    
+    [ObservableProperty]
+    private bool _isDocumentsTabSelected;
 
     #endregion
 
@@ -70,13 +76,50 @@ public partial class EmployeeDetailViewModel : ViewModelBase
 
     #endregion
 
-    #region Attendance
+    #region Attendance Pagination
+
+    // Full list (cache)
+    private ObservableCollection<AttendanceRecordViewModel> _allAttendanceRecords = new();
+
+    // Display list
+    [ObservableProperty]
+    private ObservableCollection<AttendanceRecordViewModel> _pagedAttendanceRecords = new();
 
     [ObservableProperty]
-    private ObservableCollection<AttendanceRecordViewModel> _attendanceRecords = new();
+    private int _attendanceCurrentPage = 1;
+
+    private const int AttendancePageSize = 5;
+
+    public int AttendanceTotalPages => (int)Math.Ceiling((double)_allAttendanceRecords.Count / AttendancePageSize);
+    public bool CanNavigateAttendanceNext => AttendanceCurrentPage < AttendanceTotalPages;
+    public bool CanNavigateAttendancePrev => AttendanceCurrentPage > 1;
 
     [ObservableProperty]
     private bool _hasNoAttendanceRecords;
+
+    #endregion
+
+    #region Documents Pagination
+
+    // Full list (cache)
+    [ObservableProperty]
+    private ObservableCollection<DocumentItem> _documents = new();
+    
+    // Display list
+    [ObservableProperty]
+    private ObservableCollection<DocumentItem> _pagedDocuments = new();
+    
+    [ObservableProperty]
+    private int _currentPage = 1;
+    
+    private const int PageSize = 5;
+
+    public int TotalPages => (int)Math.Ceiling((double)Documents.Count / PageSize);
+    public bool CanNavigateNext => CurrentPage < TotalPages;
+    public bool CanNavigatePrev => CurrentPage > 1;
+    
+    [ObservableProperty]
+    private bool _hasNoDocuments;
 
     #endregion
 
@@ -93,17 +136,20 @@ public partial class EmployeeDetailViewModel : ViewModelBase
     public EmployeeDetailViewModel(
         INavigationService navigationService,
         SidebarViewModel sidebarViewModel,
-        IEmployeeRepository? employeeRepository = null)
+        IEmployeeRepository employeeRepository,
+        IApiClient apiClient,
+        IFileService fileService)
     {
         _navigationService = navigationService;
         Sidebar = sidebarViewModel;
         _employeeRepository = employeeRepository;
+        _apiClient = apiClient;
+        _fileService = fileService;
     }
 
     // Parameterless constructor for design-time support
-    public EmployeeDetailViewModel() : this(null!, new SidebarViewModel(), null)
+    public EmployeeDetailViewModel() : this(null!, new SidebarViewModel(), null!, null!, null!)
     {
-        LoadMockData();
     }
 
     public void SetEmployeeId(int employeeId)
@@ -111,98 +157,16 @@ public partial class EmployeeDetailViewModel : ViewModelBase
         _currentEmployeeId = employeeId;
     }
 
-    private void LoadMockData()
-    {
-        // Mock employee data matching the Figma design
-        EmployeeFullName = "Alice Brown";
-        EmployeeInitial = "A";
-        EmployeeJobTitle = "Senior Developer";
-        EmployeeEmail = "alice.brown@company.com";
-        EmployeeDiscord = "alice_b#1234";
-        EmployeeDepartment = "Engineering";
-        EmployeeId = "EMP-0001";
-        EmployeePhone = "(555) 123-4567";
-        EmployeeStartDate = "January 15, 2022";
-        EmployeeLocation = "San Francisco, CA";
-        EmployeeType = "Full-time";
-
-        // Mock attendance records
-        AttendanceRecords = new ObservableCollection<AttendanceRecordViewModel>
-        {
-            new()
-            {
-                Date = new DateTime(2025, 10, 13),
-                StartTime = new TimeSpan(9, 0, 0),
-                EndTime = new TimeSpan(17, 30, 0)
-            },
-            new()
-            {
-                Date = new DateTime(2025, 10, 12),
-                StartTime = new TimeSpan(9, 15, 0),
-                EndTime = new TimeSpan(17, 45, 0)
-            },
-            new()
-            {
-                Date = new DateTime(2025, 10, 9),
-                StartTime = new TimeSpan(8, 45, 0),
-                EndTime = new TimeSpan(17, 15, 0)
-            },
-            new()
-            {
-                Date = new DateTime(2025, 10, 8),
-                StartTime = new TimeSpan(9, 0, 0),
-                EndTime = new TimeSpan(18, 0, 0)
-            },
-            new()
-            {
-                Date = new DateTime(2025, 10, 7),
-                StartTime = new TimeSpan(8, 30, 0),
-                EndTime = new TimeSpan(17, 0, 0)
-            }
-        };
-
-        HasNoAttendanceRecords = AttendanceRecords.Count == 0;
-    }
-
-    #region Tab Commands
-
-    [RelayCommand]
-    private void SelectPersonalInfoTab()
-    {
-        IsPersonalInfoTabSelected = true;
-        IsAttendanceTabSelected = false;
-    }
-
-    [RelayCommand]
-    private void SelectAttendanceTab()
-    {
-        IsPersonalInfoTabSelected = false;
-        IsAttendanceTabSelected = true;
-    }
-
-    #endregion
-
-    #region Navigation Commands
-
-    [RelayCommand]
-    private async Task GoBack()
-    {
-        await _navigationService.NavigateTo(ViewModelType.Employees);
-    }
-
-    #endregion
-
     public override async Task OnNavigatedToAsync()
     {
         Sidebar.CurrentPage = "Employees";
         Sidebar.SetPortalMode(false);
+        
         if (_currentEmployeeId > 0 && _employeeRepository != null)
         {
             await LoadEmployeeAsync();
-        }
-        else
-        {
-            LoadMockData();
+            await LoadAttendanceAsync();
+            await LoadDocumentsAsync(_currentEmployeeId);
         }
 
         await base.OnNavigatedToAsync();
@@ -218,35 +182,42 @@ public partial class EmployeeDetailViewModel : ViewModelBase
             var result = await _employeeRepository!.GetByIdAsync(_currentEmployeeId);
             if (result.IsSuccess && result.Value != null)
             {
-                var employee = result.Value;
+                var emp = result.Value;
 
-                EmployeeFullName = $"{employee.BasicInfo?.FirstName} {employee.BasicInfo?.LastName}".Trim();
-                EmployeeInitial = !string.IsNullOrEmpty(employee.BasicInfo?.FirstName)
-                    ? employee.BasicInfo.FirstName[0].ToString().ToUpper()
+                // Bind Header Info
+                EmployeeFullName = $"{emp.BasicInfo?.FirstName} {emp.BasicInfo?.LastName}".Trim();
+                EmployeeInitial = !string.IsNullOrEmpty(emp.BasicInfo?.FirstName) 
+                    ? emp.BasicInfo.FirstName[0].ToString().ToUpper() 
                     : "?";
-                EmployeeJobTitle = employee.PositionDetails?.PositionName ?? "Unknown Position";
-                EmployeeEmail = employee.ContactInfo?.ProjxonEmail ?? employee.ContactInfo?.PersonalEmail ?? string.Empty;
-                EmployeeDiscord = "user#0000"; // TODO: Add discord to DTO
-                EmployeeDepartment = "Engineering"; // TODO: Map from department ID
-                EmployeeId = $"EMP-{employee.Id:D4}";
-                EmployeePhone = employee.ContactInfo?.PhoneNumber ?? string.Empty;
-                EmployeeStartDate = employee.PositionDetails?.HireDate?.ToString("MMMM dd, yyyy") ?? "N/A";
-                EmployeeLocation = GetLocationString(employee.ContactInfo?.PermanentAddress);
-                EmployeeType = employee.PositionDetails?.EmploymentType?.ToString() ?? "N/A";
+                EmployeeJobTitle = emp.PositionDetails?.PositionName ?? "N/A";
+                EmployeeEmail = emp.ContactInfo?.ProjxonEmail ?? emp.ContactInfo?.PersonalEmail ?? "N/A";
+                
+                // Discord Binding
+                EmployeeDiscord = !string.IsNullOrWhiteSpace(emp.ContactInfo?.DiscordUsername) 
+                    ? emp.ContactInfo.DiscordUsername 
+                    : "N/A";
 
-                // TODO: Load actual attendance records from API
-                LoadMockAttendanceRecords();
+                // Department Binding
+                EmployeeDepartment = emp.PositionDetails?.Department ?? "General";
+
+                EmployeeId = $"EMP-{emp.Id:D4}";
+                EmployeePhone = emp.ContactInfo?.PhoneNumber ?? "N/A";
+                EmployeeStartDate = emp.PositionDetails?.HireDate?.ToString("MMMM dd, yyyy") ?? "N/A";
+                
+                // Location
+                var addr = emp.ContactInfo?.PermanentAddress;
+                EmployeeLocation = addr != null ? GetLocationString(addr) : "N/A";
+
+                EmployeeType = emp.PositionDetails?.EmploymentType?.ToString() ?? "N/A";
             }
             else
             {
                 ErrorMessage = result.ErrorMessage;
-                LoadMockData();
             }
         }
         catch (Exception ex)
         {
             ErrorMessage = ex.Message;
-            LoadMockData();
         }
         finally
         {
@@ -254,31 +225,148 @@ public partial class EmployeeDetailViewModel : ViewModelBase
         }
     }
 
-    private void LoadMockAttendanceRecords()
+    private async Task LoadAttendanceAsync()
     {
-        AttendanceRecords = new ObservableCollection<AttendanceRecordViewModel>
+        try
         {
-            new()
+            var result = await _apiClient.GetAllAsync<IEnumerable<AttendanceResponse>>($"api/Attendance/{_currentEmployeeId}");
+            
+            _allAttendanceRecords.Clear();
+            
+            if (result.IsSuccess && result.Data != null)
             {
-                Date = new DateTime(2025, 10, 13),
-                StartTime = new TimeSpan(9, 0, 0),
-                EndTime = new TimeSpan(17, 30, 0)
-            },
-            new()
-            {
-                Date = new DateTime(2025, 10, 12),
-                StartTime = new TimeSpan(9, 15, 0),
-                EndTime = new TimeSpan(17, 45, 0)
-            },
-            new()
-            {
-                Date = new DateTime(2025, 10, 9),
-                StartTime = new TimeSpan(8, 45, 0),
-                EndTime = new TimeSpan(17, 15, 0)
+                var sorted = result.Data.OrderByDescending(x => x.Date).ToList();
+                foreach (var rec in sorted)
+                {
+                    _allAttendanceRecords.Add(new AttendanceRecordViewModel
+                    {
+                        Date = rec.Date,
+                        StartTime = rec.StartTime,
+                        EndTime = rec.EndTime
+                    });
+                }
             }
-        };
+            
+            HasNoAttendanceRecords = _allAttendanceRecords.Count == 0;
+            
+            // Initialize Pagination
+            AttendanceCurrentPage = 1;
+            UpdatePagedAttendance();
+        }
+        catch
+        {
+            HasNoAttendanceRecords = true;
+        }
+    }
 
-        HasNoAttendanceRecords = AttendanceRecords.Count == 0;
+    private void UpdatePagedAttendance()
+    {
+        var items = _allAttendanceRecords.Skip((AttendanceCurrentPage - 1) * AttendancePageSize).Take(AttendancePageSize);
+        PagedAttendanceRecords = new ObservableCollection<AttendanceRecordViewModel>(items);
+
+        OnPropertyChanged(nameof(AttendanceTotalPages));
+        OnPropertyChanged(nameof(CanNavigateAttendanceNext));
+        OnPropertyChanged(nameof(CanNavigateAttendancePrev));
+    }
+
+    private async Task LoadDocumentsAsync(int employeeId)
+    {
+        try 
+        {
+            Documents.Clear();
+
+            if (_employeeRepository != null)
+            {
+                var empResult = await _employeeRepository.GetByIdAsync(employeeId);
+                if (empResult.IsSuccess && empResult.Value != null)
+                {
+                    var emp = empResult.Value;
+                    
+                    if (!string.IsNullOrEmpty(emp.Documents?.ResumeUrl))
+                    {
+                        Documents.Add(new DocumentItem 
+                        {
+                            Id = -1,
+                            FileName = "Resume",
+                            UploadedDate = "On File",
+                            DocumentType = "resume",
+                            FileUrl = SanitizeUrl(emp.Documents.ResumeUrl)
+                        });
+                    }
+                    
+                    if (!string.IsNullOrEmpty(emp.Documents?.CoverLetterUrl))
+                    {
+                        Documents.Add(new DocumentItem 
+                        {
+                            Id = -2,
+                            FileName = "Cover Letter",
+                            UploadedDate = "On File",
+                            DocumentType = "cover-letter",
+                            FileUrl = SanitizeUrl(emp.Documents.CoverLetterUrl)
+                        });
+                    }
+                    
+                    if (!string.IsNullOrEmpty(emp.Documents?.ProfilePictureUrl))
+                    {
+                        Documents.Add(new DocumentItem 
+                        {
+                            Id = -3,
+                            FileName = "Profile Picture",
+                            UploadedDate = "On File",
+                            DocumentType = "profile-picture",
+                            FileUrl = SanitizeUrl(emp.Documents.ProfilePictureUrl)
+                        });
+                    }
+                }
+            }
+
+            var result = await _apiClient.GetAllAsync<IEnumerable<EmployeeFileResponse>>($"api/Document/files/{employeeId}");
+            
+            if (result.IsSuccess && result.Data != null)
+            {
+                foreach(var file in result.Data)
+                {
+                    Documents.Add(new DocumentItem 
+                    {
+                        Id = file.Id,
+                        FileName = file.FileName,
+                        UploadedDate = file.UploadedAt.ToLocalTime().ToString("MM/dd/yyyy"),
+                        DocumentType = file.Category,
+                        FileUrl = SanitizeUrl(file.FileUrl)
+                    });
+                }
+            }
+            
+            CurrentPage = 1;
+            UpdatePagedDocuments(); 
+            HasNoDocuments = Documents.Count == 0;
+        }
+        catch
+        {
+            HasNoDocuments = true;
+        }
+    }
+
+    private void UpdatePagedDocuments()
+    {
+        var items = Documents.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+        PagedDocuments = new ObservableCollection<DocumentItem>(items);
+        
+        OnPropertyChanged(nameof(TotalPages));
+        OnPropertyChanged(nameof(CanNavigateNext));
+        OnPropertyChanged(nameof(CanNavigatePrev));
+    }
+    
+    private string? SanitizeUrl(string? url)
+    {
+        if (string.IsNullOrEmpty(url)) return null;
+        if (url.Contains(":8080") && !url.Contains("localhost"))
+        {
+            var uri = new Uri(url);
+            return $"{BaseUrl}{uri.PathAndQuery}";
+        }
+        if (url.StartsWith("/")) return $"{BaseUrl}{url}";
+        return url;
     }
 
     private static string GetLocationString(Shared.EmployeeManagement.Responses.AddressResponse? address)
@@ -291,8 +379,132 @@ public partial class EmployeeDetailViewModel : ViewModelBase
             address.StateOrProvince
         };
 
-        return string.Join(", ", parts.Where(p => !string.IsNullOrWhiteSpace(p)));
+        var location = string.Join(", ", parts.Where(p => !string.IsNullOrWhiteSpace(p)));
+        return string.IsNullOrWhiteSpace(location) ? "N/A" : location;
     }
+
+    #region Tab Commands
+
+    [RelayCommand]
+    private void SelectPersonalInfoTab()
+    {
+        IsPersonalInfoTabSelected = true;
+        IsAttendanceTabSelected = false;
+        IsDocumentsTabSelected = false;
+    }
+
+    [RelayCommand]
+    private void SelectAttendanceTab()
+    {
+        IsPersonalInfoTabSelected = false;
+        IsAttendanceTabSelected = true;
+        IsDocumentsTabSelected = false;
+    }
+
+    [RelayCommand]
+    private void SelectDocumentsTab()
+    {
+        IsPersonalInfoTabSelected = false;
+        IsAttendanceTabSelected = false;
+        IsDocumentsTabSelected = true;
+    }
+
+    #endregion
+
+    #region Pagination Commands (Documents)
+
+    [RelayCommand]
+    private void NextPage()
+    {
+        if (CanNavigateNext)
+        {
+            CurrentPage++;
+            UpdatePagedDocuments();
+        }
+    }
+
+    [RelayCommand]
+    private void PreviousPage()
+    {
+        if (CanNavigatePrev)
+        {
+            CurrentPage--;
+            UpdatePagedDocuments();
+        }
+    }
+
+    #endregion
+
+    #region Pagination Commands (Attendance)
+
+    [RelayCommand] 
+    private void NextAttendancePage() 
+    { 
+        if (CanNavigateAttendanceNext) 
+        { 
+            AttendanceCurrentPage++; 
+            UpdatePagedAttendance(); 
+        } 
+    }
+
+    [RelayCommand] 
+    private void PreviousAttendancePage() 
+    { 
+        if (CanNavigateAttendancePrev) 
+        { 
+            AttendanceCurrentPage--; 
+            UpdatePagedAttendance(); 
+        } 
+    }
+
+    #endregion
+
+    #region Feature Commands
+
+    [RelayCommand]
+    private void RequestChange()
+    {
+        Sidebar.TriggerComingSoonCommand.Execute(null);
+    }
+
+    [RelayCommand]
+    private void SelectPerformanceTab()
+    {
+        Sidebar.TriggerComingSoonCommand.Execute(null);
+    }
+
+    [RelayCommand]
+    private async Task GoBack()
+    {
+        await _navigationService.NavigateTo(ViewModelType.Employees);
+    }
+    
+    [RelayCommand]
+    private void ViewDocument(DocumentItem? doc)
+    {
+        if (doc?.FileUrl != null)
+        {
+            _fileService.OpenUrl(doc.FileUrl);
+        }
+    }
+
+    #endregion
+
+    #region Helper Classes
+
+    public class EmployeeFileResponse
+    {
+        public int Id { get; set; }
+        public int EmployeeId { get; set; }
+        public string FileName { get; set; } = string.Empty;
+        public string FileUrl { get; set; } = string.Empty;
+        public DateTime UploadedAt { get; set; }
+        public string Category { get; set; } = string.Empty;
+        public string ContentType { get; set; } = string.Empty;
+        public long SizeBytes { get; set; }
+    }
+
+    #endregion
 }
 
 /// <summary>

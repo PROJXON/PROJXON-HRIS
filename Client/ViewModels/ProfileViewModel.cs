@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -117,6 +118,18 @@ public partial class ProfileViewModel : ViewModelBase
     [ObservableProperty]
     private ObservableCollection<DocumentItem> _documents = new();
 
+    [ObservableProperty]
+    private ObservableCollection<DocumentItem> _pagedDocuments = new();
+
+    [ObservableProperty]
+    private int _currentPage = 1;
+
+    private const int PageSize = 5;
+
+    public int TotalPages => (int)Math.Ceiling((double)Documents.Count / PageSize);
+    public bool CanNavigateNext => CurrentPage < TotalPages;
+    public bool CanNavigatePrev => CurrentPage > 1;
+
     // Critical: Backing fields to persist URLs during Save updates
     private string? _resumeUrl;
     private string? _coverLetterUrl;
@@ -181,7 +194,8 @@ public partial class ProfileViewModel : ViewModelBase
             await _sessionService.RefreshEmployeeDataAsync();
             if (_sessionService.CurrentEmployee != null)
             {
-                LoadFromEmployee(_sessionService.CurrentEmployee);
+                LoadFromEmployee(_sessionService.CurrentEmployee); // Loads basic info
+                await LoadDocumentsAsync(_sessionService.CurrentEmployee.Id ?? 0); // Loads dynamic file list
             }
         }
 
@@ -226,8 +240,6 @@ public partial class ProfileViewModel : ViewModelBase
         // Update Header/Sidebar info
         ProfileName = $"{FirstName} {LastName}".Trim();
         ProfileRole = string.IsNullOrWhiteSpace(JobTitle) ? "Employee" : JobTitle;
-
-        BuildDocumentsList();
     }
 
     private string? SanitizeServerUrl(string? url)
@@ -242,20 +254,88 @@ public partial class ProfileViewModel : ViewModelBase
         return url;
     }
 
+    private async Task LoadDocumentsAsync(int employeeId)
+    {
+        try 
+        {
+            Documents.Clear();
+            
+            if (!string.IsNullOrEmpty(_resumeUrl))
+            {
+                Documents.Add(new DocumentItem 
+                {
+                    Id = -1, 
+                    FileName = "Resume",
+                    UploadedDate = "On File",
+                    DocumentType = "resume",
+                    FileUrl = _resumeUrl
+                });
+            }
+
+            if (!string.IsNullOrEmpty(_coverLetterUrl))
+            {
+                Documents.Add(new DocumentItem 
+                {
+                    Id = -2,
+                    FileName = "Cover Letter",
+                    UploadedDate = "On File",
+                    DocumentType = "cover-letter",
+                    FileUrl = _coverLetterUrl
+                });
+            }
+            
+            if (!string.IsNullOrEmpty(ProfilePictureUrl))
+            {
+                Documents.Add(new DocumentItem 
+                {
+                    Id = -3,
+                    FileName = "Profile Picture",
+                    UploadedDate = "On File",
+                    DocumentType = "profile-picture",
+                    FileUrl = ProfilePictureUrl
+                });
+            }
+
+            // Fetch Generic Files from API
+            var result = await _apiClient.GetAllAsync<IEnumerable<EmployeeFileResponse>>($"api/Document/files/{employeeId}");
+            
+            if (result.IsSuccess && result.Data != null)
+            {
+                foreach(var file in result.Data)
+                {
+                    Documents.Add(new DocumentItem 
+                    {
+                        Id = file.Id,
+                        FileName = file.FileName,
+                        UploadedDate = file.UploadedAt.ToLocalTime().ToString("MM/dd/yyyy"),
+                        DocumentType = file.Category,
+                        FileUrl = SanitizeServerUrl(file.FileUrl)
+                    });
+                }
+            }
+            
+            // Update Pagination
+            CurrentPage = 1; 
+            BuildDocumentsList(); 
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Failed to load documents list");
+        }
+    }
+
     private void BuildDocumentsList()
     {
-        Documents.Clear();
+        UpdatePagedDocuments();
+        OnPropertyChanged(nameof(TotalPages));
+        OnPropertyChanged(nameof(CanNavigateNext));
+        OnPropertyChanged(nameof(CanNavigatePrev));
+    }
 
-        if (!string.IsNullOrEmpty(_resumeUrl))
-        {
-            Documents.Add(new DocumentItem
-            {
-                FileName = "Resume",
-                UploadedDate = "Uploaded", 
-                DocumentType = "resume",
-                FileUrl = _resumeUrl
-            });
-        }
+    private void UpdatePagedDocuments()
+    {
+        var items = Documents.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+        PagedDocuments = new ObservableCollection<DocumentItem>(items);
     }
 
     #region Tab Commands
@@ -281,7 +361,6 @@ public partial class ProfileViewModel : ViewModelBase
     [RelayCommand]
     private void StartEditing()
     {
-        // Copy current values to edit buffers
         EditFirstName = FirstName;
         EditLastName = LastName;
         EditPreferredName = PreferredName;
@@ -292,10 +371,8 @@ public partial class ProfileViewModel : ViewModelBase
         EditProjxonEmail = ProjxonEmail;
         EditDiscordUsername = DiscordUsername;
 
-        // Ensure dropdown is synced
         SelectedDepartment = Departments.FirstOrDefault(d => d.Name.Equals(Department, StringComparison.OrdinalIgnoreCase));
         
-        // Parse Start Date string to DateTimeOffset for DatePicker
         if (DateTime.TryParse(StartDate, out var parsedDate))
         {
             EditStartDate = new DateTimeOffset(parsedDate);
@@ -328,11 +405,9 @@ public partial class ProfileViewModel : ViewModelBase
 
         try
         {
-            // Convert DateTimeOffset to UTC DateTime for PostgreSQL compatibility
             DateTime? hireDateUtc = null;
             if (EditStartDate.HasValue)
             {
-                // Use the date portion and specify it as UTC to satisfy PostgreSQL timestamptz
                 hireDateUtc = DateTime.SpecifyKind(EditStartDate.Value.Date, DateTimeKind.Utc);
             }
 
@@ -376,10 +451,8 @@ public partial class ProfileViewModel : ViewModelBase
 
             if (response.IsSuccess)
             {
-                // Force a session refresh
                 await _sessionService.RefreshEmployeeDataAsync();
                 
-                // Reload local view
                 if (_sessionService.CurrentEmployee != null)
                 {
                     LoadFromEmployee(_sessionService.CurrentEmployee);
@@ -401,6 +474,34 @@ public partial class ProfileViewModel : ViewModelBase
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    #endregion
+
+    #region Pagination Commands
+
+    [RelayCommand]
+    private void NextPage()
+    {
+        if (CanNavigateNext)
+        {
+            CurrentPage++;
+            UpdatePagedDocuments();
+            OnPropertyChanged(nameof(CanNavigateNext));
+            OnPropertyChanged(nameof(CanNavigatePrev));
+        }
+    }
+
+    [RelayCommand]
+    private void PreviousPage()
+    {
+        if (CanNavigatePrev)
+        {
+            CurrentPage--;
+            UpdatePagedDocuments();
+            OnPropertyChanged(nameof(CanNavigateNext));
+            OnPropertyChanged(nameof(CanNavigatePrev));
         }
     }
 
@@ -428,9 +529,47 @@ public partial class ProfileViewModel : ViewModelBase
                 _resumeUrl = SanitizeServerUrl(result.FileUrl);
                 
                 await _sessionService.RefreshEmployeeDataAsync();
-                BuildDocumentsList();
+                await LoadDocumentsAsync(_currentEmployeeId);
                 
                 SuccessMessage = "Resume uploaded successfully!";
+            }
+            else
+            {
+                ErrorMessage = "Upload failed: " + (result.ErrorMessage ?? "Unknown error");
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Upload error: {ex.Message}";
+        }
+        finally
+        {
+            IsUploadingDocument = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task UploadDocumentAsync()
+    {
+        if (_currentEmployeeId == 0) return;
+
+        try
+        {
+            var file = await _fileService.PickFileAsync("Select Document", new[] { 
+                ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".csv", 
+                ".ppt", ".pptx", ".txt", ".rtf" 
+            });
+            if (file == null) return;
+
+            IsUploadingDocument = true;
+            ErrorMessage = string.Empty;
+
+            var result = await _fileService.UploadFileAsync(file, _currentEmployeeId, "other");
+
+            if (result.Success && result.FileUrl != null)
+            {
+                await LoadDocumentsAsync(_currentEmployeeId);
+                SuccessMessage = "Document uploaded successfully!";
             }
             else
             {
@@ -455,20 +594,84 @@ public partial class ProfileViewModel : ViewModelBase
             _fileService.OpenUrl(doc.FileUrl);
         }
     }
+    
+    // Delete Document Command
+    [RelayCommand]
+    private async Task DeleteDocument(DocumentItem? doc)
+    {
+        if (doc == null || _currentEmployeeId == 0) return;
+        
+        IsLoading = true;
+        ErrorMessage = string.Empty;
+        
+        try 
+        {
+            ApiResponse<object?> response;
+            
+            // Check if it is a specific file (Resume, etc) or generic
+            if (doc.Id < 0)
+            {
+                var endpoint = $"api/Document/{_currentEmployeeId}/{doc.DocumentType}";
+                response = await _apiClient.DeleteAsync<object>(endpoint);
+                
+                // If successful, clear the local URL variable so it doesn't reappear
+                if (response.IsSuccess)
+                {
+                    if (doc.DocumentType == "resume") _resumeUrl = null;
+                    else if (doc.DocumentType == "cover-letter") _coverLetterUrl = null;
+                    else if (doc.DocumentType == "profile-picture") ProfilePictureUrl = null;
+                    
+                    // Sync session
+                    await _sessionService.RefreshEmployeeDataAsync();
+                }
+            }
+            else
+            {
+                response = await _apiClient.DeleteAsync<object>("api/Document/file", doc.Id);
+            }
+            
+            if (response.IsSuccess)
+            {
+                SuccessMessage = "File deleted successfully.";
+                await LoadDocumentsAsync(_currentEmployeeId);
+            }
+            else 
+            {
+                ErrorMessage = "Failed to delete: " + response.ErrorMessage;
+            }
+        }
+        catch (Exception ex)
+        {
+             ErrorMessage = "Delete error: " + ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
 
     #endregion
 }
 
-// ---------------------------------------------------------
-// Helper Classes
-// ---------------------------------------------------------
-
 public class DocumentItem
 {
+    public int Id { get; set; }
     public string FileName { get; set; } = string.Empty;
     public string UploadedDate { get; set; } = string.Empty;
     public string DocumentType { get; set; } = string.Empty;
     public string? FileUrl { get; set; }
+}
+
+public class EmployeeFileResponse
+{
+    public int Id { get; set; }
+    public int EmployeeId { get; set; }
+    public string FileName { get; set; } = string.Empty;
+    public string FileUrl { get; set; } = string.Empty;
+    public DateTime UploadedAt { get; set; }
+    public string Category { get; set; } = string.Empty;
+    public string ContentType { get; set; } = string.Empty;
+    public long SizeBytes { get; set; }
 }
 
 public class DepartmentOption(int id, string name)

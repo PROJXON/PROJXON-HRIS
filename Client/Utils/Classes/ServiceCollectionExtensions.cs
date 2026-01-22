@@ -26,13 +26,17 @@ public static class ServiceCollectionExtensions
 
         collection.AddLogging();
 
+        // Register the authorization message handler
+        collection.AddTransient<AuthorizationMessageHandler>();
+
         collection.AddHttpClient("OAuth");
         collection.AddHttpClient<IApiClient, ApiClient>("Api", client =>
         {
             client.BaseAddress = new Uri(baseUrl);
             client.Timeout = TimeSpan.FromSeconds(30);
             client.DefaultRequestHeaders.Add("User-Agent", "HRIS-App/1.0");
-        });
+        })
+        .AddHttpMessageHandler<AuthorizationMessageHandler>(); // Add the authorization handler
 
         collection.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
@@ -58,6 +62,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<FormsViewModel>();
         collection.AddTransient<CreateSurveyViewModel>();
         collection.AddTransient<TasksViewModel>();
+        collection.AddTransient<SurveyResponsesViewModel>();
 
 
         // Views
@@ -77,7 +82,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<CreateSurveyView>();
         collection.AddTransient<TasksView>();
         collection.AddTransient<TakeSurveyView>();
-
         collection.AddTransient<SidebarView>();
+        collection.AddTransient<SurveyResponsesView>();
     }
 }

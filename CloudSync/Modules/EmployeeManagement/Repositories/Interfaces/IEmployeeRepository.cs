@@ -18,4 +18,10 @@ public interface IEmployeeRepository
     Task<Employee> CreateAsync(Employee employee);
     Task UpdateAsync(int id, Employee employee);
     Task DeleteAsync(int id);
+    
+    // File Management Methods
+    Task AddFileAsync(EmployeeFile file);
+    Task<IEnumerable<EmployeeFile>> GetFilesByEmployeeIdAsync(int employeeId);
+    Task DeleteFileAsync(int fileId);
+    Task<EmployeeFile?> GetFileByIdAsync(int fileId);
 }

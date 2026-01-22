@@ -60,8 +60,8 @@
             <Border Background="White" CornerRadius="12" Padding="32" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center" BoxShadow="0 10 30 0 #40000000">
                 <StackPanel Spacing="16">
                     <StackPanel Spacing="8">
-                        <TextBlock Text="Feature Coming Soon" FontSize="20" FontWeight="Bold" Foreground="#1F2937" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Time Off requests are currently under development." FontSize="15" Foreground="#6B7280" TextAlignment="Center" TextWrapping="Wrap"/>
+                        <TextBlock Text="Coming Soon" FontSize="20" FontWeight="Bold" Foreground="#1F2937" HorizontalAlignment="Center"/>
+                        <TextBlock Text="This feature is currently under development." FontSize="15" Foreground="#6B7280" TextAlignment="Center" TextWrapping="Wrap"/>
                     </StackPanel>
                     <Button Command="{Binding CloseComingSoonCommand}" Content="Got it" HorizontalAlignment="Center" Background="#1F2937" Foreground="White" CornerRadius="6" Padding="24,10" Cursor="Hand"/>
                 </StackPanel>

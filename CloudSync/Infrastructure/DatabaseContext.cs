@@ -27,6 +27,7 @@ public class DatabaseContext : DbContext
     public DbSet<Survey> Surveys { get; set; }
     public DbSet<SurveyAssignment> SurveyAssignments { get; set; }
     public DbSet<Attendance> Attendance { get; set; }
+    public virtual DbSet<EmployeeFile> EmployeeFiles { get; set; }
 
     public virtual DbSet<Address> Addresses { get; set; }
     public virtual DbSet<Department> Departments { get; set; }

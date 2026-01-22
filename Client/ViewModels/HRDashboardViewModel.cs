@@ -18,6 +18,10 @@ using Shared.EmployeeManagement.Responses;
 
 namespace Client.ViewModels;
 
+/// <summary>
+/// ViewModel for the HR Portal Dashboard
+/// Provides access to HR-specific features like employee management, recruitment, time off approval, etc.
+/// </summary>
 public partial class HRDashboardViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;

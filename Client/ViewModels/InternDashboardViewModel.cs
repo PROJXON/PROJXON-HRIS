@@ -51,10 +51,21 @@ public partial class InternDashboardViewModel : ViewModelBase
         Sidebar.CurrentPage = "Dashboard";
         Sidebar.SetPortalMode(true);
 
+        // Force a refresh to ensure we have the latest Name data
+        await _sessionService.RefreshEmployeeDataAsync();
+        
         if (_sessionService.CurrentEmployee?.BasicInfo != null)
         {
             var basic = _sessionService.CurrentEmployee.BasicInfo;
-            UserName = basic.PreferredName ?? basic.FirstName ?? "Intern";
+            
+            // Logic to prioritize Preferred Name, then First Name, then Fallback
+            var nameToUse = !string.IsNullOrWhiteSpace(basic.PreferredName) ? basic.PreferredName : basic.FirstName;
+            
+            UserName = !string.IsNullOrWhiteSpace(nameToUse) ? nameToUse : "Intern";
+        }
+        else
+        {
+            UserName = "Intern";
         }
 
         await LoadDashboardData();

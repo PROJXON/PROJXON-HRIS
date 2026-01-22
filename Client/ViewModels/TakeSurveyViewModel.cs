@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.Json;
@@ -24,6 +25,12 @@ public partial class TakeSurveyViewModel : ViewModelBase
     [ObservableProperty] private bool _isLoading;
     [ObservableProperty] private string _errorMessage = string.Empty;
     
+    // Read Only Property
+    [ObservableProperty] private bool _isReadOnly;
+    
+    // Dynamic return destination - defaults to Tasks (for Interns)
+    public ViewModelType ReturnDestination { get; set; } = ViewModelType.Tasks;
+    
     public ObservableCollection<SurveyAnswerViewModel> Questions { get; } = new();
 
     public TakeSurveyViewModel(IApiClient apiClient, INavigationService navigationService)
@@ -44,14 +51,25 @@ public partial class TakeSurveyViewModel : ViewModelBase
             
             if (response.IsSuccess && response.Data != null && response.Data.Survey != null)
             {
-                var survey = response.Data.Survey;
+                var data = response.Data;
+                var survey = data.Survey;
                 
                 Title = survey.Title;
                 Description = survey.Description;
                 
+                // Determine if Read Only
+                IsReadOnly = data.IsCompleted;
+
+                // Parse Questions
                 if (!string.IsNullOrEmpty(survey.QuestionsJson))
                 {
                     ParseQuestions(survey.QuestionsJson);
+                }
+
+                // If Completed, Parse Answers and fill them in
+                if (IsReadOnly && !string.IsNullOrEmpty(data.ResponseJson))
+                {
+                    ParseAnswers(data.ResponseJson);
                 }
             }
             else
@@ -105,6 +123,37 @@ public partial class TakeSurveyViewModel : ViewModelBase
         }
     }
 
+    // Helper to parse answers
+    private void ParseAnswers(string json)
+    {
+        try
+        {
+            var answers = JsonSerializer.Deserialize<List<AnswerDto>>(json);
+            if (answers != null)
+            {
+                foreach (var ans in answers)
+                {
+                    var question = Questions.FirstOrDefault(q => q.QuestionId == ans.id);
+                    if (question != null)
+                    {
+                        question.Answer = ans.answer ?? "";
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Fail silently or log if answer parsing fails
+        }
+    }
+
+    // Private DTO for deserialization
+    private class AnswerDto
+    {
+        public int id { get; set; }
+        public string? answer { get; set; }
+    }
+
     [RelayCommand]
     private async Task SubmitSurvey()
     {
@@ -114,11 +163,12 @@ public partial class TakeSurveyViewModel : ViewModelBase
             var answers = Questions.Select(q => new { id = q.QuestionId, answer = q.Answer }).ToList();
             var jsonAnswers = JsonSerializer.Serialize(answers);
 
-            var response = await _apiClient.PostAsync<object>($"api/Survey/complete/{_assignmentId}", jsonAnswers); // Send raw string, handled by backend
+            var response = await _apiClient.PostAsync<object>($"api/Survey/complete/{_assignmentId}", jsonAnswers);
             
             if (response.IsSuccess)
             {
-                await _navigationService.NavigateTo(ViewModelType.Tasks);
+                // Use dynamic destination instead of hardcoding Tasks
+                await _navigationService.NavigateTo(ReturnDestination);
             }
             else 
             {
@@ -138,7 +188,8 @@ public partial class TakeSurveyViewModel : ViewModelBase
     [RelayCommand]
     private async Task Cancel()
     {
-        await _navigationService.NavigateTo(ViewModelType.Tasks);
+        // Use the dynamic destination instead of hardcoding Tasks
+        await _navigationService.NavigateTo(ReturnDestination);
     }
 }
 

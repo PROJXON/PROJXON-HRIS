@@ -43,10 +43,19 @@ public class FileService : IFileService
 
     private static readonly FilePickerFileType AllSupportedFileTypes = new("All Supported Files")
     {
-        Patterns = new[] { "*.jpg", "*.jpeg", "*.png", "*.gif", "*.webp", "*.pdf", "*.doc", "*.docx" },
-        MimeTypes = new[] { "image/jpeg", "image/png", "image/gif", "image/webp",
-            "application/pdf", "application/msword",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }
+        Patterns = new[] { 
+            "*.pdf", "*.doc", "*.docx", "*.rtf", "*.txt",
+            "*.xls", "*.xlsx", "*.csv",
+            "*.ppt", "*.pptx",
+            "*.jpg", "*.jpeg", "*.png", "*.gif", "*.webp"
+        },
+        MimeTypes = new[] { 
+            "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/rtf", "text/plain",
+            "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv",
+            "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            "image/jpeg", "image/png", "image/gif", "image/webp"
+        }
     };
 
     public FileService(
@@ -213,22 +222,16 @@ public class FileService : IFileService
     {
         try
         {
-            // Get auth token
-            var token = await _authService.GetAccessTokenAsync();
-            
             // Create multipart form content
             using var content = new MultipartFormDataContent();
             using var streamContent = new StreamContent(stream);
             streamContent.Headers.ContentType = new MediaTypeHeaderValue(contentType);
             
             content.Add(streamContent, "file", fileName);
-
-            // Configure request
-            using var request = new HttpRequestMessage(
-                HttpMethod.Post, 
-                $"{_baseUrl}api/Document/upload/{employeeId}/{documentType}");
             
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var url = $"{_baseUrl}api/Document/upload/{employeeId}/{documentType}";
+            
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Content = content;
 
             // Send request
@@ -304,6 +307,13 @@ public class FileService : IFileService
             ".pdf" => "application/pdf",
             ".doc" => "application/msword",
             ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ".rtf" => "application/rtf",
+            ".txt" => "text/plain",
+            ".xls" => "application/vnd.ms-excel",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".csv" => "text/csv",
+            ".ppt" => "application/vnd.ms-powerpoint",
+            ".pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
             _ => "application/octet-stream"
         };
     }

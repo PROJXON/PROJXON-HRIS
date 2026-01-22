@@ -168,4 +168,62 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
             throw new EmployeeException(e.Message, 500);
         }
     }
+
+    // File Management Methods
+    public async Task AddFileAsync(EmployeeFile file)
+    {
+        try
+        {
+            await context.EmployeeFiles.AddAsync(file);
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
+    }
+
+    public async Task<IEnumerable<EmployeeFile>> GetFilesByEmployeeIdAsync(int employeeId)
+    {
+        try
+        {
+            return await context.EmployeeFiles
+                .Where(f => f.EmployeeId == employeeId)
+                .OrderByDescending(f => f.UploadedAt)
+                .ToListAsync();
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
+    }
+
+    public async Task DeleteFileAsync(int fileId)
+    {
+        try
+        {
+            var file = await context.EmployeeFiles.FindAsync(fileId);
+            if (file != null)
+            {
+                context.EmployeeFiles.Remove(file);
+                await context.SaveChangesAsync();
+            }
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
+    }
+
+    public async Task<EmployeeFile?> GetFileByIdAsync(int fileId)
+    {
+        try
+        {
+            return await context.EmployeeFiles.FindAsync(fileId);
+        }
+        catch (Exception e)
+        {
+            throw new EmployeeException(e.Message, 500);
+        }
+    }
 }

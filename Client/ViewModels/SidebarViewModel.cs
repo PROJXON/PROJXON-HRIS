@@ -182,8 +182,9 @@ public partial class SidebarViewModel : ViewModelBase
     [RelayCommand]
     private async Task NavigateToAttendance() => await _navigationService.NavigateTo(ViewModelType.Attendance);
 
+    // Made public to be called by other ViewModels
     [RelayCommand]
-    private void TriggerTimeOff()
+    public void TriggerComingSoon()
     {
         ComingSoonRequested?.Invoke(this, EventArgs.Empty);
     }

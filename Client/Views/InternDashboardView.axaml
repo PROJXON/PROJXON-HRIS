@@ -47,9 +47,16 @@
                                 <TextBlock Text="Hours This Week" FontSize="14" Foreground="#6B7280" />
                                 <TextBlock Text="{Binding HoursThisWeek}" FontSize="32" FontWeight="Bold" Foreground="#1F2937" />
                             </StackPanel>
-                            <!-- Icon Blue -->
+                            <!-- Icon Blue: Clock -->
                             <Border Grid.Column="1" Background="#3B82F6" CornerRadius="10" Width="48" Height="48" VerticalAlignment="Center">
-                                <TextBlock Text="🕒" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Viewbox Width="24" Height="24">
+                                    <Canvas Width="24" Height="24">
+                                        <!-- Circle -->
+                                        <Path Stroke="White" StrokeThickness="2" Data="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" />
+                                        <!-- Hands -->
+                                        <Path Stroke="White" StrokeThickness="2" Data="M12 6v6l4 2" />
+                                    </Canvas>
+                                </Viewbox>
                             </Border>
                         </Grid>
                     </Border>
@@ -61,9 +68,14 @@
                                 <TextBlock Text="Days Present" FontSize="14" Foreground="#6B7280" />
                                 <TextBlock Text="{Binding DaysPresent}" FontSize="32" FontWeight="Bold" Foreground="#1F2937" />
                             </StackPanel>
-                            <!-- Icon Green -->
+                            <!-- Icon Green: Calendar -->
                             <Border Grid.Column="1" Background="#22C55E" CornerRadius="10" Width="48" Height="48" VerticalAlignment="Center">
-                                <TextBlock Text="📅" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Viewbox Width="24" Height="24">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Stroke="White" StrokeThickness="2" Data="M8 2v4 M16 2v4 M3 10h18" />
+                                        <Path Stroke="White" StrokeThickness="2" Data="M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+                                    </Canvas>
+                                </Viewbox>
                             </Border>
                         </Grid>
                     </Border>
@@ -75,9 +87,15 @@
                                 <TextBlock Text="Pending Tasks" FontSize="14" Foreground="#6B7280" />
                                 <TextBlock Text="{Binding PendingTasks}" FontSize="32" FontWeight="Bold" Foreground="#1F2937" />
                             </StackPanel>
-                            <!-- Icon Orange -->
+                            <!-- Icon Orange: Checklist -->
                             <Border Grid.Column="1" Background="#F97316" CornerRadius="10" Width="48" Height="48" VerticalAlignment="Center">
-                                <TextBlock Text="📋" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Viewbox Width="24" Height="24">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Stroke="White" StrokeThickness="2" Data="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                                        <Path Stroke="White" StrokeThickness="2" Data="M9 14l2 2 4-4" />
+                                        <Path Stroke="White" StrokeThickness="2" Data="M9 2h6a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" />
+                                    </Canvas>
+                                </Viewbox>
                             </Border>
                         </Grid>
                     </Border>
@@ -89,9 +107,15 @@
                                 <TextBlock Text="Completed Tasks" FontSize="14" Foreground="#6B7280" />
                                 <TextBlock Text="{Binding CompletedTasks}" FontSize="32" FontWeight="Bold" Foreground="#1F2937" />
                             </StackPanel>
-                            <!-- Icon Purple -->
+                            <!-- Icon Purple: File Text -->
                             <Border Grid.Column="1" Background="#A855F7" CornerRadius="10" Width="48" Height="48" VerticalAlignment="Center">
-                                <TextBlock Text="✅" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Viewbox Width="24" Height="24">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Stroke="White" StrokeThickness="2" Data="M14 2v4a2 2 0 0 0 2 2h4" />
+                                        <Path Stroke="White" StrokeThickness="2" Data="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z" />
+                                        <Path Stroke="White" StrokeThickness="2" Data="M10 9H8 M16 13H8 M16 17H8" />
+                                    </Canvas>
+                                </Viewbox>
                             </Border>
                         </Grid>
                     </Border>
@@ -194,6 +218,14 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                            
+                            <!-- Empty State -->
+                            <TextBlock Text="No recent activity" 
+                                       IsVisible="{Binding !RecentActivities.Count}"
+                                       Foreground="#9CA3AF" 
+                                       FontStyle="Italic"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,20"/>
                         </StackPanel>
                     </Border>
                 </Grid>

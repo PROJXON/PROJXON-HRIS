@@ -117,10 +117,9 @@ public partial class FormsViewModel : ViewModelBase
     private async Task ViewResponses(FormItemViewModel? form)
     {
         if (form == null) return;
-
-        // Placeholder as no specific view exists yet, but ensures button isn't dead
-        // Ideally navigate to a details page
-        await Task.CompletedTask;
+        
+        // Navigate to the list of responses, passing the Survey ID
+        await _navigationService.NavigateTo(ViewModelType.SurveyResponses, form.Id);
     }
 
     [RelayCommand]

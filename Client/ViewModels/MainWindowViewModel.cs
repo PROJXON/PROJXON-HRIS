@@ -108,7 +108,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         ViewModelBase? newVm = null;
 
-        // 1. Determine Logic based on ViewModel Type
+        // Determine Logic based on ViewModel Type
         switch (e.ViewModelType)
         {
             case ViewModelType.Login:
@@ -180,8 +180,40 @@ public partial class MainWindowViewModel : ObservableObject
                 break;
             case ViewModelType.TakeSurvey:
                 var takeSurveyVm = new TakeSurveyViewModel(_apiClient, _navigationService);
+                
+                // Determine where to go back to based on current Portal
+                var currentPortal = await _userPreferencesService.GetPortalPreferenceAsync();
+                
+                if (currentPortal == PortalType.HR)
+                {
+                    // HR Users go back to Forms list
+                    // Since SurveyResponsesViewModel is transient and requires a surveyId,
+                    // we return to Forms to prevent navigation errors
+                    takeSurveyVm.ReturnDestination = ViewModelType.Forms; 
+                }
+                else
+                {
+                    // Interns go back to Tasks
+                    takeSurveyVm.ReturnDestination = ViewModelType.Tasks;
+                }
+                
                 if (e.EntityId > 0) await takeSurveyVm.LoadFromAssignmentAsync(e.EntityId);
+                
                 newVm = takeSurveyVm;
+                IsSidebarVisible = true;
+                break;
+            
+            case ViewModelType.SurveyResponses:
+                var surveyResponsesVm = new SurveyResponsesViewModel(
+                    _apiClient, 
+                    _navigationService, 
+                    _sidebarViewModel);
+                
+                // Pass the Survey ID (EntityId) to load data
+                if (e.EntityId > 0) 
+                    await surveyResponsesVm.LoadResponsesAsync(e.EntityId);
+                    
+                newVm = surveyResponsesVm;
                 IsSidebarVisible = true;
                 break;
                 
@@ -199,7 +231,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     private EmployeeDetailViewModel CreateEmployeeDetailViewModel(int employeeId)
     {
-        var vm = new EmployeeDetailViewModel(_navigationService, _sidebarViewModel, _employeeRepository);
+        var vm = new EmployeeDetailViewModel(_navigationService, _sidebarViewModel, _employeeRepository, _apiClient, _fileService);
         vm.SetEmployeeId(employeeId);
         return vm;
     }
