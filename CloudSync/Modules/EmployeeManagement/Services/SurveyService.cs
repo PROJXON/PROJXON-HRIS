@@ -103,6 +103,33 @@ public class SurveyService(
             .ToListAsync();
     }
 
+    // Get assignments for a specific survey
+    public async Task<IEnumerable<SurveyAssignmentResponse>> GetAssignmentsBySurveyIdAsync(int surveyId)
+    {
+        // This executes "WHERE survey_id = X" in SQL
+        return await _context.SurveyAssignments
+            .Include(sa => sa.Employee) // Load employee to get names
+            .Where(sa => sa.SurveyId == surveyId)
+            .OrderByDescending(sa => sa.CompletedDate)
+            .Select(sa => new SurveyAssignmentResponse
+            {
+                Id = sa.Id,
+                SurveyId = sa.SurveyId,
+                EmployeeId = sa.EmployeeId,
+                // Handle null employee gracefully
+                EmployeeName = sa.Employee != null 
+                    ? $"{sa.Employee.BasicInfo.FirstName} {sa.Employee.BasicInfo.LastName}" 
+                    : "Unknown",
+                AssignedDate = sa.AssignedDate,
+                IsCompleted = sa.IsCompleted,
+                CompletedDate = sa.CompletedDate,
+                // We usually don't need the full JSON list for the summary view, 
+                // but we include it if needed for the ViewModel logic
+                ResponseJson = sa.ResponseJson 
+            })
+            .ToListAsync();
+    }
+
     public async Task<SurveyResponse> CreateSurveyAsync(CreateSurveyRequest request)
     {
         var survey = new Survey

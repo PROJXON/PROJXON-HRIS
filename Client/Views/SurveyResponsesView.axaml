@@ -1,0 +1,182 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Client.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
+             x:Class="Client.Views.SurveyResponsesView"
+             x:DataType="vm:SurveyResponsesViewModel">
+
+    <UserControl.Styles>
+        <!-- Style 1: Clean DataGrid Header -->
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#6B7280" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="12,0,0,0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="SeparatorBrush" Value="Transparent" />
+        </Style>
+
+        <!-- Style 2: Clean DataGrid Cell -->
+        <Style Selector="DataGridCell">
+            <Setter Property="Padding" Value="12" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+        
+        <!-- Style 3: Remove cell focus dotted line -->
+        <Style Selector="DataGridCell:focus /template/ Grid#FocusVisual">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="#F8F9FA">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="40,32,40,32" Spacing="24">
+                
+                <!-- Back Button -->
+                <Button Command="{Binding GoBackCommand}"
+                        Background="Transparent" BorderThickness="0" Padding="0" Cursor="Hand" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="←" FontSize="16" VerticalAlignment="Center"/>
+                        <TextBlock Text="Back to Forms" FontSize="14" Foreground="#374151" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+
+                <!-- Header -->
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Survey Responses" FontSize="28" FontWeight="Bold" Foreground="#1F2937" />
+                    <TextBlock Text="{Binding SurveyTitle, StringFormat='Reviewing responses for: {0}'}" FontSize="16" Foreground="#6B7280" />
+                </StackPanel>
+
+                <!-- Loading / Error -->
+                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" />
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+                <!-- Data Table -->
+                <Border Background="White" 
+                        CornerRadius="12" 
+                        BorderBrush="#E5E7EB" 
+                        BorderThickness="1" 
+                        Padding="0" 
+                        ClipToBounds="True">
+                    
+                    <DataGrid ItemsSource="{Binding Assignments}" 
+                              AutoGenerateColumns="False" 
+                              IsReadOnly="True" 
+                              GridLinesVisibility="Horizontal" 
+                              HorizontalGridLinesBrush="#F3F4F6"
+                              BorderThickness="0"
+                              RowBackground="White"
+                              HeadersVisibility="Column"
+                              RowHeight="60">
+                        
+                        <DataGrid.Columns>
+                            <!-- Employee Column -->
+                            <DataGridTemplateColumn Header="Employee" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding EmployeeName}" 
+                                                   VerticalAlignment="Center" 
+                                                   Margin="12,0" 
+                                                   FontWeight="Medium" 
+                                                   Foreground="#1F2937"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            
+                            <!-- Status Column -->
+                            <DataGridTemplateColumn Header="Status" Width="140">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Panel VerticalAlignment="Center" Margin="12,0,0,0">
+                                            <!-- Completed Badge -->
+                                            <Border Background="#DCFCE7" 
+                                                    CornerRadius="12" 
+                                                    Padding="10,4" 
+                                                    HorizontalAlignment="Left"
+                                                    IsVisible="{Binding IsCompleted}">
+                                                <TextBlock Text="Completed" 
+                                                           Foreground="#166534" 
+                                                           FontSize="12" 
+                                                           FontWeight="SemiBold"/>
+                                            </Border>
+                                            
+                                            <!-- Pending Badge -->
+                                            <Border Background="#F3F4F6" 
+                                                    CornerRadius="12" 
+                                                    Padding="10,4" 
+                                                    HorizontalAlignment="Left"
+                                                    IsVisible="{Binding !IsCompleted}">
+                                                <TextBlock Text="Pending" 
+                                                           Foreground="#6B7280" 
+                                                           FontSize="12" 
+                                                           FontWeight="SemiBold"/>
+                                            </Border>
+                                        </Panel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Date Submitted Column (Hiding 0001 dates) -->
+                            <DataGridTemplateColumn Header="Date Submitted" Width="180">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Panel VerticalAlignment="Center" Margin="12,0">
+                                            <!-- Show Date if Completed -->
+                                            <TextBlock Text="{Binding CompletedDate, StringFormat='{}{0:MMM dd, yyyy}'}" 
+                                                       Foreground="#6B7280"
+                                                       IsVisible="{Binding IsCompleted}"/>
+                                            <!-- Show Dash if Pending -->
+                                            <TextBlock Text="—" 
+                                                       Foreground="#D1D5DB"
+                                                       IsVisible="{Binding !IsCompleted}"/>
+                                        </Panel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Action Column (Clean Link Style) -->
+                            <DataGridTemplateColumn Header="" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Command="{Binding $parent[UserControl].((vm:SurveyResponsesViewModel)DataContext).ViewDetailsCommand}"
+                                                CommandParameter="{Binding}"
+                                                IsEnabled="{Binding IsCompleted}"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Padding="12,0"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center"
+                                                Cursor="Hand">
+                                            <Button.Styles>
+                                                <Style Selector="Button:disabled /template/ ContentPresenter">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                    <Setter Property="Opacity" Value="0.3" />
+                                                </Style>
+                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                </Style>
+                                                <Style Selector="Button:pointerover TextBlock">
+                                                    <Setter Property="TextDecorations" Value="Underline" />
+                                                </Style>
+                                            </Button.Styles>
+                                            <TextBlock Text="View Answers" 
+                                                       Foreground="#2563EB" 
+                                                       FontWeight="Medium" 
+                                                       FontSize="13"/>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

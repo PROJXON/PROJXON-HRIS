@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Client.ViewModels"
              xmlns:converters="using:Client.Utils.Converters"
-             xmlns:components="using:Client.Views.Components"
              mc:Ignorable="d" d:DesignWidth="1440" d:DesignHeight="900"
              x:Class="Client.Views.EmployeeDetailView"
              x:DataType="vm:EmployeeDetailViewModel"
@@ -20,10 +19,8 @@
     </Design.DataContext>
 
     <Grid Background="#F8F9FA">
-        
         <!-- Main Content Area -->
-        <ScrollViewer Grid.Column="1"
-                      HorizontalScrollBarVisibility="Disabled"
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="40,32,40,32" Spacing="24">
                 
@@ -143,7 +140,8 @@
                                 Padding="16,8"
                                 CornerRadius="6"
                                 Background="{Binding IsPersonalInfoTabSelected, Converter={StaticResource TabBackgroundConverter}}"
-                                Foreground="{Binding IsPersonalInfoTabSelected, Converter={StaticResource TabForegroundConverter}}">
+                                Foreground="{Binding IsPersonalInfoTabSelected, Converter={StaticResource TabForegroundConverter}}"
+                                Cursor="Hand">
                             <TextBlock Text="Personal Information" />
                         </Button>
                         
@@ -152,25 +150,28 @@
                                 Padding="16,8"
                                 CornerRadius="6"
                                 Background="{Binding IsAttendanceTabSelected, Converter={StaticResource TabBackgroundConverter}}"
-                                Foreground="{Binding IsAttendanceTabSelected, Converter={StaticResource TabForegroundConverter}}">
+                                Foreground="{Binding IsAttendanceTabSelected, Converter={StaticResource TabForegroundConverter}}"
+                                Cursor="Hand">
                             <TextBlock Text="Attendance" />
                         </Button>
                         
-                        <!-- Documents Tab (Placeholder) -->
-                        <Button Padding="16,8"
+                        <!-- Documents Tab -->
+                        <Button Command="{Binding SelectDocumentsTabCommand}"
+                                Padding="16,8"
                                 CornerRadius="6"
-                                Background="Transparent"
-                                Foreground="#6B7280"
-                                IsEnabled="False">
+                                Background="{Binding IsDocumentsTabSelected, Converter={StaticResource TabBackgroundConverter}}"
+                                Foreground="{Binding IsDocumentsTabSelected, Converter={StaticResource TabForegroundConverter}}"
+                                Cursor="Hand">
                             <TextBlock Text="Documents" />
                         </Button>
                         
-                        <!-- Performance Tab (Placeholder) -->
-                        <Button Padding="16,8"
+                        <!-- Performance Tab (Triggers Coming Soon) -->
+                        <Button Command="{Binding SelectPerformanceTabCommand}"
+                                Padding="16,8"
                                 CornerRadius="6"
                                 Background="Transparent"
                                 Foreground="#6B7280"
-                                IsEnabled="False">
+                                Cursor="Hand">
                             <TextBlock Text="Performance" />
                         </Button>
                     </StackPanel>
@@ -192,12 +193,14 @@
                                        FontWeight="SemiBold"
                                        Foreground="#1F2937" />
                             <Button Grid.Column="1"
+                                    Command="{Binding RequestChangeCommand}"
                                     Background="White"
                                     Foreground="#374151"
                                     BorderBrush="#D1D5DB"
                                     BorderThickness="1"
                                     CornerRadius="8"
-                                    Padding="16,10">
+                                    Padding="16,10"
+                                    Cursor="Hand">
                                 <Button.Styles>
                                     <Style Selector="Button:pointerover /template/ ContentPresenter">
                                         <Setter Property="Background" Value="#F3F4F6" />
@@ -327,8 +330,8 @@
                                    FontWeight="SemiBold"
                                    Foreground="#1F2937" />
                         
-                        <!-- Attendance Records -->
-                        <ItemsControl ItemsSource="{Binding AttendanceRecords}">
+                        <!-- Attendance Records (Paged) -->
+                        <ItemsControl ItemsSource="{Binding PagedAttendanceRecords}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type vm:AttendanceRecordViewModel}">
                                     <Border Background="White"
@@ -403,15 +406,190 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                         
+                        <!-- Attendance Pagination Controls -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" IsVisible="{Binding !!AttendanceTotalPages}">
+                            <Button Command="{Binding PreviousAttendancePageCommand}" 
+                                    IsEnabled="{Binding CanNavigateAttendancePrev}" 
+                                    Background="Transparent" 
+                                    BorderThickness="0" 
+                                    Padding="8"
+                                    Cursor="Hand">
+                                <TextBlock Text="Previous" Foreground="#6B7280" />
+                            </Button>
+                            
+                            <TextBlock VerticalAlignment="Center" Foreground="#6B7280" FontSize="14">
+                                <Run Text="Page " />
+                                <Run Text="{Binding AttendanceCurrentPage}" />
+                                <Run Text=" of " />
+                                <Run Text="{Binding AttendanceTotalPages}" />
+                            </TextBlock>
+                            
+                            <Button Command="{Binding NextAttendancePageCommand}" 
+                                    IsEnabled="{Binding CanNavigateAttendanceNext}"
+                                    Background="Transparent" 
+                                    BorderThickness="0" 
+                                    Padding="8"
+                                    Cursor="Hand">
+                                <TextBlock Text="Next" Foreground="#6B7280" />
+                            </Button>
+                        </StackPanel>
+                        
                         <!-- Empty State for Attendance -->
                         <Border IsVisible="{Binding HasNoAttendanceRecords}"
                                 Background="#F9FAFB"
                                 CornerRadius="8"
                                 Padding="32"
                                 HorizontalAlignment="Center">
-                            <TextBlock Text="No attendance records found"
-                                       FontSize="14"
-                                       Foreground="#6B7280" />
+                            <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                <TextBlock Text="📅"
+                                           FontSize="32"
+                                           HorizontalAlignment="Center" />
+                                <TextBlock Text="No attendance records found"
+                                           FontSize="14"
+                                           Foreground="#6B7280"
+                                           HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Documents Tab Content -->
+                <Border Background="White"
+                        CornerRadius="12"
+                        Padding="32"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        IsVisible="{Binding IsDocumentsTabSelected}">
+                    <StackPanel Spacing="24">
+                        <TextBlock Text="Employee Documents"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="#1F2937" />
+                        
+                        <!-- Documents List - Changed to PagedDocuments -->
+                        <ItemsControl ItemsSource="{Binding PagedDocuments}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="White"
+                                            BorderBrush="#E5E7EB"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            Padding="16"
+                                            Margin="0,0,0,12">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <!-- Document Icon -->
+                                            <Border Grid.Column="0"
+                                                    Background="#F3F4F6"
+                                                    CornerRadius="8"
+                                                    Width="40"
+                                                    Height="40"
+                                                    Margin="0,0,16,0">
+                                                <Viewbox Width="20" Height="20"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center">
+                                                    <Canvas Width="24" Height="24">
+                                                        <Path Stroke="#374151"
+                                                              StrokeThickness="2"
+                                                              Data="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                        <Path Stroke="#374151"
+                                                              StrokeThickness="2"
+                                                              Data="M14 2v6h6" />
+                                                        <Path Stroke="#374151"
+                                                              StrokeThickness="2"
+                                                              Data="M16 13H8" />
+                                                        <Path Stroke="#374151"
+                                                              StrokeThickness="2"
+                                                              Data="M16 17H8" />
+                                                        <Path Stroke="#374151"
+                                                              StrokeThickness="2"
+                                                              Data="M10 9H8" />
+                                                    </Canvas>
+                                                </Viewbox>
+                                            </Border>
+                                            
+                                            <!-- Document Info -->
+                                            <StackPanel Grid.Column="1"
+                                                        VerticalAlignment="Center"
+                                                        Spacing="2">
+                                                <TextBlock Text="{Binding FileName}"
+                                                           FontSize="14"
+                                                           FontWeight="Medium"
+                                                           Foreground="#1F2937" />
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <TextBlock Text="{Binding DocumentType}" FontSize="12" Foreground="#9CA3AF" />
+                                                    <TextBlock Text="•" FontSize="12" Foreground="#9CA3AF" />
+                                                    <TextBlock Text="{Binding UploadedDate}" FontSize="13" Foreground="#6B7280" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                            
+                                            <!-- View Button -->
+                                            <Button Grid.Column="2"
+                                                    Command="{Binding #Root.((vm:EmployeeDetailViewModel)DataContext).ViewDocumentCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Background="White"
+                                                    Foreground="#374151"
+                                                    BorderBrush="#D1D5DB"
+                                                    BorderThickness="1"
+                                                    CornerRadius="6"
+                                                    Padding="16,8"
+                                                    Cursor="Hand">
+                                                <Button.Styles>
+                                                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                        <Setter Property="Background" Value="#F3F4F6" />
+                                                    </Style>
+                                                </Button.Styles>
+                                                <TextBlock Text="View" FontSize="14" />
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Pagination Controls (Documents) -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20" IsVisible="{Binding !!TotalPages}">
+                            
+                            <Button Command="{Binding PreviousPageCommand}" 
+                                    IsEnabled="{Binding CanNavigatePrev}" 
+                                    Background="Transparent" 
+                                    BorderThickness="0" 
+                                    Padding="8"
+                                    Cursor="Hand">
+                                <TextBlock Text="Previous" Foreground="#6B7280" />
+                            </Button>
+                            
+                            <TextBlock VerticalAlignment="Center" Foreground="#6B7280" FontSize="14">
+                                <Run Text="Page " />
+                                <Run Text="{Binding CurrentPage}" />
+                                <Run Text=" of " />
+                                <Run Text="{Binding TotalPages}" />
+                            </TextBlock>
+                            
+                            <Button Command="{Binding NextPageCommand}" 
+                                    IsEnabled="{Binding CanNavigateNext}"
+                                    Background="Transparent" 
+                                    BorderThickness="0" 
+                                    Padding="8"
+                                    Cursor="Hand">
+                                <TextBlock Text="Next" Foreground="#6B7280" />
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Empty State for Documents -->
+                        <Border IsVisible="{Binding HasNoDocuments}"
+                                Background="#F9FAFB"
+                                CornerRadius="8"
+                                Padding="32"
+                                HorizontalAlignment="Center">
+                            <StackPanel Spacing="8" HorizontalAlignment="Center">
+                                <TextBlock Text="📄"
+                                           FontSize="32"
+                                           HorizontalAlignment="Center" />
+                                <TextBlock Text="No documents found"
+                                           FontSize="14"
+                                           Foreground="#6B7280"
+                                           HorizontalAlignment="Center" />
+                            </StackPanel>
                         </Border>
                     </StackPanel>
                 </Border>

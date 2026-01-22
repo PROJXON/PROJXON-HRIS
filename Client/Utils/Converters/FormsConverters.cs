@@ -18,7 +18,7 @@ public class FormStatusBackgroundConverter : IValueConverter
         {
             return status switch
             {
-                FormStatus.Active => new SolidColorBrush(Color.Parse("#DCFCE7")), // Light green
+                FormStatus.Active => new SolidColorBrush(Color.Parse("#E0F2FE")), // Light blue
                 FormStatus.Completed => new SolidColorBrush(Color.Parse("#E5E7EB")), // Light gray
                 FormStatus.Draft => new SolidColorBrush(Color.Parse("#F3F4F6")), // Lighter gray
                 _ => new SolidColorBrush(Color.Parse("#F3F4F6"))
@@ -44,7 +44,7 @@ public class FormStatusForegroundConverter : IValueConverter
         {
             return status switch
             {
-                FormStatus.Active => new SolidColorBrush(Color.Parse("#166534")), // Dark green
+                FormStatus.Active => new SolidColorBrush(Color.Parse("#0369A1")), // Dark blue text
                 FormStatus.Completed => new SolidColorBrush(Color.Parse("#374151")), // Dark gray
                 FormStatus.Draft => new SolidColorBrush(Color.Parse("#6B7280")), // Medium gray
                 _ => new SolidColorBrush(Color.Parse("#6B7280"))

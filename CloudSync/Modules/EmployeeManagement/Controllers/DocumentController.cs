@@ -38,11 +38,16 @@ public class DocumentController : ControllerBase
         "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"
     };
 
+    // Added PowerPoint MIME types
     private static readonly HashSet<string> AllowedDocumentTypes = new(StringComparer.OrdinalIgnoreCase)
     {
         "application/pdf",
         "application/msword",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
         "image/jpeg", "image/jpg", "image/png", "image/gif"
     };
 
@@ -59,10 +64,6 @@ public class DocumentController : ControllerBase
     /// <summary>
     /// Uploads a document for an employee.
     /// </summary>
-    /// <param name="employeeId">The employee's ID.</param>
-    /// <param name="documentType">Type of document: profile-picture, resume, cover-letter, contract, certification, id-document, other.</param>
-    /// <param name="file">The file to upload.</param>
-    /// <returns>The URL of the uploaded file.</returns>
     [HttpPost("upload/{employeeId:int}/{documentType}")]
     [RequestSizeLimit(MaxFileSize)]
     public async Task<IActionResult> UploadDocument(
@@ -121,12 +122,14 @@ public class DocumentController : ControllerBase
                 return NotFound(new { Error = "Employee not found", EmployeeId = employeeId });
             }
 
-            // Delete old file if exists for this document type
-            var oldFileUrl = GetCurrentDocumentUrl(employee, documentType);
-            if (!string.IsNullOrEmpty(oldFileUrl))
+            // Check for duplicates for "other" documents
+            if (documentType.Equals("other", StringComparison.OrdinalIgnoreCase))
             {
-                await _fileStorageService.DeleteFileAsync(oldFileUrl);
-                _logger.LogInformation("Deleted old file: {Url}", oldFileUrl);
+                var existingFiles = await _employeeRepository.GetFilesByEmployeeIdAsync(employeeId);
+                if (existingFiles.Any(f => f.FileName.Equals(file.FileName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return Conflict(new { Error = "A file with this name already exists. Please rename the file or delete the existing one." });
+                }
             }
 
             // Save new file
@@ -137,12 +140,43 @@ public class DocumentController : ControllerBase
                 $"employees/{employeeId}/{folderName}",
                 file.ContentType);
 
-            // Update employee record with new URL
-            await UpdateEmployeeDocumentUrl(employee, documentType, fileUrl);
+            // Handle "other" type differently - save to EmployeeFile table
+            if (documentType.Equals("other", StringComparison.OrdinalIgnoreCase))
+            {
+                var employeeFile = new Models.EmployeeFile
+                {
+                    EmployeeId = employeeId,
+                    FileName = file.FileName,
+                    FileUrl = fileUrl,
+                    UploadedAt = DateTime.UtcNow,
+                    Category = GetFileExtension(file.FileName),
+                    ContentType = file.ContentType,
+                    SizeBytes = file.Length
+                };
 
-            _logger.LogInformation(
-                "Document uploaded successfully. EmployeeId: {EmployeeId}, Type: {Type}, Url: {Url}",
-                employeeId, documentType, fileUrl);
+                await _employeeRepository.AddFileAsync(employeeFile);
+                
+                _logger.LogInformation(
+                    "Generic document uploaded. EmployeeId: {EmployeeId}, FileName: {FileName}",
+                    employeeId, file.FileName);
+            }
+            else
+            {
+                // Delete old file if exists for specific document types (Resume, Profile Pic, etc)
+                var oldFileUrl = GetCurrentDocumentUrl(employee, documentType);
+                if (!string.IsNullOrEmpty(oldFileUrl))
+                {
+                    await _fileStorageService.DeleteFileAsync(oldFileUrl);
+                    _logger.LogInformation("Deleted old file: {Url}", oldFileUrl);
+                }
+
+                // Update employee record with new URL
+                await UpdateEmployeeDocumentUrl(employee, documentType, fileUrl);
+                
+                _logger.LogInformation(
+                    "Specific document uploaded. EmployeeId: {EmployeeId}, Type: {Type}",
+                    employeeId, documentType);
+            }
 
             return Ok(new DocumentUploadResponse
             {
@@ -168,7 +202,7 @@ public class DocumentController : ControllerBase
     }
 
     /// <summary>
-    /// Deletes a document for an employee.
+    /// Deletes a document for an employee (Resume, Profile Picture, etc).
     /// </summary>
     [HttpDelete("{employeeId:int}/{documentType}")]
     public async Task<IActionResult> DeleteDocument(int employeeId, string documentType)
@@ -193,18 +227,40 @@ public class DocumentController : ControllerBase
             }
 
             var deleted = await _fileStorageService.DeleteFileAsync(fileUrl);
-            if (deleted)
-            {
-                await UpdateEmployeeDocumentUrl(employee, documentType, null);
-                return Ok(new { Success = true, Message = "Document deleted successfully" });
-            }
-
-            return StatusCode(500, new { Error = "Failed to delete document" });
+            await UpdateEmployeeDocumentUrl(employee, documentType, null);
+            
+            return Ok(new { Success = true, Message = "Document deleted successfully" });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to delete document for employee {EmployeeId}", employeeId);
             return StatusCode(500, new { Error = "Failed to delete document" });
+        }
+    }
+
+    /// <summary>
+    /// Deletes a generic file by its ID (from Uploads list).
+    /// </summary>
+    [HttpDelete("file/{fileId:int}")]
+    public async Task<IActionResult> DeleteFile(int fileId)
+    {
+        try
+        {
+            var file = await _employeeRepository.GetFileByIdAsync(fileId);
+            if (file == null)
+            {
+                return NotFound(new { Error = "File not found" });
+            }
+
+            var deleted = await _fileStorageService.DeleteFileAsync(file.FileUrl);
+            await _employeeRepository.DeleteFileAsync(fileId);
+            
+            return Ok(new { Success = true, Message = "File deleted successfully" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to delete file {FileId}", fileId);
+            return StatusCode(500, new { Error = "Failed to delete file" });
         }
     }
 
@@ -234,6 +290,24 @@ public class DocumentController : ControllerBase
         {
             _logger.LogError(ex, "Failed to get documents for employee {EmployeeId}", employeeId);
             return StatusCode(500, new { Error = "Failed to retrieve documents" });
+        }
+    }
+
+    /// <summary>
+    /// Gets all generic files for an employee.
+    /// </summary>
+    [HttpGet("files/{employeeId:int}")]
+    public async Task<IActionResult> GetEmployeeFiles(int employeeId)
+    {
+        try
+        {
+            var files = await _employeeRepository.GetFilesByEmployeeIdAsync(employeeId);
+            return Ok(files);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get files for employee {EmployeeId}", employeeId);
+            return StatusCode(500, new { Error = "Failed to retrieve files" });
         }
     }
 
@@ -285,11 +359,14 @@ public class DocumentController : ControllerBase
 
         await _employeeRepository.UpdateAsync(employee.Id, employee);
     }
+
+    private string GetFileExtension(string fileName)
+    {
+        var extension = Path.GetExtension(fileName);
+        return string.IsNullOrEmpty(extension) ? "unknown" : extension.TrimStart('.');
+    }
 }
 
-/// <summary>
-/// Response model for document upload operations.
-/// </summary>
 public class DocumentUploadResponse
 {
     public bool Success { get; set; }

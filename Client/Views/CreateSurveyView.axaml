@@ -14,9 +14,13 @@
     </Design.DataContext>
 
     <Grid Background="#F8F9FA">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />     <!-- Column 0: The Form Input -->
+            <ColumnDefinition Width="300" />   <!-- Column 1: The Summary Sidebar -->
+        </Grid.ColumnDefinitions>
         
         <!-- Main Content Area -->
-        <ScrollViewer Grid.Column="1"
+        <ScrollViewer Grid.Column="0"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="40,32,40,32" Spacing="24">
@@ -182,7 +186,7 @@
         </ScrollViewer>
 
         <!-- Right Panel - Survey Summary -->
-        <Border Grid.Column="2"
+        <Border Grid.Column="1"
                 Background="White"
                 BorderBrush="#E5E7EB"
                 BorderThickness="1,0,0,0">

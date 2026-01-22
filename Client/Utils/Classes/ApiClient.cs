@@ -130,6 +130,33 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
         }
     }
     
+    public async Task<ApiResponse<object?>> DeleteAsync<T>(string endpoint, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            logger.LogDebug("DELETE request to {Endpoint}", endpoint);
+
+            var response = await httpClient.DeleteAsync(endpoint, cancellationToken);
+
+            return new ApiResponse<object?>
+            {
+                IsSuccess = response.IsSuccessStatusCode,
+                StatusCode = (int)response.StatusCode,
+                Data = null,
+                ErrorMessage = response.IsSuccessStatusCode ? string.Empty : $"HTTP {response.StatusCode}"
+            };
+        }
+        catch (Exception e)
+        {
+            return new ApiResponse<object?>
+            {
+                IsSuccess = false,
+                ErrorMessage = e.Message,
+                StatusCode = 0
+            };
+        }
+    }
+    
     private ApiResponse<T> HandleException<T>(Exception e)
     {
         logger.LogError(e, "API request failed with exception.");

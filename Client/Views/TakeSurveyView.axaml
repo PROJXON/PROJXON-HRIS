@@ -1,14 +1,26 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Client.ViewModels"
+             xmlns:converters="using:Client.Utils.Converters"
              x:Class="Client.Views.TakeSurveyView"
-             x:DataType="vm:TakeSurveyViewModel">
+             x:DataType="vm:TakeSurveyViewModel"
+             x:Name="Root">
+
+    <UserControl.Resources>
+        <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+    </UserControl.Resources>
     
     <Border Background="White" CornerRadius="12" BorderBrush="#E5E7EB" BorderThickness="1" MaxWidth="800" Margin="40" VerticalAlignment="Top">
         <StackPanel Spacing="24" Margin="32">
             <!-- Header -->
             <StackPanel Spacing="8">
-                <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="Bold" Foreground="#1F2937" />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="Bold" Foreground="#1F2937" />
+                    <!-- Show "Completed" badge if ReadOnly -->
+                    <Border IsVisible="{Binding IsReadOnly}" Background="#DCFCE7" CornerRadius="4" Padding="8,2" VerticalAlignment="Center">
+                        <TextBlock Text="Completed" FontSize="12" Foreground="#166534" FontWeight="Medium"/>
+                    </Border>
+                </StackPanel>
                 <TextBlock Text="{Binding Description}" FontSize="16" Foreground="#6B7280" TextWrapping="Wrap" />
             </StackPanel>
             
@@ -21,7 +33,9 @@
                         <DataTemplate>
                             <StackPanel Spacing="8" Margin="0,0,0,24">
                                 <TextBlock Text="{Binding QuestionText}" FontSize="16" FontWeight="Medium" Foreground="#374151" TextWrapping="Wrap"/>
+                                <!-- Bind IsEnabled to Inverse of IsReadOnly -->
                                 <TextBox Text="{Binding Answer}" 
+                                         IsEnabled="{Binding #Root.((vm:TakeSurveyViewModel)DataContext).IsReadOnly, Converter={StaticResource InverseBoolConverter}}"
                                          AcceptsReturn="True" 
                                          Height="80" 
                                          TextWrapping="Wrap"
@@ -35,11 +49,34 @@
             
             <!-- Actions -->
             <StackPanel Orientation="Horizontal" Spacing="16" HorizontalAlignment="Right">
-                <Button Command="{Binding CancelCommand}" Content="Cancel" Background="White" BorderBrush="#D1D5DB" BorderThickness="1" Foreground="#374151" CornerRadius="6" Padding="16,10"/>
-                <Button Command="{Binding SubmitSurveyCommand}" Content="Submit Survey" Background="#1F2937" Foreground="White" CornerRadius="6" Padding="24,10" IsEnabled="{Binding !IsLoading}"/>
+                <!-- Cancel/Back Button - shows "Back" when read-only, "Cancel" otherwise -->
+                <Button Command="{Binding CancelCommand}" 
+                        Background="White" 
+                        BorderBrush="#D1D5DB" 
+                        BorderThickness="1" 
+                        Foreground="#374151" 
+                        CornerRadius="6" 
+                        Padding="16,10">
+                    <Panel>
+                        <TextBlock Text="Back" IsVisible="{Binding IsReadOnly}" />
+                        <TextBlock Text="Cancel" IsVisible="{Binding !IsReadOnly}" />
+                    </Panel>
+                </Button>
+                
+                <!-- Hide Submit Button if ReadOnly -->
+                <Button Command="{Binding SubmitSurveyCommand}" 
+                        Content="Submit Survey" 
+                        IsVisible="{Binding !IsReadOnly}"
+                        Background="#1F2937" 
+                        Foreground="White" 
+                        CornerRadius="6" 
+                        Padding="24,10" 
+                        IsEnabled="{Binding !IsLoading}"/>
             </StackPanel>
             
-            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            <TextBlock Text="{Binding ErrorMessage}" 
+                       Foreground="Red" 
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
         </StackPanel>
     </Border>
 </UserControl>

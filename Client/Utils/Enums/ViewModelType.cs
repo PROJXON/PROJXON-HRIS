@@ -19,5 +19,6 @@ public enum ViewModelType
     Forms, // Forms/Surveys list view
     CreateSurvey, // Create new survey view
     Tasks, // New tasks view
-    TakeSurvey // Take survey view for employees to complete surveys
+    TakeSurvey, // Take survey view for employees to complete surveys
+    SurveyResponses // Survey response view for HR
 }

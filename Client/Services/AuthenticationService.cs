@@ -93,6 +93,10 @@ public class AuthenticationService : IAuthenticationService
     
     public async Task<bool> LoginAsync()
     {
+        // Variables to hold data for processing AFTER the lock is released to avoid deadlocks
+        UserResponse? userResponse = null;
+        int employeeIdToFetch = 0;
+
         await _authSemaphore.WaitAsync();
         try
         {
@@ -134,27 +138,9 @@ public class AuthenticationService : IAuthenticationService
                 c.Type == "email" || c.Type == "sub"); 
             CurrentUserEmail = emailClaim?.Value;
 
-            if (appAuthResponse.User != null)
-            {
-                _logger.LogInformation("Login successful. Initializing session for: {Email}", appAuthResponse.User.Email);
-                
-                // Fetch full employee details if ID exists
-                Shared.EmployeeManagement.Responses.EmployeeResponse? employee = null;
-                if (appAuthResponse.User.EmployeeId > 0)
-                {
-                    var empResult = await _employeeRepository.GetByIdAsync(appAuthResponse.User.EmployeeId);
-                    if (empResult.IsSuccess)
-                    {
-                        employee = empResult.Value;
-                    }
-                }
-
-                await _sessionService.InitializeSessionAsync(appAuthResponse.User, employee);
-            }
-
-            _logger.LogInformation($"Login completed. User: {CurrentUserEmail}");
-            AuthenticationChanged?.Invoke(this, new AuthenticationChangedEventArgs(true));
-            return true;
+            // Store data for processing outside the lock
+            userResponse = appAuthResponse.User;
+            employeeIdToFetch = appAuthResponse.User?.EmployeeId ?? 0;
         }
         catch (AuthenticationTimeoutException)
         {
@@ -180,6 +166,37 @@ public class AuthenticationService : IAuthenticationService
         {
             _authSemaphore.Release();
         }
+
+        if (userResponse != null)
+        {
+            _logger.LogInformation("Login successful. Initializing session for: {Email}", userResponse.Email);
+            
+            Shared.EmployeeManagement.Responses.EmployeeResponse? employee = null;
+            
+            if (employeeIdToFetch > 0)
+            {
+                try 
+                {
+
+                    var empResult = await _employeeRepository.GetByIdAsync(employeeIdToFetch);
+                    if (empResult.IsSuccess)
+                    {
+                        employee = empResult.Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to fetch employee details during login initialization.");
+                }
+            }
+
+            await _sessionService.InitializeSessionAsync(userResponse, employee);
+        }
+
+        _logger.LogInformation($"Login completed. User: {CurrentUserEmail}");
+        AuthenticationChanged?.Invoke(this, new AuthenticationChangedEventArgs(true));
+        
+        return true;
     }
 
     public async Task LogoutAsync()
@@ -228,7 +245,6 @@ public class AuthenticationService : IAuthenticationService
 
             if (DateTime.UtcNow >= _tokenExpiry)
             {
-                await LogoutAsync();
                 throw new AuthenticationException("Session expired.", "Please sign in again.");
             }
 
@@ -436,6 +452,7 @@ public class AuthenticationService : IAuthenticationService
 
         using var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
+        // Use the bare HttpClient here (no Auth header needed for login)
         var response = await _httpClient.PostAsync($"{backendUrl}api/auth/login", content);
         var body = await response.Content.ReadAsStringAsync();
 
