@@ -15,7 +15,8 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        Converters = { new JsonStringEnumConverter() }
     };
 
     public async Task<ApiResponse<T>> GetAllAsync<T>(string endpoint, CancellationToken cancellationToken = default)

@@ -55,13 +55,16 @@ public class CandidateService(
             return;
         }
 
-        // Create Employee Record (Only if not found above)
+        // Create Employee Record with SAFE DEFAULTS (Only if not found above)
         var newEmployee = new Employee
         {
             BasicInfo = new EmployeeBasic
             {
-                FirstName = candidate.FirstName,
-                LastName = candidate.LastName,
+                FirstName = candidate.FirstName ?? "Unknown",
+                LastName = candidate.LastName ?? "Candidate",
+                Gender = Shared.Enums.UserManagement.Gender.Other,
+                MaritalStatus = Shared.Enums.UserManagement.MaritalStatus.Single,
+                Nationality = "N/A"
             },
             ContactInfo = new EmployeeContactInfo
             {
@@ -70,9 +73,12 @@ public class CandidateService(
             },
             PositionDetails = new EmployeePosition 
             { 
-                PositionName = candidate.JobAppliedFor,
+                PositionName = candidate.JobAppliedFor ?? "Pending Assignment",
                 OnboardingDate = DateTime.UtcNow,
-                EmploymentStatus = Shared.EmployeeManagement.Enums.EmployeeStatus.Active
+                EmploymentStatus = Shared.EmployeeManagement.Enums.EmployeeStatus.Active,
+                EmploymentType = Shared.EmployeeManagement.Enums.EmploymentType.FullTime,
+                // Default to a generic department (e.g., ID 1) if unknown
+                DepartmentId = 1
             },
             CreateDateTime = DateTime.UtcNow,
             UpdateDateTime = DateTime.UtcNow
