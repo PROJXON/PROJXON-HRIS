@@ -71,7 +71,7 @@ public class AuthenticationService : IAuthenticationService
                             ?? throw new ConfigurationException("Google OAuth ClientSecret not found.", "Config Error", "Auth:ClientSecret");
             
             _redirectUri = _configuration["Auth:Google:RedirectUri"] 
-                           ?? "http://localhost:8080/callback";
+                           ?? "http://127.0.0.1:8080/callback";
         }
         catch (Exception e) when (e is not ConfigurationException)
         {
@@ -270,7 +270,7 @@ public class AuthenticationService : IAuthenticationService
             {
                 try
                 {
-                    callbackUrl = $"http://localhost:{port}/";
+                    callbackUrl = $"http://127.0.0.1:{port}/";
                     listener = new HttpListener();
                     listener.Prefixes.Add(callbackUrl);
                     listener.Start();
@@ -364,7 +364,7 @@ public class AuthenticationService : IAuthenticationService
                                 <div class='container'>
                                     <span class='success-icon'>✓</span>
                                     <h2>Authentication Successful</h2>
-                                    <p>You have successfully signed in to PROJXON HRIS.</p>
+                                    <p>You have successfully signed in to OrkaHR.</p>
                                     <p>You can close this window now.</p>
                                 </div>
                                 <script>
@@ -458,7 +458,23 @@ public class AuthenticationService : IAuthenticationService
 
         if (!response.IsSuccessStatusCode)
         {
-            throw new AuthenticationException($"Backend login failed. Status: {response.StatusCode} Body: {body}");
+            string friendlyMessage = "Authentication failed.";
+            try 
+            {
+                using var errorDoc = JsonDocument.Parse(body);
+                if (errorDoc.RootElement.TryGetProperty("error", out var errorProp))
+                {
+                    friendlyMessage = errorProp.GetString() ?? friendlyMessage;
+                }
+            }
+            catch 
+            {
+                // If parsing fails, stick to the default message or raw body
+                friendlyMessage = $"Login failed: {response.StatusCode}";
+            }
+
+            // Throw exception with the clean message as the first argument
+            throw new AuthenticationException(friendlyMessage, friendlyMessage);
         }
 
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };

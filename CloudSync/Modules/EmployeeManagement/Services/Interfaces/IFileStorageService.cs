@@ -36,4 +36,6 @@ public interface IFileStorageService
     /// <param name="contentType">The MIME type.</param>
     /// <returns>The file extension including the dot (e.g., ".pdf").</returns>
     string GetExtensionFromContentType(string contentType);
+    
+    Task<(Stream Stream, string ContentType)> GetFileAsync(string objectName);
 }

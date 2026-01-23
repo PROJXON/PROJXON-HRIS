@@ -11,7 +11,9 @@ public class UserRepository(DatabaseContext context, IInvitedUserRepository invi
 {
     public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return await context.Users.ToListAsync();
+        return await context.Users
+            .Where(u => u.Id != 1)
+            .ToListAsync();
     }
 
     public async Task<User?> GetByIdAsync(int id)

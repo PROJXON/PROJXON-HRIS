@@ -7,6 +7,7 @@ using Client.Utils.Classes;
 using Client.Utils.Enums;
 using Client.Utils.Interfaces;
 using Client.Models.EmployeeManagement;
+using Microsoft.Extensions.Configuration;
 
 namespace Client.ViewModels;
 
@@ -21,6 +22,7 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly IFileService _fileService;
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IInvitationService _invitationService;
+    private readonly IConfiguration _configuration;
 
     [ObservableProperty]
     private ViewModelBase? _currentViewModel;
@@ -68,7 +70,8 @@ public partial class MainWindowViewModel : ObservableObject
         ISessionService sessionService,
         SidebarViewModel sidebarViewModel,
         IFileService fileService,
-        IInvitationService invitationService)
+        IInvitationService invitationService,
+        IConfiguration configuration)
     {
         _navigationService = navigationService;
         _authService = authService;
@@ -79,6 +82,7 @@ public partial class MainWindowViewModel : ObservableObject
         _sidebarViewModel = sidebarViewModel;
         _fileService = fileService;
         _invitationService = invitationService;
+        _configuration = configuration;
 
         _navigationService.NavigationRequested += OnNavigationRequested;
         _authService.AuthenticationChanged += OnIsAuthenticatedChanged;
@@ -155,6 +159,7 @@ public partial class MainWindowViewModel : ObservableObject
                     _apiClient, 
                     _sidebarViewModel,
                     _userPreferencesService,
+                    _configuration,
                     null);
                 IsSidebarVisible = true;
                 break;
@@ -231,7 +236,13 @@ public partial class MainWindowViewModel : ObservableObject
 
     private EmployeeDetailViewModel CreateEmployeeDetailViewModel(int employeeId)
     {
-        var vm = new EmployeeDetailViewModel(_navigationService, _sidebarViewModel, _employeeRepository, _apiClient, _fileService);
+        var vm = new EmployeeDetailViewModel(
+            _navigationService, 
+            _sidebarViewModel, 
+            _employeeRepository, 
+            _apiClient, 
+            _fileService,
+            _configuration);
         vm.SetEmployeeId(employeeId);
         return vm;
     }

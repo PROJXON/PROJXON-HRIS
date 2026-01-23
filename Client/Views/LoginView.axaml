@@ -48,6 +48,15 @@
                 </StackPanel>
             </Button>
             
+            <TextBlock Text="{Binding ErrorMessage}"
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       Foreground="#DC2626"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       Margin="0,10,0,0" />
+            
             <ProgressBar IsIndeterminate="True" 
                          IsVisible="{Binding IsLoggingIn}" 
                          Width="200" 

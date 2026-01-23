@@ -8,6 +8,8 @@ namespace CloudSync.Modules.EmployeeManagement.Repositories;
 
 public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
 {
+    private const int SystemAdminId = 1;
+    
     public async Task<IEnumerable<Employee>> GetAllAsync()
     {
         try
@@ -18,6 +20,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.Legal)
                 .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
+                .Where(e => e.Id != SystemAdminId) // <--- FILTER ADDED
                 .ToListAsync();
         }
         catch (Exception e)
@@ -85,6 +88,7 @@ public class EmployeeRepository(DatabaseContext context) : IEmployeeRepository
                 .Include(e => e.PositionDetails).ThenInclude(p => p.Department)
                 .Include(e => e.Training)
                 .Where(e => e.PositionDetails != null && e.PositionDetails.DepartmentId == departmentId)
+                .Where(e => e.Id != SystemAdminId) 
                 .ToListAsync();
         }
         catch (Exception e)

@@ -83,6 +83,7 @@ public class SurveyService(
         return await _context.SurveyAssignments
             .Include(sa => sa.Survey)
             .Include(sa => sa.Employee)
+            .Where(sa => sa.EmployeeId != 1) // Exclude System Admin
             .OrderByDescending(sa => sa.CompletedDate)
             .Select(sa => new SurveyAssignmentResponse
             {
@@ -109,7 +110,7 @@ public class SurveyService(
         // This executes "WHERE survey_id = X" in SQL
         return await _context.SurveyAssignments
             .Include(sa => sa.Employee) // Load employee to get names
-            .Where(sa => sa.SurveyId == surveyId)
+            .Where(sa => sa.SurveyId == surveyId && sa.EmployeeId != 1) // Exclude System Admin
             .OrderByDescending(sa => sa.CompletedDate)
             .Select(sa => new SurveyAssignmentResponse
             {
@@ -161,13 +162,16 @@ public class SurveyService(
     {
         var employees = await _employeeRepo.GetAllAsync();
         
-        var assignments = employees.Select(e => new SurveyAssignment
-        {
-            SurveyId = surveyId,
-            EmployeeId = e.Id,
-            AssignedDate = DateTime.UtcNow,
-            IsCompleted = false
-        });
+        // Filter out System Admin (employeeId = 1) from survey assignments
+        var assignments = employees
+            .Where(e => e.Id != 1) // Exclude System Admin
+            .Select(e => new SurveyAssignment
+            {
+                SurveyId = surveyId,
+                EmployeeId = e.Id,
+                AssignedDate = DateTime.UtcNow,
+                IsCompleted = false
+            });
         
         await _context.SurveyAssignments.AddRangeAsync(assignments);
         
