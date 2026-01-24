@@ -14,6 +14,7 @@ riderModule.iml
 **/appsettings.Development.json
 **/appsettings.Production.json
 **/appsettings.json
+
 # JetBrains Rider / .idea folder
 .idea/
 
