@@ -102,6 +102,15 @@ public class LocalFileStorageService : IFileStorageService
             throw;
         }
     }
+    
+    public async Task<(Stream Stream, string ContentType)> GetFileAsync(string objectName)
+    {
+        var filePath = Path.Combine(_uploadBasePath, objectName);
+        if (!File.Exists(filePath)) throw new FileNotFoundException();
+        
+        var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+        return (stream, "application/octet-stream");
+    }
 
     public Task<bool> DeleteFileAsync(string fileUrl)
     {

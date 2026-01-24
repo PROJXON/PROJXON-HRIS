@@ -42,7 +42,12 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-builder.Services.AddControllers();
+// Add JsonStringEnumConverter to handle Enums as Strings
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(
     builder.Configuration.GetConnectionString("PostgresConnection"));
@@ -71,8 +76,17 @@ builder.Services.AddScoped<ICandidateService, CandidateService>();
 builder.Services.AddScoped<ICandidateRepository, CandidateRepository>();
 
 // File Storage Service - Strategy Pattern Implementation
-// For production GCP migration, replace LocalFileStorageService with GcpFileStorageService
-builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+// Use Local storage in Development, GCP storage in Production
+if (builder.Environment.IsDevelopment())
+{
+    // Local storage for dev
+    builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+}
+else
+{
+    // GCP Storage for Production (Cloud Run)
+    builder.Services.AddScoped<IFileStorageService, GcpFileStorageService>();
+}
 
 //Survey Service
 builder.Services.AddScoped<ISurveyService, SurveyService>();

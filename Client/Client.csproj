@@ -16,12 +16,7 @@
 
     <!-- Ensure appsettings files are available at runtime (bin/Debug/net9.0, bin/Release/net9.0) -->
     <ItemGroup>
-        <None Update="appsettings.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="appsettings.Development.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
+        <EmbeddedResource Include="appsettings.json" />
     </ItemGroup>
 
     <ItemGroup>

@@ -9,6 +9,7 @@ using Client.Utils.Enums;
 using Client.Utils.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Shared.EmployeeManagement.Requests;
 using Shared.EmployeeManagement.Responses;
@@ -26,9 +27,7 @@ public partial class ProfileViewModel : ViewModelBase
     private readonly IApiClient _apiClient;
     private readonly IUserPreferencesService _userPreferencesService;
     private readonly ILogger<ProfileViewModel>? _logger;
-    
-    // Hardcoded for dev environment
-    private const string BaseUrl = "http://localhost:8080";
+    private readonly string _baseUrl;
 
     public SidebarViewModel Sidebar { get; }
 
@@ -149,6 +148,7 @@ public partial class ProfileViewModel : ViewModelBase
         IApiClient apiClient,
         SidebarViewModel sidebarViewModel,
         IUserPreferencesService userPreferencesService,
+        IConfiguration configuration,
         ILogger<ProfileViewModel>? logger = null)
     {
         _navigationService = navigationService;
@@ -159,13 +159,14 @@ public partial class ProfileViewModel : ViewModelBase
         Sidebar = sidebarViewModel;
         _userPreferencesService = userPreferencesService;
         _logger = logger;
+        _baseUrl = configuration["CloudSyncUrl"] ?? "http://localhost:8080";
 
         // Initialize immediately so binding context exists before data load
         InitializeDepartments();
     }
 
     // Constructor for Design-time
-    public ProfileViewModel() : this(null!, null!, null!, null!, null!, null!, null!) { }
+    public ProfileViewModel() : this(null!, null!, null!, null!, null!, null!, null!, null!) { }
 
     private void InitializeDepartments()
     {
@@ -245,13 +246,27 @@ public partial class ProfileViewModel : ViewModelBase
     private string? SanitizeServerUrl(string? url)
     {
         if (string.IsNullOrEmpty(url)) return null;
-        if (url.Contains(":8080") && !url.Contains("localhost"))
+
+        if (url.Contains("storage.googleapis.com"))
         {
-            var uri = new Uri(url);
-            return $"{BaseUrl}{uri.PathAndQuery}";
+            const string bucketName = "projxon-hris-uploads"; 
+        
+            var parts = url.Split(new[] { bucketName }, StringSplitOptions.None);
+            if (parts.Length > 1)
+            {
+                var objectPath = parts[1].TrimStart('/');
+                var encodedPath = System.Net.WebUtility.UrlEncode(objectPath);
+            
+                return $"{_baseUrl.TrimEnd('/')}/api/Document/view/{encodedPath}";
+            }
         }
-        if (url.StartsWith("/")) return $"{BaseUrl}{url}";
-        return url;
+
+        if (url.StartsWith("http")) return url;
+    
+        var baseUri = _baseUrl.TrimEnd('/');
+        var path = url.StartsWith("/") ? url : "/" + url;
+    
+        return $"{baseUri}{path}";
     }
 
     private async Task LoadDocumentsAsync(int employeeId)

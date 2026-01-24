@@ -6,6 +6,7 @@ using Client.Utils.Classes;
 using Client.Utils.Enums;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Configuration;
 using Shared.EmployeeManagement.Responses;
 
 using ServiceSessionArgs = Client.Services.SessionChangedEventArgs;
@@ -17,8 +18,7 @@ public partial class SidebarViewModel : ViewModelBase
     private readonly ISessionService _sessionService;
     private readonly IFileService _fileService;
     private readonly INavigationService _navigationService;
-
-    private const string BaseUrl = "http://localhost:8080";
+    private readonly string _baseUrl;
 
     [ObservableProperty]
     private string _userName = string.Empty;
@@ -44,11 +44,13 @@ public partial class SidebarViewModel : ViewModelBase
     public SidebarViewModel(
         ISessionService sessionService,
         IFileService fileService,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        IConfiguration configuration)
     {
         _sessionService = sessionService;
         _fileService = fileService;
         _navigationService = navigationService;
+        _baseUrl = configuration["CloudSyncUrl"] ?? "http://localhost:8080";
 
         if (_sessionService != null)
         {
@@ -63,7 +65,7 @@ public partial class SidebarViewModel : ViewModelBase
     }
 
     // Default constructor for design-time
-    public SidebarViewModel() : this(null!, null!, null!)
+    public SidebarViewModel() : this(null!, null!, null!, null!)
     {
     }
 
@@ -103,16 +105,29 @@ public partial class SidebarViewModel : ViewModelBase
     private string? SanitizeServerUrl(string? url)
     {
         if (string.IsNullOrEmpty(url)) return null;
-        if (url.StartsWith(BaseUrl)) return url;
-        if (url.StartsWith("/")) return $"{BaseUrl}{url}";
-        if (url.Contains(":8080") && !url.Contains("localhost"))
-        {
-            var uri = new Uri(url);
-            return $"{BaseUrl}{uri.PathAndQuery}";
-        }
-        return url;
-    }
 
+        if (url.Contains("storage.googleapis.com"))
+        {
+            const string bucketName = "projxon-hris-uploads"; 
+        
+            var parts = url.Split(new[] { bucketName }, StringSplitOptions.None);
+            if (parts.Length > 1)
+            {
+
+                var objectPath = parts[1].TrimStart('/');
+                var encodedPath = System.Net.WebUtility.UrlEncode(objectPath);
+            
+                return $"{_baseUrl.TrimEnd('/')}/api/Document/view/{encodedPath}";
+            }
+        }
+
+        if (url.StartsWith("http")) return url;
+    
+        var baseUri = _baseUrl.TrimEnd('/');
+        var path = url.StartsWith("/") ? url : "/" + url;
+    
+        return $"{baseUri}{path}";
+    }
     [RelayCommand]
     private async Task UploadProfilePictureAsync()
     {

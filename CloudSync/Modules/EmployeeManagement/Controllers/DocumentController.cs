@@ -62,6 +62,29 @@ public class DocumentController : ControllerBase
     }
 
     /// <summary>
+    /// Views/downloads a document by its object name (path in storage).
+    /// </summary>
+    [HttpGet("view/{*objectName}")]
+    [AllowAnonymous] // Allow images to load without sending Bearer token in the img src
+    public async Task<IActionResult> ViewDocument(string objectName)
+    {
+        try
+        {
+            // Decodes the URL path (e.g. resumes/myfile.pdf)
+            var decodedName = System.Net.WebUtility.UrlDecode(objectName);
+            
+            var (stream, contentType) = await _fileStorageService.GetFileAsync(decodedName);
+            
+            return File(stream, contentType);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to retrieve file: {ObjectName}", objectName);
+            return NotFound();
+        }
+    }
+
+    /// <summary>
     /// Uploads a document for an employee.
     /// </summary>
     [HttpPost("upload/{employeeId:int}/{documentType}")]

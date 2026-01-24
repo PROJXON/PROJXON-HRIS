@@ -1,10 +1,10 @@
 using System;
-using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
-using System.Linq;
-using System.Runtime.InteropServices;
 using Avalonia.Markup.Xaml;
 using Client.Services;
 using Client.Utils.Classes;
@@ -19,7 +19,8 @@ namespace Client;
 
 public partial class App : Application
 {
-    private static IServiceProvider? ServiceProvider { get; set;}
+    private static IServiceProvider? ServiceProvider { get; set; }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -29,19 +30,19 @@ public partial class App : Application
     {
         DisableAvaloniaDataAnnotationValidation();
         ConfigureServices();
-        
+
         var vm = ServiceProvider?.GetRequiredService<MainWindowViewModel>();
-        
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
+            // Avoid duplicate validations from both Avalonia and the CommunityToolkit.
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
-            
+
             var mainWindow = new MainWindow
             {
                 DataContext = vm
             };
-            
+
             desktop.MainWindow = mainWindow;
         }
 
@@ -50,24 +51,32 @@ public partial class App : Application
 
     private static void ConfigureServices()
     {
-        
         var collection = new ServiceCollection();
+
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory);
+
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceName = "Client.appsettings.json";
         
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development"}.json", optional: true)
-            .AddEnvironmentVariables()
-            .Build();
-        
+        var stream = assembly.GetManifestResourceStream(resourceName);
+        if (stream != null)
+        {
+            builder.AddJsonStream(stream);
+        }
+
+        builder.AddEnvironmentVariables();
+
+        var configuration = builder.Build();
+
         collection.AddCommonServices(configuration,
             configuration["CloudSyncUrl"] ?? throw new ConfigurationException(
-                "CloudSyncUrl not found in applicaton configuration.",
+                "CloudSyncUrl not found in application configuration.",
                 "Networking is not properly configured. Please contact support.", "CloudSyncUrl"));
-
+        
         RegisterSecureStorage(collection);
 
-        var serviceProvider = collection.BuildServiceProvider();
-        ServiceProvider = serviceProvider;
+        ServiceProvider = collection.BuildServiceProvider();
     }
 
     private static void RegisterSecureStorage(IServiceCollection services)

@@ -9,6 +9,7 @@ using Client.Utils.Enums;
 using Client.Utils.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Configuration;
 using Shared.Attendance;
 using Shared.EmployeeManagement.Responses;
 
@@ -20,9 +21,8 @@ public partial class EmployeeDetailViewModel : ViewModelBase
     private readonly IEmployeeRepository? _employeeRepository;
     private readonly IApiClient _apiClient;
     private readonly IFileService _fileService;
+    private readonly string _baseUrl;
     private int _currentEmployeeId;
-    
-    private const string BaseUrl = "http://localhost:8080";
 
     public SidebarViewModel Sidebar { get; }
 
@@ -138,17 +138,19 @@ public partial class EmployeeDetailViewModel : ViewModelBase
         SidebarViewModel sidebarViewModel,
         IEmployeeRepository employeeRepository,
         IApiClient apiClient,
-        IFileService fileService)
+        IFileService fileService,
+        IConfiguration configuration)
     {
         _navigationService = navigationService;
         Sidebar = sidebarViewModel;
         _employeeRepository = employeeRepository;
         _apiClient = apiClient;
         _fileService = fileService;
+        _baseUrl = configuration["CloudSyncUrl"] ?? "http://localhost:8080";
     }
 
     // Parameterless constructor for design-time support
-    public EmployeeDetailViewModel() : this(null!, new SidebarViewModel(), null!, null!, null!)
+    public EmployeeDetailViewModel() : this(null!, new SidebarViewModel(), null!, null!, null!, null!)
     {
     }
 
@@ -360,13 +362,25 @@ public partial class EmployeeDetailViewModel : ViewModelBase
     private string? SanitizeUrl(string? url)
     {
         if (string.IsNullOrEmpty(url)) return null;
-        if (url.Contains(":8080") && !url.Contains("localhost"))
+
+        if (url.Contains("storage.googleapis.com"))
         {
-            var uri = new Uri(url);
-            return $"{BaseUrl}{uri.PathAndQuery}";
+            const string bucketName = "projxon-hris-uploads"; 
+        
+            var parts = url.Split(new[] { bucketName }, StringSplitOptions.None);
+            if (parts.Length > 1)
+            {
+                var objectPath = parts[1].TrimStart('/');
+                var encodedPath = System.Net.WebUtility.UrlEncode(objectPath);
+                return $"{_baseUrl.TrimEnd('/')}/api/Document/view/{encodedPath}";
+            }
         }
-        if (url.StartsWith("/")) return $"{BaseUrl}{url}";
-        return url;
+        if (url.StartsWith("http")) return url;
+    
+        var baseUri = _baseUrl.TrimEnd('/');
+        var path = url.StartsWith("/") ? url : "/" + url;
+    
+        return $"{baseUri}{path}";
     }
 
     private static string GetLocationString(Shared.EmployeeManagement.Responses.AddressResponse? address)
