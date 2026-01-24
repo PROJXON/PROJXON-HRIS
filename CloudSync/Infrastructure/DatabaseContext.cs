@@ -27,8 +27,8 @@ public class DatabaseContext : DbContext
     public DbSet<Survey> Surveys { get; set; }
     public DbSet<SurveyAssignment> SurveyAssignments { get; set; }
     public DbSet<Attendance> Attendance { get; set; }
+    public DbSet<TimeOffRequest> TimeOffRequests { get; set; }
     public virtual DbSet<EmployeeFile> EmployeeFiles { get; set; }
-
     public virtual DbSet<Address> Addresses { get; set; }
     public virtual DbSet<Department> Departments { get; set; }
     public virtual DbSet<ProjectTeam> ProjectTeams { get; set; }
@@ -157,6 +157,53 @@ public class DatabaseContext : DbContext
             new Department { Id = 20, Name = "Finance", ParentDepartmentId = 5 },
             new Department { Id = 21, Name = "Legal", ParentDepartmentId = 5 }
         );
+
+        modelBuilder.Entity<TimeOffRequest>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.EmployeeId)
+                .IsRequired();
+
+            entity.Property(e => e.StartDate)
+                .IsRequired();
+
+            entity.Property(e => e.EndDate)
+                .IsRequired();
+
+            entity.Property(e => e.RequestType)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            entity.Property(e => e.Reason)
+                .IsRequired()
+                .HasMaxLength(500);
+
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasMaxLength(20)
+                .HasDefaultValue("Pending");
+
+            entity.Property(e => e.SubmittedDate)
+                .IsRequired();
+
+            entity.Property(e => e.ReviewedBy)
+                .HasMaxLength(100);
+
+            entity.Property(e => e.TotalDays)
+                .IsRequired();
+
+            // Configure relationship with Employee
+            entity.HasOne(e => e.Employee)
+                .WithMany()
+                .HasForeignKey(e => e.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Create indexes for better query performance
+            entity.HasIndex(e => e.EmployeeId);
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.SubmittedDate);
+        });
         
         modelBuilder.Entity<ProjectTeam>()
             .HasKey(u => u.Id);

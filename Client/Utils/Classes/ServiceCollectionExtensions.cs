@@ -63,7 +63,8 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<CreateSurveyViewModel>();
         collection.AddTransient<TasksViewModel>();
         collection.AddTransient<SurveyResponsesViewModel>();
-
+        collection.AddTransient<TimeOffViewModel>();
+        collection.AddTransient<TimeOffRequestsViewModel>();
 
         // Views
         collection.AddTransient<MainWindow>();
@@ -84,5 +85,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<TakeSurveyView>();
         collection.AddTransient<SidebarView>();
         collection.AddTransient<SurveyResponsesView>();
+        collection.AddTransient<TimeOffView>();
+        collection.AddTransient<TimeOffRequestsView>();
     }
 }

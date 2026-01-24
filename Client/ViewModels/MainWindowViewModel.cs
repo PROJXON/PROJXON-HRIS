@@ -171,6 +171,14 @@ public partial class MainWindowViewModel : ObservableObject
                 newVm = new RecruitmentViewModel(_navigationService, _apiClient, _sidebarViewModel);
                 IsSidebarVisible = true;
                 break;
+            case ViewModelType.TimeOffRequests:
+                newVm = new TimeOffRequestsViewModel(_navigationService, _apiClient, _sidebarViewModel);
+                IsSidebarVisible = true;
+                break;
+            case ViewModelType.TimeOff:
+                newVm = new TimeOffViewModel(_navigationService, _apiClient, _sidebarViewModel);
+                IsSidebarVisible = true;
+                break;
             case ViewModelType.Forms:
                 newVm = new FormsViewModel(_navigationService, _sidebarViewModel, _apiClient, _employeeRepository);
                 IsSidebarVisible = true;

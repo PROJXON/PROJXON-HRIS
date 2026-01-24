@@ -193,6 +193,10 @@ public partial class SidebarViewModel : ViewModelBase
     [RelayCommand]
     private async Task NavigateToForms() => await _navigationService.NavigateTo(ViewModelType.Forms);
 
+    [RelayCommand]
+    private async Task NavigateToTimeOffRequests() => await _navigationService.NavigateTo(ViewModelType.TimeOffRequests);
+
+
     // Intern Specific
     [RelayCommand]
     private async Task NavigateToAttendance() => await _navigationService.NavigateTo(ViewModelType.Attendance);
@@ -203,6 +207,9 @@ public partial class SidebarViewModel : ViewModelBase
     {
         ComingSoonRequested?.Invoke(this, EventArgs.Empty);
     }
+
+    [RelayCommand]
+    private async Task NavigateToTimeOff() => await _navigationService.NavigateTo(ViewModelType.TimeOff);
 
     [RelayCommand]
     private async Task NavigateToTasks()
