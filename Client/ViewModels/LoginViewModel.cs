@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Client.Services;
@@ -39,6 +39,26 @@ public partial class LoginViewModel(IAuthenticationService authService)
             {
                 ErrorMessage = "An unexpected error occurred. Please try again.";
             }
+        }
+        finally
+        {
+            IsLoggingIn = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task LoginWithDemoAsync()
+    {
+        IsLoggingIn = true;
+        ErrorMessage = string.Empty;
+        try
+        {
+            Client.Utils.Classes.AppConfig.IsDemoMode = true;
+            await authService.LoginAsync();
+        }
+        catch (Exception)
+        {
+            ErrorMessage = "Failed to launch Demo Mode.";
         }
         finally
         {

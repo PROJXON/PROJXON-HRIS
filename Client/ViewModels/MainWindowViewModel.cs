@@ -249,33 +249,36 @@ public partial class MainWindowViewModel : ObservableObject
 
     private async void OnIsAuthenticatedChanged(object? sender, AuthenticationChangedEventArgs e)
     {
-        IsAuthenticated = e.IsAuthenticated;
-        OnPropertyChanged(nameof(IsSwitchPortalVisible)); 
-        OnPropertyChanged(nameof(IsDevButtonVisible)); 
-
-        if (IsAuthenticated)
+        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            if (IsDevUser)
-            {
-                await _navigationService.NavigateTo(ViewModelType.PortalSelection);
-                return;
-            }
+            IsAuthenticated = e.IsAuthenticated;
+            OnPropertyChanged(nameof(IsSwitchPortalVisible)); 
+            OnPropertyChanged(nameof(IsDevButtonVisible)); 
 
-            if (_sessionService.IsHrOrExecutive)
+            if (IsAuthenticated)
             {
-                await _navigationService.NavigateTo(ViewModelType.PortalSelection);
+                if (IsDevUser)
+                {
+                    await _navigationService.NavigateTo(ViewModelType.PortalSelection);
+                    return;
+                }
+
+                if (_sessionService.IsHrOrExecutive)
+                {
+                    await _navigationService.NavigateTo(ViewModelType.PortalSelection);
+                }
+                else
+                {
+                    await _userPreferencesService.SetPortalPreferenceAsync(PortalType.Intern);
+                    await _navigationService.NavigateTo(ViewModelType.InternDashboard);
+                }
             }
             else
             {
-                await _userPreferencesService.SetPortalPreferenceAsync(PortalType.Intern);
-                await _navigationService.NavigateTo(ViewModelType.InternDashboard);
+                await _userPreferencesService.ClearPortalPreferenceAsync();
+                await _navigationService.NavigateTo(ViewModelType.Login);
             }
-        }
-        else
-        {
-            await _userPreferencesService.ClearPortalPreferenceAsync();
-            await _navigationService.NavigateTo(ViewModelType.Login);
-        }
+        });
     }
 
     [RelayCommand]

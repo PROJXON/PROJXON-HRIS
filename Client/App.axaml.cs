@@ -69,10 +69,16 @@ public partial class App : Application
 
         var configuration = builder.Build();
 
-        collection.AddCommonServices(configuration,
-            configuration["CloudSyncUrl"] ?? throw new ConfigurationException(
-                "CloudSyncUrl not found in application configuration.",
-                "Networking is not properly configured. Please contact support.", "CloudSyncUrl"));
+        var cloudSyncUrl = configuration["CloudSyncUrl"];
+        var clientId = configuration["Auth:ClientId"];
+
+        if (string.IsNullOrWhiteSpace(cloudSyncUrl) || string.IsNullOrWhiteSpace(clientId))
+        {
+            AppConfig.IsDemoMode = true;
+            cloudSyncUrl = string.IsNullOrWhiteSpace(cloudSyncUrl) ? "http://localhost/" : cloudSyncUrl;
+        }
+
+        collection.AddCommonServices(configuration, cloudSyncUrl);
         
         RegisterSecureStorage(collection);
 
@@ -97,6 +103,14 @@ public partial class App : Application
             {
                 var logger = provider.GetRequiredService<ILogger<LinuxSecretServiceStorage>>();
                 return new LinuxSecretServiceStorage(logger, applicationName);
+            });
+        }
+        else
+        {
+            services.AddSingleton<ISecureTokenStorage>(provider =>
+            {
+                var logger = provider.GetRequiredService<ILogger<SecureTokenStorage>>();
+                return new SecureTokenStorage(logger);
             });
         }
     }

@@ -21,6 +21,8 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
 
     public async Task<ApiResponse<T>> GetAllAsync<T>(string endpoint, CancellationToken cancellationToken = default)
     {
+        if (AppConfig.IsDemoMode) return HandleDemoMode<T>(endpoint);
+
         try
         {
             logger.LogDebug("GET request to {Endpoint}", httpClient.BaseAddress + endpoint);
@@ -36,6 +38,8 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
 
     public async Task<ApiResponse<T>> GetByIdAsync<T>(string endpoint, int id, CancellationToken cancellationToken = default)
     {
+        if (AppConfig.IsDemoMode) return HandleDemoMode<T>(endpoint);
+
         var fullEndpoint = $"{endpoint}/{id}";
         try
         {
@@ -52,6 +56,8 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
 
     public async Task<ApiResponse<T>> PostAsync<T>(string endpoint, object data, CancellationToken cancellationToken = default)
     {
+        if (AppConfig.IsDemoMode) return HandleDemoMode<T>(endpoint);
+
         try
         {
             logger.LogDebug("POST request to {Endpoint}", endpoint);
@@ -70,6 +76,8 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
 
     public async Task<ApiResponse<T>> PutAsync<T>(string endpoint, int id, object data, CancellationToken cancellationToken = default)
     {
+        if (AppConfig.IsDemoMode) return HandleDemoMode<T>(endpoint);
+
         try
         {
             logger.LogDebug("PUT request to {Endpoint}/{Id}", endpoint, id);
@@ -88,6 +96,8 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
 
     public async Task<ApiResponse<T>> PutAsync<T>(string endpoint, object data, CancellationToken cancellationToken = default)
     {
+        if (AppConfig.IsDemoMode) return HandleDemoMode<T>(endpoint);
+
         try
         {
             logger.LogDebug("PUT request to {Endpoint}", endpoint);
@@ -106,6 +116,8 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
 
     public async Task<ApiResponse<object?>> DeleteAsync<T>(string endpoint, int id, CancellationToken cancellationToken = default)
     {
+        if (AppConfig.IsDemoMode) return new ApiResponse<object?> { IsSuccess = true, StatusCode = 200 };
+
         try
         {
             logger.LogDebug("DELETE request to {Endpoint}/{Id}", endpoint, id);
@@ -133,6 +145,8 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
     
     public async Task<ApiResponse<object?>> DeleteAsync<T>(string endpoint, CancellationToken cancellationToken = default)
     {
+        if (AppConfig.IsDemoMode) return new ApiResponse<object?> { IsSuccess = true, StatusCode = 200 };
+
         try
         {
             logger.LogDebug("DELETE request to {Endpoint}", endpoint);
@@ -221,5 +235,54 @@ public class ApiClient(HttpClient httpClient, ILogger<ApiClient> logger) : IApiC
         }
 
         return apiResponse;
+    }
+
+    private ApiResponse<T> HandleDemoMode<T>(string endpoint)
+    {
+        try
+        {
+            // For fetching lists of employees
+            if (typeof(T) == typeof(System.Collections.Generic.IEnumerable<Shared.EmployeeManagement.Responses.EmployeeResponse>))
+            {
+                var demoEmployees = new System.Collections.Generic.List<Shared.EmployeeManagement.Responses.EmployeeResponse>
+                {
+                    new() { Id = 1, BasicInfo = new() { FirstName = "John", LastName = "Doe", PreferredName = "Johnny", DateOfBirth = default }, ContactInfo = new() { PersonalEmail = "john.doe@demo.com" }, PositionDetails = new() { PositionName = "Software Engineer", Department = "Engineering" } },
+                    new() { Id = 2, BasicInfo = new() { FirstName = "Jane", LastName = "Smith", DateOfBirth = default }, ContactInfo = new() { PersonalEmail = "jane.smith@demo.com" }, PositionDetails = new() { PositionName = "HR Manager", Department = "Human Resources" } },
+                    new() { Id = 3, BasicInfo = new() { FirstName = "Alice", LastName = "Johnson", DateOfBirth = default }, ContactInfo = new() { PersonalEmail = "alice.j@demo.com" }, PositionDetails = new() { PositionName = "Sales Rep", Department = "Sales" } }
+                };
+                return new ApiResponse<T> { IsSuccess = true, StatusCode = 200, Data = (T)(object)demoEmployees };
+            }
+            
+            // For fetching a single employee
+            if (typeof(T) == typeof(Shared.EmployeeManagement.Responses.EmployeeResponse))
+            {
+                var employee = new Shared.EmployeeManagement.Responses.EmployeeResponse
+                {
+                    Id = 1, 
+                    BasicInfo = new() { FirstName = "John", LastName = "Doe", DateOfBirth = default }, 
+                    ContactInfo = new() { PersonalEmail = "john.doe@demo.com" }, 
+                    PositionDetails = new() { PositionName = "Demo Employee", Department = "Demo" }
+                };
+                return new ApiResponse<T> { IsSuccess = true, StatusCode = 200, Data = (T)(object)employee };
+            }
+
+            // Fallback for returning empty lists for other endpoints
+            if (typeof(System.Collections.IEnumerable).IsAssignableFrom(typeof(T)) && typeof(T) != typeof(string))
+            {
+                if (typeof(T).IsGenericType)
+                {
+                    var argType = typeof(T).GetGenericArguments()[0];
+                    var emptyListType = typeof(System.Collections.Generic.List<>).MakeGenericType(argType);
+                    var emptyList = Activator.CreateInstance(emptyListType);
+                    return new ApiResponse<T> { IsSuccess = true, StatusCode = 200, Data = (T)emptyList! };
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error creating demo data");
+        }
+
+        return new ApiResponse<T> { IsSuccess = true, StatusCode = 200, Data = default };
     }
 }

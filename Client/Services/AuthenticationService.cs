@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -18,6 +18,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using Client.Models.EmployeeManagement; 
 using Shared.Responses.UserManagement;
+using Shared.EmployeeManagement.Responses;
 
 namespace Client.Services;
 
@@ -64,14 +65,23 @@ public class AuthenticationService : IAuthenticationService
 
         try
         {
-            _clientId = _configuration["Auth:ClientId"]
-                        ?? throw new ConfigurationException("Google OAuth ClientId not found.", "Config Error", "Auth:ClientId");
-            
-            _clientSecret = _configuration["Auth:ClientSecret"]
-                            ?? throw new ConfigurationException("Google OAuth ClientSecret not found.", "Config Error", "Auth:ClientSecret");
-            
-            _redirectUri = _configuration["Auth:Google:RedirectUri"] 
-                           ?? "http://127.0.0.1:8080/callback";
+            if (!AppConfig.IsDemoMode)
+            {
+                _clientId = _configuration["Auth:ClientId"]
+                            ?? throw new ConfigurationException("Google OAuth ClientId not found.", "Config Error", "Auth:ClientId");
+                
+                _clientSecret = _configuration["Auth:ClientSecret"]
+                                ?? throw new ConfigurationException("Google OAuth ClientSecret not found.", "Config Error", "Auth:ClientSecret");
+                
+                _redirectUri = _configuration["Auth:Google:RedirectUri"] 
+                               ?? "http://127.0.0.1:8080/callback";
+            }
+            else
+            {
+                _clientId = "demo_client_id";
+                _clientSecret = "demo_client_secret";
+                _redirectUri = "http://localhost/callback";
+            }
         }
         catch (Exception e) when (e is not ConfigurationException)
         {
@@ -93,6 +103,12 @@ public class AuthenticationService : IAuthenticationService
     
     public async Task<bool> LoginAsync()
     {
+        if (AppConfig.IsDemoMode)
+        {
+            await InitializeDemoModeAsync();
+            return true;
+        }
+
         // Variables to hold data for processing AFTER the lock is released to avoid deadlocks
         UserResponse? userResponse = null;
         int employeeIdToFetch = 0;
@@ -501,6 +517,12 @@ public class AuthenticationService : IAuthenticationService
 
     private async Task LoadStoredTokenAsync()
     {
+        if (AppConfig.IsDemoMode)
+        {
+            await InitializeDemoModeAsync();
+            return;
+        }
+
         try
         {
             _appJwtToken = await _tokenStorage.RetrieveTokenAsync("app_jwt_token");
@@ -603,5 +625,40 @@ public class AuthenticationService : IAuthenticationService
             get => JsonWebToken; 
             set => JsonWebToken = value; 
         }
+    }
+
+    private async Task InitializeDemoModeAsync()
+    {
+        await _authSemaphore.WaitAsync();
+        try
+        {
+            CurrentUserEmail = "demo.hr@projxon.com";
+            _appJwtToken = "demo_jwt_token";
+            _tokenExpiry = DateTime.UtcNow.AddDays(1);
+            
+            var userResponse = new UserResponse 
+            { 
+                Id = 999, 
+                Email = CurrentUserEmail,
+                RoleId = 2, // HR OR ADMIN
+                EmployeeId = 999 
+            };
+            
+            var employeeResponse = new EmployeeResponse 
+            { 
+                Id = 999, 
+                BasicInfo = new EmployeeBasicResponse { FirstName = "Demo", LastName = "HR", PreferredName = "Demo", DateOfBirth = default },
+                ContactInfo = new EmployeeContactInfoResponse { PersonalEmail = "demo.hr@projxon.com" },
+                PositionDetails = new EmployeePositionResponse { Department = "Human Resources", PositionName = "HR Manager" }
+            };
+
+            await _sessionService.InitializeSessionAsync(userResponse, employeeResponse);
+        }
+        finally
+        {
+            _authSemaphore.Release();
+        }
+
+        AuthenticationChanged?.Invoke(this, new AuthenticationChangedEventArgs(true));
     }
 }

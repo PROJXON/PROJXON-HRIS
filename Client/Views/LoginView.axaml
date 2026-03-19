@@ -48,6 +48,27 @@
                 </StackPanel>
             </Button>
             
+            <!-- Styled Demo Button -->
+            <Button Command="{Binding LoginWithDemoCommand}"
+                    Background="#1F2937"
+                    Foreground="White"
+                    BorderThickness="0"
+                    CornerRadius="8"
+                    Padding="16,12"
+                    Cursor="Hand"
+                    HorizontalAlignment="Center"
+                    Width="300">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="#111827" />
+                        <Setter Property="TextBlock.Foreground" Value="White"/>
+                    </Style>
+                </Button.Styles>
+                <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                    <TextBlock Text="View Demo" VerticalAlignment="Center" FontSize="15" FontWeight="Medium" />
+                </StackPanel>
+            </Button>
+            
             <TextBlock Text="{Binding ErrorMessage}"
                        IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                        Foreground="#DC2626"
